@@ -1,0 +1,50 @@
+@(users: List[User])
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("Users list"){
+
+<script>
+function del(urlToDelete) {
+	$.ajax({
+		url: urlToDelete,
+		type: 'DELETE',
+		success: function(results) {
+		// Refresh the page
+		location.reload();
+	}
+	});
+}
+</script>
+
+<div class="container">
+<h2>List of users</h2>
+<table class="table table-striped">
+<thead>
+<tr>
+<th>First name</th>
+<th>Last name</th>
+<th>email</th>
+<th>Pesel Number</th>
+<th>Id Card Number</th>
+<th>Fee Status</th>
+<th>Houers Points</th>
+</tr>
+</thead>
+<tbody>
+@for(user <- users) {
+<tr>
+	<td>@user.firstName</td>
+	<td>@user.lastName</td>
+	<td>@user.email</td>
+	<td>@user.peselNr</td>
+	<td>@user.idCardNr</td>
+	<td>@user.feeStatus</td>
+	<td>@user.houersPoints</td>
+	<td>
+
+</td>
+</tr>
+}
+
+}
