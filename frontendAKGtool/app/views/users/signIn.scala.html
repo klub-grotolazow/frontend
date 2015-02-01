@@ -1,0 +1,22 @@
+@(userAccountForm: Form[UserAccount])
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("User form"){
+	<div class="container col-md-offset-2">
+		<h1>User account</h1>
+		@helper.form(action = routes.Users.verifyUser(), 'enctype -> "multipart/form-data") {
+			<fieldset>
+				<legend>Sign in:</legend>
+				@helper.inputText(userAccountForm("userName"), '_label -> "User name")
+				@helper.inputPassword(userAccountForm("passwordHash"), '_label -> "Password")		
+			</fieldset>
+			<input type="submit" class="btn btn-primary" value="Sing in">
+		}
+	</div>
+	
+	
+
+
+
+}
