@@ -1,5 +1,9 @@
 package models;
 
+/*
+ * @Author(name="Lukas Pecak")
+ */
+
 public class UserAccount {
 	public String userName;
 	public String passwordHash;
