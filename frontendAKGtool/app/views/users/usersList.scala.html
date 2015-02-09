@@ -30,6 +30,7 @@ function del(urlToDelete) {
 <th>Id Card Number</th>
 <th>Fee Status</th>
 <th>Houers Points</th>
+<th>Edit/Delete</th>
 </tr>
 </thead>
 <tbody>
@@ -43,10 +44,19 @@ function del(urlToDelete) {
 	<td>@user.feeStatus</td>
 	<td>@user.hoursPoints</td>
 	<td>
-
-</td>
+		&nbsp&nbsp
+		<a href="#">
+		<i class="glyphicon glyphicon-pencil"></i></a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+		<a >
+		<i class="glyphicon glyphicon-remove"></i></a>
+	</td>
 </tr>
 }
+</tbody>
+</table>
+<a href="@routes.Users.newUser()" class="btn btn-primary">
+<i class="glyphicon glyphicon-plus"></i>&nbsp&nbspAdd user</a>
+</div>
 }
 
 <!--  @@Author(name="Lukas Pecak") -->

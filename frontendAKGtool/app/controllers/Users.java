@@ -80,6 +80,7 @@ public class Users extends Controller {
 		return ok(userDetails.render(userForm));
 	}
 	
+	
 	public static Result signIn(){
 		return ok(signIn.render(userAccountForm));
 	}
@@ -87,4 +88,8 @@ public class Users extends Controller {
 	public static Result verifyUser(){
 		return TODO;
 	}
+	
+	
+	
+	
 }
