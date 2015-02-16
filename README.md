@@ -18,7 +18,8 @@ cd frontend\frontendAKGtool
 ```
 3. Run the activator program on port 9001
 ```
-activator run 9001
+activator 
+run 9001
 ```
 4. Now you can test application.
 Open your browser and type in the adress field : http:/localhost:9001
