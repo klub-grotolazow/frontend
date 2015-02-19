@@ -7,15 +7,23 @@ package utils;
 
 public class Messages {
 	//flash message type
-	public static final String WARNING = 	"warning";
-	public static final String ERROR = 		"error"; 
-	public static final String SUCCESS = 	"success";
+	public static final String WARNING = 					"warning";
+	public static final String ERROR = 						"error"; 
+	public static final String SUCCESS = 					"success";
+	
+	//Keys
+	public static final String EDIT_USER_KEY = 				"editUser";
 	
 	//User details messages
 	public static final String CORRECT_FORM = 				"Please correct the form below.";
 	public static final String ERROR_ADDING_USER = 			"Error! Problem with adding user! Details : Cann not connect to server. Check if the server is running or the server url is crorrect.";
 	public static final String SUCCESS_ADING_USER = 		"Success! User added to list!";
+	public static final String SUCCESS_UPDATE_USER = 		"Success! User updated successfull!";
 	public static final String ERROR_ADDING_USER_DETAILS = 	"Error! Problem with adding user! Details : ";
+	public static final String SUCCESS_DELETED =		 	"Success! Deleted user : ";
+	public static final String ERROR_DELETE =			 	"Problem occured while deleting user !";
+	public static final String ERROR_GETTING_USER = 		"Error! Can not display user!";
+	public static final String USER_NOT_FOUND =				"Error! User not found!";
 	
 	//User list messages
 	public static final String CANT_LOAD_USERS =			"Can not load users!";

@@ -29,31 +29,30 @@ import views.html.users.signIn;
 
 
 public class Users extends Controller {
-	private static final Form<User> userForm = Form.form(User.class);
+	private static Form<User> userForm = Form.form(User.class);
 	private static final Form<UserAccount> userAccountForm = Form.form(UserAccount.class);
+	
+	//Edit user
+	public static Result editUser(String id){
+		User user = UsersService.getUser(id);
+		if(user == null){
+			Controller.flash().put(Messages.ERROR, Messages.USER_NOT_FOUND);
+			return ok(usersList.render(UsersService.getUsersList()));
+		} else{
+			session().put(Messages.EDIT_USER_KEY, id.toString());
+			Form<User> form = userForm.fill(user);
+			return ok(userDetails.render(form));
+		}
+	}
+	
+	//Deleting user
+	public static Result deleteUser(String id){
+		UsersService.deleteUser(id);	
+		return ok(usersList.render(UsersService.getUsersList()));
+	}
 	
 	//Displaying the users list
 	public static Result getUsersList() throws JSONException {
-		/*
-		WSResponse response = null;
-		JSONArray array;
-		List<User> resultList = new ArrayList<User>();
-		try{
-		Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.GET_USERS_URL)
-										.setContentType(Urls.CONTENT_TYPE_JSON)
-										.get();
-		response = result.get(10000);
-		JSONObject object = new JSONObject(Utils.wrapJsonTable(response.getBody()));
-		array = object.getJSONArray(Utils.USERS_JSON_TABLE);
-		for(int i=0;i<array.length();i++){
-			User user = new Gson().fromJson(array.get(i).toString(), User.class);
-			resultList.add(user);
-		}
-		} catch(Exception exception){
-			flash(Messages.ERROR, Messages.CANT_LOAD_USERS);
-			return badRequest(index.render());
-		}
-		*/
 		try{
 			return ok(usersList.render(UsersService.getUsersList()));
 		} catch(Exception exception){
@@ -71,6 +70,9 @@ public class Users extends Controller {
 		User user = boundForm.get();
 		JsonNode json = Json.toJson(user);
 		WSResponse response = null;
+		
+		//The case for new user save
+		if(!session().containsKey(Messages.EDIT_USER_KEY)){
 		try{
 		Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.POST_USER_URL)
 										.setContentType(Urls.CONTENT_TYPE_JSON)
@@ -86,6 +88,30 @@ public class Users extends Controller {
 		} else{
 			flash(Messages.ERROR, Messages.ERROR_ADDING_USER_DETAILS + response.getStatus() +" "+ response.getStatusText());
 			return badRequest(userDetails.render(boundForm));
+		}
+		} 
+		
+		//The case for user update
+		else{
+			user._id = session().get(Messages.EDIT_USER_KEY);
+			json = Json.toJson(user);
+			try{
+			Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.PUT_USER_URL+session().get(Messages.EDIT_USER_KEY))
+											.setContentType(Urls.CONTENT_TYPE_JSON)
+											.put(json);
+			response = result.get(10000);
+			session().remove(Messages.EDIT_USER_KEY);
+			} catch(Exception exception){
+				flash(Messages.ERROR, Messages.ERROR_ADDING_USER);
+				return badRequest(userDetails.render(boundForm));
+			}
+			if(response.getStatus() == StatusCodes.OK){
+				flash(Messages.SUCCESS, Messages.SUCCESS_UPDATE_USER);
+				return ok(usersList.render(UsersService.getUsersList()));
+			} else{
+				flash(Messages.ERROR, Messages.ERROR_ADDING_USER_DETAILS);
+				return badRequest(userDetails.render(boundForm));
+			}
 		}	
 	}
 	

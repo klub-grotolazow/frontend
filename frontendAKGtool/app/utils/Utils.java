@@ -47,15 +47,17 @@ public class Utils {
 		try{
 			output = new FileOutputStream(PROPERTIES_FILE);
 			properties.clear();
+			if(setting.apiUrl != null){
 			properties.setProperty(API_URL, setting.apiUrl);
 			properties.store(output, Messages.PROPERTIRS_FILE_COMMENT);
 			Controller.session().put(API_URL, properties.getProperty(API_URL));
+			}
 			Controller.flash(Messages.SUCCESS, Messages.SAVED_MESSAGE);
 		} catch(Exception exception){
-			Controller.flash(Messages.ERROR, Messages.ERROR_SAVING_SETTINGS);
+			Controller.flash(Messages.ERROR, Messages.ERROR_SAVING_SETTINGS + setting + setting.apiUrl);
 		}
 		} else{
-			Controller.flash().put(Messages.WARNING, Messages.EMPTY_FORM);
+			Controller.flash().put(Messages.WARNING, Messages.EMPTY_FORM + setting + setting.apiUrl);
 		}
 	}
 	

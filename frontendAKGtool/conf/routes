@@ -7,8 +7,11 @@ GET     /                           controllers.Application.index()
 GET		/users					 	controllers.Users.getUsersList()
 GET		/users/new					controllers.Users.newUser()
 GET		/users/singin				controllers.Users.signIn()
+GET		/users/delete/:id			controllers.Users.deleteUser(id: String)
+GET		/users/:id					controllers.Users.editUser(id: String)
 GET		/settings					controllers.Settings.getSettings()
 GET 	/settings/save				controllers.Settings.saveSettings()
+
 
 
 POST 	/users 						controllers.Users.saveUser()
