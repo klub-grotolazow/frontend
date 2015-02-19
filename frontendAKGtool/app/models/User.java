@@ -19,10 +19,13 @@ public class User {
 	public String firstName;
 	public String lastName;
 	public String email;
+	
+	/*
 	public String peselNr;
 	public String idCardNr;
 	public String feeStatus;
 	public int hoursPoints;
+	*/
 	
 	public User() {}
 	
@@ -30,10 +33,13 @@ public class User {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
+		
+		/*
 		this.peselNr = peselNr;
 		this.idCardNr = idCardNr;
 		this.feeStatus = feeStatus;
 		this.hoursPoints = hoursPoints;
+		*/
 	}
 	
 	@Override
