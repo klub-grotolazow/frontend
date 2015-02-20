@@ -1,0 +1,24 @@
+@(settingForm : Form[Setting], name: String)
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("Settings"){
+	<div class="container col-md-offset-2">
+		<br>
+		<h1 align="center">System settings</h1>
+		<br>
+		<br>
+		<h3>Api server location&nbsp&nbsp&nbsp <i class="glyphicon glyphicon-floppy-saved"></i> &nbsp  @name </h3>
+		@helper.form(action = routes.Settings.saveSettings(), 'enctype -> "multipart/form-data"){
+			<fieldset>
+				@helper.inputText(settingForm("apiUrl"), '_label -> "New Api server location", 'size -> 60)		
+			</fieldset>
+			<br>
+			<input type="submit" class="btn btn-primary" value="Save settings">
+		
+		}
+	</div>
+
+}
+
+<!--  @@Author(name="Lukas Pecak") -->

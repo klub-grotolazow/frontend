@@ -1,0 +1,66 @@
+@(users: List[User])
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("Users list"){
+
+<script>
+function del(urlToDelete) {
+	$.ajax({
+		url: urlToDelete,
+		type: 'DELETE',
+		success: function(results) {
+		// Refresh the page
+		location.reload();
+	}
+	});
+}
+</script>
+
+<div class="container">
+<h1 align="center">List of users</h1>
+<br>
+<table class="table table-striped">
+<thead>
+<tr>
+<th>First name</th>
+<th>Last name</th>
+<th>email</th>
+
+<!-- 
+<th>Pesel Number</th>
+<th>Id Card Number</th>
+<th>Fee Status</th>
+<th>Houers Points</th>
+-->
+
+<th>Edit/Delete</th>
+</tr>
+</thead>
+<tbody>
+@for(user <- users) {
+<tr>
+	<td>@user.firstName</td>
+	<td>@user.lastName</td>
+	<td>@user.email</td>
+	
+	<!-- 
+	
+	-->
+	<td>
+		&nbsp&nbsp
+		<a href="@routes.Users.editUser(user._id)">
+		<i class="glyphicon glyphicon-pencil"></i></a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+		<a href="@routes.Users.deleteUser(user._id)">
+		<i class="glyphicon glyphicon-remove"></i></a>
+	</td>
+</tr>
+}
+</tbody>
+</table>
+<a href="@routes.Users.newUser()" class="btn btn-primary">
+<i class="glyphicon glyphicon-plus"></i>&nbsp&nbspAdd user</a>
+</div>
+}
+
+<!--  @@Author(name="Lukas Pecak") -->

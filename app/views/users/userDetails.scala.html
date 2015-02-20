@@ -1,0 +1,26 @@
+@(userForm: Form[User])
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("User form"){
+	<div class="container col-md-offset-2">
+		<h1 align="center">User form</h1>
+		@helper.form(action = routes.Users.saveUser(), 'enctype -> "multipart/form-data") {
+			<fieldset>
+				<legend>User - @userForm("firstName").valueOr("new") @userForm("lastName").valueOr("")</legend>
+				@helper.inputText(userForm("firstName"), '_label -> "First name")
+				@helper.inputText(userForm("lastName"), '_label -> "Last name")
+				@helper.inputText(userForm("email"), '_label -> "email")
+				<!-- 
+				@helper.inputText(userForm("peselNr"), '_label -> "Pesel number")
+				@helper.inputText(userForm("idCardNr"), '_label -> "Id card number")
+				@helper.inputText(userForm("feeStatus"), '_label -> "Fee status")
+				@helper.inputText(userForm("hoursPoints"), '_label -> "Houers points")
+				-->
+			</fieldset>
+			<input type="submit" class="btn btn-primary" value="Save">
+		}
+	</div>
+}
+
+<!--  @@Author(name="Lukas Pecak") -->
