@@ -1,4 +1,6 @@
 package models;
+
+import scala.Option;
 /*
  *@Author(name="Lukas Pecak")
 
@@ -20,6 +22,7 @@ public class User {
 	public String lastName;
 	public String email;
 	
+	public Option<String> gender;
 	/*
 	public String peselNr;
 	public String idCardNr;
