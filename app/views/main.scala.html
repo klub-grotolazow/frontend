@@ -7,7 +7,7 @@
 <html>
     <head>
         <title>@title</title>
-        <!-- <link href="@routes.Assets.at("bootstrap/css/bootstrap.min.css")" rel="stylesheet" media="screen"> -->
+        <meta charset="UTF-8">
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
         <script src="@routes.Assets.at("javascripts/hello.js")" type="text/javascript"></script>
@@ -56,19 +56,27 @@
 		    <!-- Collect the nav links, forms, and other content for toggling -->
 		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		      <ul class="nav navbar-nav">
-		      	<li><a href="/">Home</a></li>
+		      	<li><a href="/">Info</a></li>
 		        <li class="dropdown">
-		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Users <span class="caret"></span></a>
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Uzytkownicy <span class="caret"></span></a>
 		          <ul class="dropdown-menu" role="menu">
-		            <li><a href="/users/new">Add user</a></li><!-- Adding new user -->
+		            <li><a href="/users/new">Nowy użytkownik</a></li><!-- Adding new user -->
 		            <li class="divider"></li>
-		            <li><a href="/users">Display all users</a></li><!-- Displaying the users List -->
+		            <li><a href="/users">Lista użytkowników</a></li><!-- Displaying the users List -->
+		          </ul>
+		        </li>
+		        <li class="dropdown">
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Kursy <span class="caret"></span></a>
+		          <ul class="dropdown-menu" role="menu">
+		            <li><a href="/courses/new">Nowy kurs</a></li><!-- Adding new user -->
+		            <li class="divider"></li>
+		            <li><a href="/courses">Lista kursów</a></li><!-- Displaying the users List -->
 		          </ul>
 		        </li>
 		      </ul>
 		      
 		      <ul class="nav navbar-nav navbar-right">
-		        <li><a href="/users/singin"><button>Sign in</button></a></li><!-- User authentication -->
+		        <li><a href="/users/singin"><button>Logowanie</button></a></li><!-- User authentication -->
 		        <li><a href="/settings"><i class="glyphicon glyphicon-wrench"></i></a></li><!-- Displaying the settings panel -->
 		      </ul>
 		    </div><!-- /.navbar-collapse -->

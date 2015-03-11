@@ -2,7 +2,7 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@main("Users list"){
+@main("Lista użytkowników"){
 
 <script>
 function del(urlToDelete) {
@@ -16,15 +16,15 @@ function del(urlToDelete) {
 	});
 }
 </script>
-
+<meta charset="UTF-8">
 <div class="container">
-<h1 align="center">List of users</h1>
+<h1 align="center">Lista użytkowników</h1>
 <br>
 <table class="table table-striped">
 <thead>
 <tr>
-<th>First name</th>
-<th>Last name</th>
+<th>Imię</th>
+<th>Nazwisko</th>
 <th>email</th>
 
 <!-- 
@@ -34,7 +34,7 @@ function del(urlToDelete) {
 <th>Houers Points</th>
 -->
 
-<th>Edit/Delete</th>
+<th>Zmień/Usuń</th>
 </tr>
 </thead>
 <tbody>
@@ -59,7 +59,7 @@ function del(urlToDelete) {
 </tbody>
 </table>
 <a href="@routes.Users.newUser()" class="btn btn-primary">
-<i class="glyphicon glyphicon-plus"></i>&nbsp&nbspAdd user</a>
+<i class="glyphicon glyphicon-plus"></i>&nbsp&nbspDodaj użytkownika</a>
 </div>
 }
 

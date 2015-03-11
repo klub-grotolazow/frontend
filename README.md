@@ -31,7 +31,13 @@ USERS:
   1. Add user  
   2. List all users  
   3. Edit user   
-  
+  4. Delete user  
+    
+COURSE:  
+  1. Add course
+  2. List all courses
+  3. Edit course data
+  4. Delete course
 
 
 

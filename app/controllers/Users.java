@@ -27,7 +27,6 @@ import views.html.users.usersList;
 import views.html.users.userDetails;
 import views.html.users.signIn;
 
-
 public class Users extends Controller {
 	private static Form<User> userForm = Form.form(User.class);
 	private static final Form<UserAccount> userAccountForm = Form.form(UserAccount.class);

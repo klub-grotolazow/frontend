@@ -2,14 +2,15 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@main("User form"){
+@main("Użytkownik"){
+	<meta charset="UTF-8">
 	<div class="container col-md-offset-2">
-		<h1 align="center">User form</h1>
+		<h1 align="center">Użytkownik</h1>
 		@helper.form(action = routes.Users.saveUser(), 'enctype -> "multipart/form-data") {
 			<fieldset>
-				<legend>User - @userForm("firstName").valueOr("new") @userForm("lastName").valueOr("")</legend>
-				@helper.inputText(userForm("firstName"), '_label -> "First name")
-				@helper.inputText(userForm("lastName"), '_label -> "Last name")
+				<legend>Użytkownik - @userForm("firstName").valueOr("nowy") @userForm("lastName").valueOr("")</legend>
+				@helper.inputText(userForm("firstName"), '_label -> "Imię")
+				@helper.inputText(userForm("lastName"), '_label -> "Nazwisko")
 				@helper.inputText(userForm("email"), '_label -> "email")
 				<!-- 
 				@helper.inputText(userForm("peselNr"), '_label -> "Pesel number")

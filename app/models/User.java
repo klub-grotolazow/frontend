@@ -33,8 +33,8 @@ public class User {
 	public Option<String> indexNr; 						//\\d{6}
 	public Option<String> instructorCard;
 	public Option<String> instructorSpecialization;
-	public List<Course> currentCourses;
-	public List<Equipment> hiredEquipments;
+	public List<String> currentCourses_ids;
+	public List<String> hiredEquipments_ids;
 	
 	public User() {}
 	

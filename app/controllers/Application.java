@@ -13,6 +13,7 @@ import views.html.index;
 public class Application extends Controller {
 
     public static Result index() {
+    	response().setContentType("text/html; charset=UTF-8");
         return ok(index.render());
     }
 

@@ -2,23 +2,34 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+# Info url --------------------------------------------------------------------------------------------------------------------
 GET     /                           controllers.Application.index()
+#------------------------------------------------------------------------------------------------------------------------------
+
+# Users urls ------------------------------------------------------------------------------------------------------------------
 GET		/users					 	controllers.Users.getUsersList()
 GET		/users/new					controllers.Users.newUser()
 GET		/users/singin				controllers.Users.signIn()
 GET		/users/delete/:id			controllers.Users.deleteUser(id: String)
 GET		/users/:id					controllers.Users.editUser(id: String)
-GET		/settings					controllers.Settings.getSettings()
-GET 	/settings/save				controllers.Settings.saveSettings()
-
-
 
 POST 	/users 						controllers.Users.saveUser()
 POST	/users/verify				controllers.Users.verifyUser()
+#------------------------------------------------------------------------------------------------------------------------------
 
+# Courses urls ----------------------------------------------------------------------------------------------------------------
+GET 	/courses					controllers.Courses.getCourses()
+GET		/courses/delete/:id			controllers.Courses.deleteCourse(id: String)
+GET		/courses/:id				controllers.Courses.editCourse(id: String)
+GET		/courses/new				controllers.Courses.newCourse()
 
+#------------------------------------------------------------------------------------------------------------------------------
 
+# Settings urls ---------------------------------------------------------------------------------------------------------------
+GET		/settings					controllers.Settings.getSettings()
+GET 	/settings/save				controllers.Settings.saveSettings()
+
+#------------------------------------------------------------------------------------------------------------------------------
 
 
 # Map static resources from the /public folder to the /assets URL path
