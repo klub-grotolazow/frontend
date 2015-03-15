@@ -14,5 +14,8 @@ public class Urls {
 	public static final String DELETE_USER_URL =	"/users/";
 	public static final String GET_ONE_USER = 		"/users/";
 	public static final String PUT_USER_URL	=		"/users/";
+	
+	//Course urls
+	public static final String GET_COURSES_URL = 	"/courses";
 
 }

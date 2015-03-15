@@ -56,7 +56,11 @@
 		    <!-- Collect the nav links, forms, and other content for toggling -->
 		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		      <ul class="nav navbar-nav">
+		      
+		      	<!-- Defining the main page link-->
 		      	<li><a href="/">Info</a></li>
+		      	
+		      	<!-- Defining the dropdown list for avalible user functions -->
 		        <li class="dropdown">
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Uzytkownicy <span class="caret"></span></a>
 		          <ul class="dropdown-menu" role="menu">
@@ -65,18 +69,36 @@
 		            <li><a href="/users">Lista użytkowników</a></li><!-- Displaying the users List -->
 		          </ul>
 		        </li>
+		        
+		        <!-- Defining the dropdown list for avalible course functions -->
 		        <li class="dropdown">
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Kursy <span class="caret"></span></a>
 		          <ul class="dropdown-menu" role="menu">
-		            <li><a href="/courses/new">Nowy kurs</a></li><!-- Adding new user -->
+		            <li><a href="/courses/new">Nowy kurs</a></li><!-- Adding new course -->
 		            <li class="divider"></li>
-		            <li><a href="/courses">Lista kursów</a></li><!-- Displaying the users List -->
+		            <li><a href="/courses">Lista kursów</a></li><!-- Displaying the courses List -->
+		          </ul>
+		        </li>
+		      
+		      <!-- Defining the dropdown list for avalible payment functions -->
+		        <li class="dropdown">
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Płatności <span class="caret"></span></a>
+		          <ul class="dropdown-menu" role="menu">
+		            <li><a href="/payments/new">Nowa płatność</a></li><!-- Adding new payment -->
+		            <li class="divider"></li>
+		            <li><a href="/payments">Lista płatności</a></li><!-- Displaying the payments List -->
 		          </ul>
 		        </li>
 		      </ul>
 		      
+		      
+		      <!-- Defining the nav-bars roght side components -->
 		      <ul class="nav navbar-nav navbar-right">
+		      
+		      	<!-- Defining the fink for signing in -->
 		        <li><a href="/users/singin"><button>Logowanie</button></a></li><!-- User authentication -->
+		        
+		        <!-- Defining the link for access the system settings -->
 		        <li><a href="/settings"><i class="glyphicon glyphicon-wrench"></i></a></li><!-- Displaying the settings panel -->
 		      </ul>
 		    </div><!-- /.navbar-collapse -->

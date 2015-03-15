@@ -15,22 +15,38 @@ import org.json.JSONException;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import service.CoursesService;
 import service.UsersService;
 import utils.Messages;
 import models.Course;
+import views.html.index;
 import views.html.courses.coursesList;
+import views.html.courses.courseDetails;
+import views.html.courses.courseOverview;
 
 public class Courses extends Controller {
 	private static Form<Course> courseForm = Form.form(Course.class);
 	private static List<Course> cl = new ArrayList<Course>();
+	
 	//Displaying the list of courses
 	public static Result getCourses() throws JSONException {
 		try{
-			
-			return ok(coursesList.render(cl));
+			return ok(coursesList.render(CoursesService.getCoursesList()));
 		} catch(Exception exception){
-			return badRequest();
+			flash(Messages.ERROR, Messages.ERROR_LOADING_COURSES);
+			return badRequest(index.render());
 		}
+	}
+	
+	//Show the course overview
+	public static Result showCourse(String _id){
+		try{
+			return ok(courseOverview.render());
+		} catch(Exception exception){
+			flash(Messages.ERROR, Messages.ERROR_LOADING_COURSE_VIEW);
+			return badRequest(index.render());
+		}
+		
 	}
 	
 	//Edit course
@@ -58,9 +74,13 @@ public class Courses extends Controller {
 	}
 	
 	//Adding new course
-		public static Result newCourse(){
-			//return ok(userDetails.render(userForm));
-			return ok(coursesList.render(cl));
-		}
+	public static Result newCourse(){
+		return ok(courseDetails.render(courseForm));
+	}
 	
+	//Adding new course
+	public static Result saveCourse(){
+		//return ok(userDetails.render(userForm));
+		return ok(coursesList.render(cl));
+	}
 }

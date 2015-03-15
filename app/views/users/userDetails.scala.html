@@ -1,27 +1,117 @@
-@(userForm: Form[User])
+@(userForm: Form[User])(id: String)
 @import helper._
 @import helper.twitterBootstrap._
 
 @main("Użytkownik"){
 	<meta charset="UTF-8">
-	<div class="container col-md-offset-2">
-		<h1 align="center">Użytkownik</h1>
-		@helper.form(action = routes.Users.saveUser(), 'enctype -> "multipart/form-data") {
+		
+		<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		    <div class="modal-dialog">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                ...
+		            </div>
+		            <div class="modal-body">
+		                ...
+		            </div>
+		            <div class="modal-footer">
+		                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+		                <a class="btn btn-danger btn-ok">Delete</a>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+		
+		<div class="container col-md-offset-2 col-md-8">
+		@helper.form(action = routes.Users.saveUser(id), 'class -> "form-inline", 'enctype -> "multipart/form-data") {
 			<fieldset>
-				<legend>Użytkownik - @userForm("firstName").valueOr("nowy") @userForm("lastName").valueOr("")</legend>
-				@helper.inputText(userForm("firstName"), '_label -> "Imię")
-				@helper.inputText(userForm("lastName"), '_label -> "Nazwisko")
-				@helper.inputText(userForm("email"), '_label -> "email")
-				<!-- 
-				@helper.inputText(userForm("peselNr"), '_label -> "Pesel number")
-				@helper.inputText(userForm("idCardNr"), '_label -> "Id card number")
-				@helper.inputText(userForm("feeStatus"), '_label -> "Fee status")
-				@helper.inputText(userForm("hoursPoints"), '_label -> "Houers points")
-				-->
+				<legend><h1>@userForm("firstName").valueOr("Nowy") @userForm("lastName").valueOr("użytkownik")</h1></legend>
+					<div class="col-md-6">
+						<div class="panel panel-default">
+							<div class="col-md-offset-1">
+								<h3>Dane użytkownika </h3>
+								@helper.inputText(userForm("firstName"), '_label -> "Imię",'size -> 40, 'type -> "text")
+								@helper.inputText(userForm("lastName"), '_label -> "Nazwisko", 'size -> 40, 'type -> "text")
+								@helper.inputText(userForm("idCardNr"), '_label -> "Numer dowodu osobistego", 'size -> 40, 'type -> "text")
+								@helper.inputText(userForm("peselNr"), '_label -> "Pesel", 'size -> 40, 'type -> "number")
+								@helper.inputText(userForm("age"), '_label -> "Wiek", 'size -> 5, 'type -> "number")
+								@select(userForm("gender"),
+										options("Woman"->"Kobieta",
+												"Man"->"Mężczyzna"),
+										'_label -> "Płeć", '_size -> 30)
+								@helper.inputText(userForm("indexNr"), '_label -> "Numer indeksu", 'size -> 40, 'type -> "number")
+							</div>
+							
+						</div>
+						<div class="panel panel-default">
+							<div class="col-md-offset-1">
+							<h3>Dane opcjonalne :</h3>
+								@select(userForm("membershipTypeTag"),
+											options("CandidateMember"->"Członek - kandydat",
+													"CommonMember"->"Członek zwyczajny",
+													"HonourableMember"->"Członek honorowy",
+													"SupportingMember"->"Członek wspierający"),
+											'_label -> "Płatności", '_size -> 30)
+								@select(userForm("courseRole"),
+										options("NonCourseMember"->"Nie uczestniczy w kursie",
+												"CourseMember"->"Uczestniczy w kursie",
+												"CourseManager"->"Kierownik kursu",
+												"Instructor"->"Instruktor"),
+										'_label -> "Rola użytkownika", '_size -> 30)
+								@select(userForm("warehouseRole"),
+										options("WarehouseUser"->"Użytkownik magazynu sprzętowego",
+												"WarehouseMan"->"Magazynier"),
+										'_label -> "Wynagrodzenie", '_size -> 30)		
+										
+								@select(userForm("paymentRole"),
+										options("NonAccounter"->"Nie pobiera wynagrodzenia",
+												"Accounter"->"Pobiera wynagrodzenie"),
+										'_label -> "Wynagrodzenie", '_size -> 30)
+								@select(userForm("feeStatus"),
+										options("OnTime"->"Brak zaległości",
+												"Overpayed"->"Nadpłata",
+												"OnePaymentMissing"->"Brak ostatniej płatności",
+												"Blocked"->"Zaległości - blokada magazynu"),
+										'_label -> "Płatności", '_size -> 30)	
+										
+								@helper.inputText(userForm("instructorCard"), '_label -> "Numer karty instruktora", 'size -> 40, 'type -> "text")
+								@helper.inputText(userForm("instructorSpecialization"), '_label -> "Specjalizacja instrukora", 'size -> 40, 'type -> "text")		
+		          				
+		          				
+		          				@helper.inputText(userForm("hoursPoints"), '_label -> "Przepracowane godziny", 'size -> 40, 'type -> "number")
+							</div>
+						</div>          				
+					</div>
+					
+					<div class="col-md-6">
+						<div class="panel panel-default">
+							<div class="col-md-offset-1">
+								<h3>Kontakt :</h3>
+								@helper.inputText(userForm("email"), '_label -> "email", 'size -> 40, 'type -> "email")
+								@helper.inputText(userForm("phoneNr"), '_label -> "Numer telefonu", 'size -> 40, 'type -> "tel")
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="col-md-offset-1">
+								<h3>Adres :</h3>
+								@helper.inputText(userForm("address.street"), '_label -> "Ulica", 'size -> 40, 'type -> "text")
+								@helper.inputText(userForm("address.buildingNr"), '_label -> "Numer budynku", 'size -> 40, 'type -> "text")
+								@helper.inputText(userForm("address.apartmentNr"), '_label -> "Numer mieszkania", 'size -> 40, 'type -> "text")
+								@helper.inputText(userForm("address.town"), '_label -> "Miejscowość", 'size -> 40, 'type -> "text")
+								@helper.inputText(userForm("address.zipCode"), '_label -> "Kod pocztowy", 'size -> 40, 'type -> "text")
+								@helper.inputText(userForm("address.voivodeship"), '_label -> "Województwo", 'size -> 40, 'type -> "text")
+							</div>
+						</div>
+						<br>
+						<br>
+						<p class="text-right"><input type="submit" class="btn btn-primary" value="Zapisz"></p>
+
+					</div>
 			</fieldset>
-			<input type="submit" class="btn btn-primary" value="Save">
+			
 		}
-	</div>
+		</div>
+
 }
 
 <!--  @@Author(name="Lukas Pecak") -->

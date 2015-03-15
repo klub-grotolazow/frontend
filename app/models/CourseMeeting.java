@@ -11,13 +11,13 @@ import scala.Option;
 
 public class CourseMeeting {
 	public String place;
-	public Date date;
+	public String date;
 	public String subject;
 	public Option<String> description;
 	public Option<String> meetingType;
 	public enum meetingStatusEnum {Planned,Done,Cancelled};
 	public meetingStatusEnum meetingStatus;
-	public List<User> presentMembers_ids;
+	public List<String> presentMembers_ids;
 	
 	public CourseMeeting() {}
 	

@@ -11,19 +11,32 @@ GET		/users					 	controllers.Users.getUsersList()
 GET		/users/new					controllers.Users.newUser()
 GET		/users/singin				controllers.Users.signIn()
 GET		/users/delete/:id			controllers.Users.deleteUser(id: String)
-GET		/users/:id					controllers.Users.editUser(id: String)
+GET		/users/edit/:id				controllers.Users.editUser(id: String)
+GET 	/users/:id					controllers.Users.showUser(id: String)
 
-POST 	/users 						controllers.Users.saveUser()
+POST 	/users					    controllers.Users.saveUser(id: String)
 POST	/users/verify				controllers.Users.verifyUser()
 #------------------------------------------------------------------------------------------------------------------------------
 
 # Courses urls ----------------------------------------------------------------------------------------------------------------
 GET 	/courses					controllers.Courses.getCourses()
-GET		/courses/delete/:id			controllers.Courses.deleteCourse(id: String)
-GET		/courses/:id				controllers.Courses.editCourse(id: String)
 GET		/courses/new				controllers.Courses.newCourse()
+GET		/courses/delete/:id			controllers.Courses.deleteCourse(id: String)
+GET 	/courses/edit/:id			controllers.Courses.editCourse(id: String)
+GET		/courses/:id				controllers.Courses.showCourse(id: String)
 
+POST 	/courses 					controllers.Courses.saveCourse()
 #------------------------------------------------------------------------------------------------------------------------------
+
+# Payments urls ---------------------------------------------------------------------------------------------------------------
+GET		/payments					controllers.Payments.getPaymentsList()
+GET 	/payments/new				controllers.Payments.createPayment()
+GET		/payments/delete/:id		controllers.Payments.deletePayment(id: String)
+GET		/payments/edit/:id			controllers.Payments.editPayment(id: String)
+GET		/payments/:id				controllers.Payments.showPayment(id: String)
+
+POST	/payments					controllers.Payments.savePayment()
+#--
 
 # Settings urls ---------------------------------------------------------------------------------------------------------------
 GET		/settings					controllers.Settings.getSettings()

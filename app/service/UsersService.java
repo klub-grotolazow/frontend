@@ -28,21 +28,19 @@ public class UsersService {
 	//Get the list of all users
 	public static List<User> getUsersList(){
 		WSResponse response = null;
-		JSONArray array;
 		List<User> resultList = new ArrayList<User>();
 		try{
 		Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.GET_USERS_URL)
 										.setContentType(Urls.CONTENT_TYPE_JSON)
 										.get();
 		response = result.get(10000);
-		JSONObject object = new JSONObject(Utils.wrapJsonTable(response.getBody()));
-		array = object.getJSONArray(Utils.USERS_JSON_TABLE);
-		for(int i=0;i<array.length();i++){
-			User user = new Gson().fromJson(array.get(i).toString(), User.class);
-			resultList.add(user);
+		Gson gson = new Gson();
+		User[] users = gson.fromJson(response.getBody(), User[].class);
+		for(int i=0; i<users.length; i++){
+			resultList.add(users[i]);
 		}
 		} catch(Exception exception){
-			Controller.flash(Messages.ERROR, Messages.CANT_LOAD_USERS);
+			Controller.flash(Messages.ERROR, Messages.CANT_LOAD_USERS + exception);
 		}
 		return resultList;
 	}
@@ -61,7 +59,7 @@ public class UsersService {
 			Controller.flash().put(Messages.ERROR, Messages.ERROR_DELETE);
 		}
 		} catch(Exception exception){
-			Controller.flash(Messages.ERROR, Messages.CANT_LOAD_USERS);
+			Controller.flash(Messages.ERROR, Messages.CANT_LOAD_USERS + exception);
 		}
 	}
 	
@@ -76,7 +74,7 @@ public class UsersService {
 		response = result.get(10000);
 		user = new Gson().fromJson(response.getBody(), User.class);
 		} catch(Exception exception){
-			Controller.flash(Messages.ERROR, Messages.CANT_LOAD_USERS);
+			Controller.flash(Messages.ERROR, Messages.CANT_LOAD_USERS + exception);
 		}
 		return user;
 	}

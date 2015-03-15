@@ -1,4 +1,4 @@
-package models;
+ package models;
 
 import java.util.List;
 
@@ -25,16 +25,17 @@ public class User {
 	public enum feeStatusEnum {OnTime,  Overpayed,OnePaymentMissing,Blocked};
 	public feeStatusEnum feeStatus;
 	public int hoursPoints;
-	public Option<Address> address;
+	public Address address;//Option<Address> address;
 	public enum genderEnum {Woman,Man};
-	public Option<genderEnum> gender;
-	public Option<Integer> age;
-	public Option<String> phoneNr;
-	public Option<String> indexNr; 						//\\d{6}
-	public Option<String> instructorCard;
-	public Option<String> instructorSpecialization;
+	public genderEnum gender;//Option<genderEnum> gender;
+	public int age;//Option<String> age;
+	public String phoneNr;//Option<String> phoneNr;
+	public String indexNr;//Option<String> indexNr; 						//\\d{6}
+	public String instructorCard;//Option<String> instructorCard;
+	public String instructorSpecialization;//Option<String> instructorSpecialization;
 	public List<String> currentCourses_ids;
 	public List<String> hiredEquipments_ids;
+	public List<String> payments_ids;
 	
 	public User() {}
 	
@@ -42,18 +43,11 @@ public class User {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
-		
-		/*
-		this.peselNr = peselNr;
-		this.idCardNr = idCardNr;
-		this.feeStatus = feeStatus;
-		this.hoursPoints = hoursPoints;
-		*/
 	}
 	
 	@Override
 	public String toString() {
-		return this.firstName + " " + this.lastName + " e-mail : " + this.email;
+		return this.firstName + " " + this.lastName;
 	}
 }
 

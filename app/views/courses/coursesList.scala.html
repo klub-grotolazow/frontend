@@ -25,13 +25,11 @@ function del(urlToDelete) {
 <tr>
 <th>Nazwa kursu</th>
 <th>Typ kursu</th>
-<th>Ilość kursantów</th>
+<th>Liczka kursantów</th>
 <th>Kierownik kursu</th>
-<th>Instruktor prowadzący</th>
-<!--
-<th>Fee Status</th>
-<th>Houers Points</th>
--->
+<th>Instruktor</th>
+
+
 
 <th>Zmień/Usuń</th>
 </tr>
@@ -39,14 +37,13 @@ function del(urlToDelete) {
 <tbody>
 @for(course <- courses) {
 <tr>
-	<td>@course.name</td>
+	<td><a href="@routes.Courses.showCourse(course._id)">@course.name</a></td>
 	<td>@course.courseType</td>
-	<td>@course.members.size</td>
-	<td>@course.manager.firstName @course.manager.lastName</td>
-	<td>@course.instructor.firstName @course.instructor.lastName</td>
-	<!-- 
-	
-	-->
+	<td>@course.members_ids.size</td>
+	<td>@if(course.manager_id != null) {@course.manager_id} else{Kierownik nie został dodany!}</td>
+	<td>@if(course.instructor_id != null) {@course.instructor_id} else{Instruktor nie został dodany!}</td>
+
+
 	<td>
 		&nbsp&nbsp
 		<a href="@routes.Courses.editCourse(course._id)">

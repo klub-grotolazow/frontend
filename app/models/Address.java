@@ -7,12 +7,12 @@ import scala.Option;
  */
 
 public class Address {
-	public Option<String> voivodeship;
+	public String voivodeship;//Option<String> voivodeship;
 	public String town;
 	public String street;
-	public String buildingNr;
-	public Option<String> apartmentNr;
-	public Option<String> zipCode;
+	public int buildingNr;
+	public int apartmentNr;//Option<Integer> apartmentNr;
+	public String zipCode;//Option<String> zipCode;
 	
 	public Address() {}
 	

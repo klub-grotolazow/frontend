@@ -40,8 +40,9 @@ function del(urlToDelete) {
 <tbody>
 @for(user <- users) {
 <tr>
-	<td>@user.firstName</td>
-	<td>@user.lastName</td>
+	
+	<td><a href="@routes.Users.showUser(user._id)">@user.firstName</a></td>
+	<td><a href="@routes.Users.showUser(user._id)">@user.lastName</a></td>
 	<td>@user.email</td>
 	
 	<!-- 

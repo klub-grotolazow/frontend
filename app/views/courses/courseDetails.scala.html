@@ -1,0 +1,28 @@
+@(courseForm: Form[Course])
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("Kurs"){
+	<meta charset="UTF-8">
+	<h1 align="center">Kurs</h1>
+	<div class="container col-md-offset-2 col-md-4">
+		<h2 align="center">Kurs</h2>
+		@helper.form(action = routes.Courses.saveCourse(), 'enctype -> "multipart/form-data") {
+			<fieldset>
+				<legend>Kurs - @courseForm("name").valueOr("nowy") @courseForm("courseType").valueOr("")</legend>
+				@helper.inputText(courseForm("name"), '_label -> "Nazwa kursu")
+				@helper.inputText(courseForm("courseType"), '_label -> "Typ kursu")
+				@helper.textarea(courseForm("description"), '_label -> "Opis")
+				
+		
+			</fieldset>
+			<input type="submit" class="btn btn-primary" value="Save">
+		}
+	</div>
+	<div class="container col-md-4">
+		<h2 align="center">Niekursy</h2>
+	</div>
+	
+}
+
+<!--  @@Author(name="Lukas Pecak") -->
