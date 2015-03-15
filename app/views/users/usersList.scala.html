@@ -2,66 +2,45 @@
 @import helper._
 @import helper.twitterBootstrap._
 
+
 @main("Lista użytkowników"){
-
-<script>
-function del(urlToDelete) {
-	$.ajax({
-		url: urlToDelete,
-		type: 'DELETE',
-		success: function(results) {
-		// Refresh the page
-		location.reload();
-	}
-	});
-}
-</script>
 <meta charset="UTF-8">
-<div class="container">
-<h1 align="center">Lista użytkowników</h1>
-<br>
-<table class="table table-striped">
-<thead>
-<tr>
-<th>Imię</th>
-<th>Nazwisko</th>
-<th>email</th>
 
-<!-- 
-<th>Pesel Number</th>
-<th>Id Card Number</th>
-<th>Fee Status</th>
-<th>Houers Points</th>
--->
-
-<th>Zmień/Usuń</th>
-</tr>
-</thead>
-<tbody>
-@for(user <- users) {
-<tr>
-	
-	<td><a href="@routes.Users.showUser(user._id)">@user.firstName</a></td>
-	<td><a href="@routes.Users.showUser(user._id)">@user.lastName</a></td>
-	<td>@user.email</td>
-	
-	<!-- 
-	
-	-->
-	<td>
-		&nbsp&nbsp
-		<a href="@routes.Users.editUser(user._id)">
-		<i class="glyphicon glyphicon-pencil"></i></a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-		<a href="@routes.Users.deleteUser(user._id)">
-		<i class="glyphicon glyphicon-remove"></i></a>
-	</td>
-</tr>
-}
-</tbody>
-</table>
-<a href="@routes.Users.newUser()" class="btn btn-primary">
-<i class="glyphicon glyphicon-plus"></i>&nbsp&nbspDodaj użytkownika</a>
-</div>
+	<div class="container">
+	<h1 align="center">Lista użytkowników</h1>
+	<br>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Imię</th>
+					<th>Nazwisko</th>
+					<th>email</th>
+					<th>Zmień/Usuń</th>
+				</tr>
+			</thead>
+			<tbody>
+			@for(user <- users) {
+				<tr>
+					<td><a href="@routes.Users.showUser(user._id)">@user.firstName</a></td>
+					<td><a href="@routes.Users.showUser(user._id)">@user.lastName</a></td>
+					<td>@user.email</td>
+					<td>
+						&nbsp&nbsp
+						<a href="@routes.Users.editUser(user._id)">
+						<i class="glyphicon glyphicon-pencil"></i></a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+						
+						<a href="@routes.Users.deleteUser(user._id)">
+						<i class="glyphicon glyphicon-remove"></i></a>
+						
+					</td>
+				</tr>
+			}
+			</tbody>
+		</table>
+		<a href="@routes.Users.newUser()" class="btn btn-primary" >
+			<i class="glyphicon glyphicon-plus"></i> Dodaj użytkownika
+		</a>
+	</div>
 }
 
 <!--  @@Author(name="Lukas Pecak") -->

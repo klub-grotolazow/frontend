@@ -44,4 +44,26 @@ public class CoursesService {
 		}
 		return resultList;
 	}
+	
+	public static Course getCourse(String id){
+		WSResponse response = null;
+		JSONArray array;
+		Course course = new Course();
+		if(id != null){
+		try{
+		Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.GET_COURSE_URL + id)
+										.setContentType(Urls.CONTENT_TYPE_JSON)
+										.get();
+		response = result.get(10000);
+		Gson gson = new Gson();
+		course = gson.fromJson(response.getBody(), Course.class);
+		} catch(Exception exception){
+			Controller.flash(Messages.ERROR, Messages.ERROR_LOADING_COURSES);
+		}
+		return course;
+		} else{
+			course.meetingDates = new ArrayList<String>();
+			return course;
+		}
+	}
 }

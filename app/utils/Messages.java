@@ -28,6 +28,8 @@ public class Messages {
 	//Course details messages
 	public static final String ERROR_LOADING_COURSES =		"Błąd podczas ładowania kursów! Sprawdź połączenie z serwerem api! ";
 	public static final String ERROR_LOADING_COURSE_VIEW =	"Błąd podczas ładowania widoku kursów! Sprawdź czy wybrany kurs istnieje w bazie ! ";
+	public static final String COURSE_NOT_FOUND =			"Błąd! Nie znaleziono kursu! ";
+	
 	
 	//User list messages
 	public static final String CANT_LOAD_USERS =			"Nie można załadować użytkowników! ";

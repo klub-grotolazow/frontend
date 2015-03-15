@@ -17,5 +17,6 @@ public class Urls {
 	
 	//Course urls
 	public static final String GET_COURSES_URL = 	"/courses";
+	public static final String GET_COURSE_URL =		"/courses/";
 
 }

@@ -4,24 +4,6 @@
 
 @main("Użytkownik"){
 	<meta charset="UTF-8">
-		
-		<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		    <div class="modal-dialog">
-		        <div class="modal-content">
-		            <div class="modal-header">
-		                ...
-		            </div>
-		            <div class="modal-body">
-		                ...
-		            </div>
-		            <div class="modal-footer">
-		                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-		                <a class="btn btn-danger btn-ok">Delete</a>
-		            </div>
-		        </div>
-		    </div>
-		</div>
-		
 		<div class="container col-md-offset-2 col-md-8">
 		@helper.form(action = routes.Users.saveUser(id), 'class -> "form-inline", 'enctype -> "multipart/form-data") {
 			<fieldset>
@@ -104,7 +86,10 @@
 						</div>
 						<br>
 						<br>
-						<p class="text-right"><input type="submit" class="btn btn-primary" value="Zapisz"></p>
+						<p class="text-right">
+							<a class="btn btn-default" href="@routes.Users.getUsersList()">Powrót do listy użytkowników</a> 
+							<input type="submit" class="btn btn-primary" value="Zapisz dane użytkownika">
+						</p>
 
 					</div>
 			</fieldset>
@@ -114,4 +99,4 @@
 
 }
 
-<!--  @@Author(name="Lukas Pecak") -->
+<!--  @@Author(name="Lukas Pecak") href="@routes.Users.getUsersList()"-->

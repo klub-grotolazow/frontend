@@ -25,14 +25,14 @@ public class User {
 	public enum feeStatusEnum {OnTime,  Overpayed,OnePaymentMissing,Blocked};
 	public feeStatusEnum feeStatus;
 	public int hoursPoints;
-	public Address address;//Option<Address> address;
+	public Address address;								//Option<Address> address;
 	public enum genderEnum {Woman,Man};
-	public genderEnum gender;//Option<genderEnum> gender;
-	public int age;//Option<String> age;
-	public String phoneNr;//Option<String> phoneNr;
-	public String indexNr;//Option<String> indexNr; 						//\\d{6}
-	public String instructorCard;//Option<String> instructorCard;
-	public String instructorSpecialization;//Option<String> instructorSpecialization;
+	public genderEnum gender;							//Option<genderEnum> gender;
+	public int age;										//Option<String> age;
+	public String phoneNr;								//Option<String> phoneNr;
+	public String indexNr;								//Option<String> indexNr; 			//\\d{6}
+	public String instructorCard;						//Option<String> instructorCard;
+	public String instructorSpecialization;				//Option<String> instructorSpecialization;
 	public List<String> currentCourses_ids;
 	public List<String> hiredEquipments_ids;
 	public List<String> payments_ids;

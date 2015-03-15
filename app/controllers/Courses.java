@@ -51,6 +51,14 @@ public class Courses extends Controller {
 	
 	//Edit course
 	public static Result editCourse(String id){
+		Course course = CoursesService.getCourse(id);
+		if(course == null){
+			Controller.flash().put(Messages.ERROR, Messages.COURSE_NOT_FOUND);
+			return ok(coursesList.render(CoursesService.getCoursesList()));
+		} else{
+			Form<Course> form = courseForm.fill(course);
+			return ok(courseDetails.render(form, course, UsersService.getUser(course.instructor_id), UsersService.getUser(course.manager_id)));
+		}
 		/*
 		User user = UsersService.getUser(id);
 		if(user == null){
@@ -61,7 +69,7 @@ public class Courses extends Controller {
 			Form<User> form = userForm.fill(user);
 			return ok(userDetails.render(form));
 		}*/
-		return ok(coursesList.render(cl));
+		//return ok(courseDetails.render(courseForm, CoursesService.getCourse(id)));
 	}
 		
 	//Deleting course
@@ -75,7 +83,7 @@ public class Courses extends Controller {
 	
 	//Adding new course
 	public static Result newCourse(){
-		return ok(courseDetails.render(courseForm));
+		return ok(courseDetails.render(courseForm, CoursesService.getCourse(null), UsersService.getUser(null), UsersService.getUser(null)));
 	}
 	
 	//Adding new course

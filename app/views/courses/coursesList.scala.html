@@ -3,61 +3,40 @@
 @import helper.twitterBootstrap._
 
 @main("Lista kursów"){
-
-<script>
-function del(urlToDelete) {
-	$.ajax({
-		url: urlToDelete,
-		type: 'DELETE',
-		success: function(results) {
-		// Refresh the page
-		location.reload();
-	}
-	});
-}
-</script>
 <meta charset="UTF-8">
-<div class="container">
-<h1 align="center">Lista kursów</h1>
-<br>
-<table class="table table-striped">
-<thead>
-<tr>
-<th>Nazwa kursu</th>
-<th>Typ kursu</th>
-<th>Liczka kursantów</th>
-<th>Kierownik kursu</th>
-<th>Instruktor</th>
-
-
-
-<th>Zmień/Usuń</th>
-</tr>
-</thead>
-<tbody>
-@for(course <- courses) {
-<tr>
-	<td><a href="@routes.Courses.showCourse(course._id)">@course.name</a></td>
-	<td>@course.courseType</td>
-	<td>@course.members_ids.size</td>
-	<td>@if(course.manager_id != null) {@course.manager_id} else{Kierownik nie został dodany!}</td>
-	<td>@if(course.instructor_id != null) {@course.instructor_id} else{Instruktor nie został dodany!}</td>
-
-
-	<td>
-		&nbsp&nbsp
-		<a href="@routes.Courses.editCourse(course._id)">
-		<i class="glyphicon glyphicon-pencil"></i></a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-		<a href="@routes.Courses.deleteCourse(course._id)">
-		<i class="glyphicon glyphicon-remove"></i></a>
-	</td>
-</tr>
-}
-</tbody>
-</table>
-<a href="@routes.Courses.newCourse()" class="btn btn-primary">
-<i class="glyphicon glyphicon-plus"></i>&nbsp&nbspDodaj kurs</a>
-</div>
+	<div class="container">
+		<h1 align="center">Lista kursów</h1>
+		<br>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+				<th>Nazwa kursu</th>
+				<th>Typ kursu</th>
+				<th>Liczka kursantów</th>
+				<th>Zmień/Usuń</th>
+				</tr>
+			</thead>
+			<tbody>
+				@for(course <- courses) {
+				<tr>
+					<td><a href="@routes.Courses.showCourse(course._id)">@course.name</a></td>
+					<td>@course.courseType</td>
+					<td>@course.members_ids.size</td>
+				
+					<td>
+						&nbsp&nbsp
+						<a href="@routes.Courses.editCourse(course._id)">
+						<i class="glyphicon glyphicon-pencil"></i></a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+						<a href="@routes.Courses.deleteCourse(course._id)">
+						<i class="glyphicon glyphicon-remove"></i></a>
+					</td>
+				</tr>
+				}
+			</tbody>
+		</table>
+		<a href="@routes.Courses.newCourse()" class="btn btn-primary">
+		<i class="glyphicon glyphicon-plus"></i> Dodaj kurs</a>
+	</div>
 }
 
 
