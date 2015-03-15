@@ -21,8 +21,8 @@
 			<tbody>
 			@for(user <- users) {
 				<tr>
-					<td><a href="@routes.Users.showUser(user._id)">@user.firstName</a></td>
-					<td><a href="@routes.Users.showUser(user._id)">@user.lastName</a></td>
+					<td><a href="@routes.Users.editUser(user._id)">@user.firstName</a></td>
+					<td><a href="@routes.Users.editUser(user._id)">@user.lastName</a></td>
 					<td>@user.email</td>
 					<td>
 						&nbsp&nbsp

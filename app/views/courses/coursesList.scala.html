@@ -19,7 +19,7 @@
 			<tbody>
 				@for(course <- courses) {
 				<tr>
-					<td><a href="@routes.Courses.showCourse(course._id)">@course.name</a></td>
+					<td><a href="@routes.Courses.editCourse(course._id)">@course.name</a></td>
 					<td>@course.courseType</td>
 					<td>@course.members_ids.size</td>
 				
