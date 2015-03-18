@@ -1,7 +1,6 @@
 @(courses: List[Course])
 @import helper._
 @import helper.twitterBootstrap._
-@import java.lang.String; var toDelete=""; var toDeleteName=""
 
 @main("Lista kursów"){
 <meta charset="UTF-8">
@@ -31,8 +30,6 @@
 						&nbsp&nbsp
 						<a href="@routes.Courses.editCourse(course._id)">
 						<i class="glyphicon glyphicon-pencil"></i></a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-						@{toDelete = course._id}
-						@{toDeleteName = course.name}
 						<a data-toggle="modal" data-target="#confirmModal" data-course-id="@course._id" data-course-name="@course.name"> 
 						<i class="glyphicon glyphicon-remove"></i></a>
 					</td>
