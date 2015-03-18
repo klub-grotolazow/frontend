@@ -21,7 +21,7 @@
 					<span class="col-md-6 panel panel-default">
 							<table class="table table-default">
 								<thead>
-									<tr><h3>Daty spotkań @if(course.meetingDates.size == 0){ nieustalone }</h3></th>
+									<tr><h3>Daty spotkań @if((course.meetingDates == null) || (course.meetingDates.size == 0)){ nieustalone }</h3></th>
 								</thead>
 								@if(course.meetingDates != null){
 								@for(dateString <- course.meetingDates) {
@@ -37,7 +37,7 @@
 						<span class="col-md-6 panel panel-default">
 							<table class="table table-default">
 								<thead>
-									<tr><h3>Miejsca spotkań @if(course.places.size == 0){ nieustalone }</h3></th>
+									<tr><h3>Miejsca spotkań @if((course.places == null) || course.places.size == 0){ nieustalone }</h3></th>
 								</thead>
 								@if(course.places != null){
 								@for(placeString <- course.places) {
@@ -56,12 +56,10 @@
 						<div class="col-md-offset-1">
 							<h3>Odpowiedzialni za prowadzenie kursu</h3>
 							<h5><b>Instruktor : </b><br> @if(instructor != null){ instructor.firstName instructor.lastName } else{ Nie przydzielono instruktora! }</h5>
-							<h5><b>Kierownik : </b><br> @if(manager != null){ @manager.firstName @manager.lastName } else{ Nie przydzielono kierownika! }</h5>
+							<h5><b>Kierownik : </b><br> @if(manager != null){ @manager.firstName @manager.lastName } else{ Nie przydzielono kierownika! }</h5>									
+						</div>
+						<div>
 							
-							    
-							    
-							
-														
 						</div>
 					</div>
 				
@@ -74,6 +72,7 @@
 		}
 	</div>
 	
+	</script>
 }
 
 <!--  @@Author(name="Lukas Pecak") -->
