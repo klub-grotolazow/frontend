@@ -1,9 +1,9 @@
-@(users: List[User])
+@(currentUser: User, role: String, users: List[User])
 @import helper._
 @import helper.twitterBootstrap._
 
 
-@main("Lista użytkowników"){
+@main(currentUser, role, "Lista użytkowników"){
 <meta charset="UTF-8">
 
 	<div class="container">
@@ -15,21 +15,31 @@
 					<th>Imię</th>
 					<th>Nazwisko</th>
 					<th>email</th>
+					<th>Wiek</th>
 					<th>Zmień/Usuń</th>
 				</tr>
 			</thead>
 			<tbody>
 			@for(user <- users) {
 				<tr>
-					<td><a href="@routes.Users.editUser(user._id)">@user.firstName</a></td>
-					<td><a href="@routes.Users.editUser(user._id)">@user.lastName</a></td>
+					<td><a href="@routes.Users.editUser(user._id)"><b>@user.firstName</b></a></td>
+					<td><a href="@routes.Users.editUser(user._id)"><b>@user.lastName</b></a></td>
 					<td>@user.email</td>
 					<td>
-						&nbsp&nbsp
-						<a href="@routes.Users.editUser(user._id)">
-						<i class="glyphicon glyphicon-pencil"></i></a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
-						<a data-toggle="modal" data-target="#confirmModal" data-user-id="@user._id" data-user-first-name="@user.firstName" data-user-last-name="@user.lastName">
-						<i class="glyphicon glyphicon-remove"></i></a>
+						@user.age
+					</td>
+					
+					<td>
+					 	<span class="col-md-offset-1">
+					 		<a href="@routes.Users.editUser(user._id)">
+							<i class="glyphicon glyphicon-pencil"></i></a>
+					 	</span>
+					 	<span class="col-md-offset-2">
+					 		<a data-toggle="modal" data-target="#confirmModal" data-user-id="@user._id" data-user-first-name="@user.firstName" data-user-last-name="@user.lastName">
+							<i class="glyphicon glyphicon-remove"></i></a>
+					 	</span>
+						
+						
 						
 					</td>
 				</tr>

@@ -10,20 +10,22 @@ import java.util.List;
 public class Course {
 	public String _id;
 	public String name;
-	public String courseType;
-	public List<String> meetingDates;
-	public List<String> places;
 	public String description;
 	public List<CourseMeeting> meetingHistory;
+	
+	//public String courseType;
+	//public List<String> meetingDates;
+	//public List<String> places;
+		
 	public List<String> members_ids;
 	public List<String> graduatedMembers_ids;
-	public String instructor_id;
+	public List<String> instructors_ids;
 	public String manager_id;
 	
 	public Course() {}
 	
 	@Override
 	public String toString() {
-		return this.name + " | " + this.courseType;
+		return this.name;
 	}
 }

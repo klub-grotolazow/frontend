@@ -1,8 +1,8 @@
-@(settingForm : Form[Setting], name: String)
+@(currentUser: User, role: String, settingForm : Form[Setting], name: String)
 @import helper._
 @import helper.twitterBootstrap._
 
-@main("Settings"){
+@main(currentUser, role, "Settings"){
 	<div class="container col-md-offset-2">
 		<br>
 		<h1 align="center">System settings</h1>

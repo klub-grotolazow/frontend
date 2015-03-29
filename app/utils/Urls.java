@@ -16,7 +16,10 @@ public class Urls {
 	public static final String PUT_USER_URL	=		"/users/";
 	
 	//Course urls
+	public static final String DELETE_COURSE_URL =	"/courses/";
+	public static final String PUT_COURSE_URL = 	"/courses/";
 	public static final String GET_COURSES_URL = 	"/courses";
+	public static final String POST_COURSE_URL = 	"/courses";
 	public static final String GET_COURSE_URL =		"/courses/";
 
 }

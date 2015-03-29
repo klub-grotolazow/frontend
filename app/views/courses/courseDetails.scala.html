@@ -1,11 +1,12 @@
-@(courseForm: Form[Course])(course: Course)(instructor: User)(manager: User)
+@(currentUser: User, role: String, courseForm: Form[Course], course: Course, users: List[User])(id: String)
 @import helper._
 @import helper.twitterBootstrap._
+@import models.User; var instructor = null; var manager = null
 
-@main("Kurs"){
+@main(currentUser, role, "Kurs"){
 	<meta charset="UTF-8">
 	<div class="container col-md-offset-2 col-md-8">
-		@helper.form(action = routes.Courses.saveCourse(), 'enctype -> "multipart/form-data") {
+		@helper.form(action = routes.Courses.saveCourse(id), 'enctype -> "multipart/form-data") {
 			<fieldset>
 				<legend><h1>@courseForm("name").valueOr("Nowy kurs") : @courseForm("courseType").valueOr("")</h1></legend>
 				<div class="col-md-6">
@@ -13,50 +14,19 @@
 						<div class="col-md-offset-1">
 							<h3>Dane podstawowe</h3>
 							@helper.inputText(courseForm("name"), '_label -> "Nazwa kursu", 'size -> 40)
-							@helper.inputText(courseForm("courseType"), '_label -> "Typ kursu", 'size -> 40)
 							@helper.textarea(courseForm("description"), '_label -> "Opis", 'size -> 40)
 						</div>
 					</div>
 					<div class="">
-					<span class="col-md-6 panel panel-default">
-							<table class="table table-default">
-								<thead>
-									<tr><h3>Daty spotkań @if((course.meetingDates == null) || (course.meetingDates.size == 0)){ nieustalone }</h3></th>
-								</thead>
-								@if(course.meetingDates != null){
-								@for(dateString <- course.meetingDates) {
-									<tr>
-										<td>@dateString</td>
-									</tr>
-									}
-								}
-							</table>
 					
-						</span>
-						
-						<span class="col-md-6 panel panel-default">
-							<table class="table table-default">
-								<thead>
-									<tr><h3>Miejsca spotkań @if((course.places == null) || course.places.size == 0){ nieustalone }</h3></th>
-								</thead>
-								@if(course.places != null){
-								@for(placeString <- course.places) {
-									<tr>
-										<td>@placeString</td>
-									</tr>
-									}
-								}
-							</table>
-					
-						</span>
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="col-md-offset-1">
 							<h3>Odpowiedzialni za prowadzenie kursu</h3>
-							<h5><b>Instruktor : </b><br> @if(instructor != null){ instructor.firstName instructor.lastName } else{ Nie przydzielono instruktora! }</h5>
-							<h5><b>Kierownik : </b><br> @if(manager != null){ @manager.firstName @manager.lastName } else{ Nie przydzielono kierownika! }</h5>									
+							<h5><a id="instrictorLink" data-toggle="modal" data-target="#chooseModal" ><b>Instruktor : </b></a><br> </h5>
+							<h5><b>Kierownik : </b><br> </h5>									
 						</div>
 						<div>
 							
@@ -72,6 +42,56 @@
 		}
 	</div>
 	
+	 
+	<div class="modal fade" id="chooseModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	            <h3 class="modal-title" id="myModalLabel">Wybierz użytkowanika</h3>
+	            </div>
+	            
+	            <div class="modal-body">
+					<!-- <table data-url="/users" data-height="299" data-click-to-select="true" data-select-item-name="radioName">-->
+					<table class="table  table-striped" data-url="/users"  data-click-to-select="true" data-select-item-name="radioName">
+						<thead>
+							<tr>
+								<th data-field="state" data-radio="true"></th>
+					            <th data-field="firstName" data-align="right">Imię</th>
+					            <th data-field="lastName" data-align="center">Nazwisko</th>
+					            <th data-field="email" data-align="left">email</th>
+							</tr>
+						</thead>
+						<tbody>
+						@for(user <- users) {
+							<tr>
+								<td><input id="@user._id" type="radio" name="chooseUser"></td>
+								<td>@user.firstName</td>
+								<td>@user.lastName</td>
+								<td>@user.email</td>
+							</tr>
+						}
+						</tbody>
+					</table>
+					<h1 id="speaker"></h1>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+	                <a  id="chooseLink" href="#" class="btn btn-danger"><i class="glyphicon glyphicon-ok"></i> Wybierz</a>
+	        </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<script type="text/javascript">
+		$('#chooseModal').on('show.bs.modal', function(e) {
+		    
+		});
+		
+		$("input[name='chooseUser']").click(function(e){
+			var user = "/courses/";
+			user += this.id;
+			$('#chooseLink').attr('href', user )
+		});
 	</script>
 }
 

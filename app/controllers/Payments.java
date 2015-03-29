@@ -6,10 +6,12 @@ package controllers;
 
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import views.html.payment.paymentList;
 import views.html.payment.paymentOverview;
 import views.html.payment.paymentDetails;
 
+@Security.Authenticated(Secured.class)
 public class Payments extends Controller {
 	
 	// Get the list of all payments

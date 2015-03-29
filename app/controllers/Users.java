@@ -14,6 +14,7 @@ import play.libs.Json;
 import play.libs.ws.WS;
 import play.libs.ws.WSResponse;
 import play.mvc.Result;
+import play.mvc.Security;
 import static play.libs.F.Promise;
 import models.User;
 import models.UserAccount;
@@ -27,9 +28,9 @@ import utils.Utils;
 import views.html.index;
 import views.html.users.usersList;
 import views.html.users.userDetails;
-import views.html.users.signIn;
 import views.html.users.userOverview;
 
+@Security.Authenticated(Secured.class)
 public class Users extends Controller {
 	private static Form<User> userForm = Form.form(User.class);
 	private static final Form<UserAccount> userAccountForm = Form.form(UserAccount.class);
@@ -41,58 +42,80 @@ public class Users extends Controller {
 			return ok(userOverview.render());
 		} catch(Exception exception){
 			flash(Messages.ERROR, Messages.ERROR_ADDING_USER + exception);
-			return badRequest(index.render());
+			return badRequest(index.render(UsersService.getUser(session().get("userName")), session().get("role")));
 		}
 	}
 	
 	//Edit user *******************************************************************************************************************************
 	public static Result editUser(String id){
-		User user = UsersService.getUser(id);
-		if(user == null){
-			Controller.flash().put(Messages.ERROR, Messages.USER_NOT_FOUND);
-			return ok(usersList.render(UsersService.getUsersList()));
-		} else{
-			Form<User> form = userForm.fill(user);
-			return ok(userDetails.render(form, id));
+		if(Secured.isSuperUser()){	
+			User user = UsersService.getUser(id);
+			if(user == null){
+				Controller.flash().put(Messages.ERROR, Messages.USER_NOT_FOUND);
+				return ok(usersList.render(UsersService.getUser(session().get("userName")), session().get("role"), UsersService.getUsersList()));
+			} else{
+				Form<User> form = userForm.fill(user);
+				return 
+						ok(userDetails.render(UsersService.getUser(session().get("userName")), session().get("role"), form, id));
+			}
+		} else {
+			Controller.session().clear();
+			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
+			return redirect(routes.Application.login());
 		}
 	}
 	
 	//Deleting user ***************************************************************************************************************************
 	public static Result deleteUser(String id){
-		UsersService.deleteUser(id);	
-		return ok(usersList.render(UsersService.getUsersList()));
+		if(Secured.isSuperUser()){	
+			UsersService.deleteUser(id);	
+			return ok(usersList.render(UsersService.getUser(session().get("userName")), session().get("role"), UsersService.getUsersList()));
+		}  else {
+			Controller.session().clear();
+			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
+			return redirect(routes.Application.login());
+		}
 	}
 	
 	//Displaying the users list ***************************************************************************************************************
 	public static Result getUsersList() throws JSONException {
-		try{
-			return ok(usersList.render(UsersService.getUsersList()));
-		} catch(Exception exception){
-			return badRequest();
+		if(Secured.isSuperUser()){	
+			try{
+				return ok(usersList.render(UsersService.getUser(session().get("userName")), session().get("role"), UsersService.getUsersList()));
+			} catch(Exception exception){
+				return badRequest();
+			}
+		} else {
+			Controller.session().clear();
+			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
+			return redirect(routes.Application.login());
 		}
     }
 	
 	//Saving user in beckend api ************************************************************************************************************** 
 	public static Result saveUser(String id){
-		Form<User> boundForm = userForm.bindFromRequest();
-		return UsersService.saveUser(boundForm, id);
+		if(Secured.isSuperUser()){
+			Form<User> boundForm = userForm.bindFromRequest();
+			return UsersService.saveUser(boundForm, id);
+		} else {
+			Controller.session().clear();
+			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
+			return redirect(routes.Application.login());
+		}
 	}
 	
 	//Adding new user *************************************************************************************************************************
 	public static Result newUser(){
-		return ok(userDetails.render(userForm,null));
+		if(Secured.isSuperUser()){
+			return ok(userDetails.render(UsersService.getUser(session().get("userName")), session().get("role"), userForm,null));
+		} else {
+			Controller.session().clear();
+			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
+			return redirect(routes.Application.login());
+		}
 	}
 	
-	//Sign in user ****************************************************************************************************************************
-	public static Result signIn(){
-		return ok(signIn.render(userAccountForm));
-	}
-	
-	//Verify user *****************************************************************************************************************************
-	public static Result verifyUser(){
-		return TODO;
-	}
-	
+
 	
 	
 	

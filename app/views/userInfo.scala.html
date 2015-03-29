@@ -1,0 +1,9 @@
+@(currentUser: User, role: String)
+@main(currentUser, role, "Moje konto"){
+<div align="center">
+	<br>
+	<br>
+	<br>
+	<h1>Jestem @if(currentUser != null){@currentUser.firstName @currentUser.lastName} i jestem @session.get("role")em </h1>
+</div>
+}

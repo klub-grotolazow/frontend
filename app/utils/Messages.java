@@ -6,6 +6,19 @@ package utils;
 
 
 public class Messages {
+	
+	//Login actions
+	public static final String FORBIDDEN_ACCESS	=			"Niestety nie masz uprawnień do wykonania tej akcji! Zaloguj jako uprawniony użytkownik! ";
+	public static final String LOGOUT_SUCCESS	=			"Użytkownik został prawidłowo wylogowany! ";
+	public static final String LOGIN_SUCCESS_BEGIN	=		"Zalogowany jako ";
+	public static final String LOGIN_SUCCESS_END	=		" z uprawnieniami - ";
+	public static final String ERROR_AUTHENTICATING_USER =	"Podczas próby uwierzytelnienia użytkownika wystąpił błąd! ";
+	public static final String ERROR_USER_NAME_PASSWORD	=	"Niepoprawna nazwa użytkownika lub hasło";
+	
+	public static String getLogginSuccess(String userName, String role){
+		return new StringBuilder().append(LOGIN_SUCCESS_BEGIN).append(userName).append(LOGIN_SUCCESS_END).append(role).toString();
+	}
+	
 	//flash message type
 	public static final String WARNING = 					"warning";
 	public static final String ERROR = 						"error"; 
@@ -26,10 +39,13 @@ public class Messages {
 	public static final String USER_NOT_FOUND =				"Błąd! Nie znaleziono użytkownika. ";
 	
 	//Course details messages
+	public static final String SUCCESS_ADDING_COURSE =		"Dane kursu zostały pomyślnie zapisane!" ;
+	public static final String ERROR_ADDING_COURSE = 		"Nastąpił błąd podczas dodawania użytkownika ! ";
 	public static final String ERROR_LOADING_COURSES =		"Błąd podczas ładowania kursów! Sprawdź połączenie z serwerem api! ";
 	public static final String ERROR_LOADING_COURSE_VIEW =	"Błąd podczas ładowania widoku kursów! Sprawdź czy wybrany kurs istnieje w bazie ! ";
 	public static final String COURSE_NOT_FOUND =			"Błąd! Nie znaleziono kursu! ";
-	
+	public static final String SUCCESS_DELETED_COURSE =		"Pomyślnie usunięto kurs - ";
+	public static final String ERROR_DELETE_COURSE =		"Wystąpił błąd podas próby usunięcia kursu! ";
 	
 	//User list messages
 	public static final String CANT_LOAD_USERS =			"Nie można załadować użytkowników! ";

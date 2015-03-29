@@ -1,0 +1,36 @@
+@(currentUser: User, role: String, userAccountForm: Form[UserAccount])
+@import helper._
+@import helper.twitterBootstrap._
+
+@main(currentUser, role, "Logowanie użytkownika"){
+	<meta charset="UTF-8">
+	
+	<div class="container col-md-offset-4 col-md-4 panal panel-default" align="center">
+	
+		<br>
+		<br>
+		<br>
+		<br>
+		<div class="panel panel-default">
+			@helper.form(action = routes.Application.authenticate(), 'enctype -> "multipart/form-data") {
+			<fieldset>
+				<legend><i class="glyphicon glyphicon-user"></i> Zaloguj się :</legend>
+				@helper.inputText(userAccountForm("userName"), '_label -> "Nazwa użytkownika", '_size -> 50)
+				@helper.inputPassword(userAccountForm("passwordHash"), '_label -> "Hasło", '_size -> 50)	
+			</fieldset>
+			<br>
+			<span>
+				<a class="btn btn-default" href="@routes.Application.index()"> Anuluj</a>
+			</span>
+			<span>
+				<input type="submit" class="btn btn-primary" value="Zaloguj">
+			</span>
+			<br><br>
+	
+		}
+		</div>
+		
+	</div>
+}
+
+<!--  @@Author(name="Lukas Pecak") -->

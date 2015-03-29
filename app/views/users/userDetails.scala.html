@@ -1,13 +1,25 @@
-@(userForm: Form[User])(id: String)
+@(currentUser: User, role: String, userForm: Form[User])(id: String)
 @import helper._
 @import helper.twitterBootstrap._
 
-@main("Użytkownik"){
+@main(currentUser, role, "Użytkownik"){
 	<meta charset="UTF-8">
 		<div class="container col-md-offset-2 col-md-8">
 		@helper.form(action = routes.Users.saveUser(id), 'class -> "form-inline", 'enctype -> "multipart/form-data") {
 			<fieldset>
-				<legend><h1>@userForm("firstName").valueOr("Nowy") @userForm("lastName").valueOr("użytkownik")</h1></legend>
+				<legend>
+					<div class="container">
+						<div class="row">
+					    	<div class="col-md-5"><h1>@userForm("firstName").valueOr("Nowy") @userForm("lastName").valueOr("użytkownik")</h1></div>
+					    	<div class="col-md-5">
+					    		<span class="pull-right">
+					    			<a class="btn btn-default" href="@routes.Users.getUsersList()">Powrót do listy użytkowników</a> 
+									<input type="submit" class="btn btn-primary" value="Zapisz dane użytkownika">
+					    		</span>
+					    	</div>
+						</div>
+					</div>
+				</legend>
 					<div class="col-md-6">
 						<div class="panel panel-default">
 							<div class="col-md-offset-1">
@@ -17,49 +29,24 @@
 								@helper.inputText(userForm("idCardNr"), '_label -> "Numer dowodu osobistego", 'size -> 40, 'type -> "text")
 								@helper.inputText(userForm("peselNr"), '_label -> "Pesel", 'size -> 40, 'type -> "number")
 								@helper.inputText(userForm("age"), '_label -> "Wiek", 'size -> 5, 'type -> "number")
-								@select(userForm("gender"),
-										options("Woman"->"Kobieta",
-												"Man"->"Mężczyzna"),
-										'_label -> "Płeć", '_size -> 30)
 								@helper.inputText(userForm("indexNr"), '_label -> "Numer indeksu", 'size -> 40, 'type -> "number")
+								@select(userForm("feeStatus"),
+										options("OnTime"->"Brak zaległości",
+												"Overpayed"->"Nadpłata",
+												"OnePaymentMissing"->"Brak ostatniej płatności",
+												"Blocked"->"Zaległości - blokada magazynu"),
+										'_label -> "Płatności", '_size -> 30)
+								
 							</div>
 							
 						</div>
 						<div class="panel panel-default">
 							<div class="col-md-offset-1">
 							<h3>Dane opcjonalne :</h3>
-								@select(userForm("membershipTypeTag"),
-											options("CandidateMember"->"Członek - kandydat",
-													"CommonMember"->"Członek zwyczajny",
-													"HonourableMember"->"Członek honorowy",
-													"SupportingMember"->"Członek wspierający"),
-											'_label -> "Płatności", '_size -> 30)
-								@select(userForm("courseRole"),
-										options("NonCourseMember"->"Nie uczestniczy w kursie",
-												"CourseMember"->"Uczestniczy w kursie",
-												"CourseManager"->"Kierownik kursu",
-												"Instructor"->"Instruktor"),
-										'_label -> "Rola użytkownika", '_size -> 30)
-								@select(userForm("warehouseRole"),
-										options("WarehouseUser"->"Użytkownik magazynu sprzętowego",
-												"WarehouseMan"->"Magazynier"),
-										'_label -> "Wynagrodzenie", '_size -> 30)		
-										
-								@select(userForm("paymentRole"),
-										options("NonAccounter"->"Nie pobiera wynagrodzenia",
-												"Accounter"->"Pobiera wynagrodzenie"),
-										'_label -> "Wynagrodzenie", '_size -> 30)
-								@select(userForm("feeStatus"),
-										options("OnTime"->"Brak zaległości",
-												"Overpayed"->"Nadpłata",
-												"OnePaymentMissing"->"Brak ostatniej płatności",
-												"Blocked"->"Zaległości - blokada magazynu"),
-										'_label -> "Płatności", '_size -> 30)	
-										
+								
 								@helper.inputText(userForm("instructorCard"), '_label -> "Numer karty instruktora", 'size -> 40, 'type -> "text")
-								@helper.inputText(userForm("instructorSpecialization"), '_label -> "Specjalizacja instrukora", 'size -> 40, 'type -> "text")		
-		          				
-		          				
+										
+		          						          				
 		          				@helper.inputText(userForm("hoursPoints"), '_label -> "Przepracowane godziny", 'size -> 40, 'type -> "number")
 							</div>
 						</div>          				
@@ -71,6 +58,7 @@
 								<h3>Kontakt :</h3>
 								@helper.inputText(userForm("email"), '_label -> "email", 'size -> 40, 'type -> "email")
 								@helper.inputText(userForm("phoneNr"), '_label -> "Numer telefonu", 'size -> 40, 'type -> "tel")
+								@helper.inputText(userForm("ICEphoneNr"),'_label -> "Numer telefonu ICE", 'size -> 40, 'type -> "tel")
 							</div>
 						</div>
 						<div class="panel panel-default">
@@ -87,8 +75,9 @@
 						<br>
 						<br>
 						<p class="text-right">
-							<a class="btn btn-default" href="@routes.Users.getUsersList()">Powrót do listy użytkowników</a> 
-							<input type="submit" class="btn btn-primary" value="Zapisz dane użytkownika">
+							
+							
+							
 						</p>
 
 					</div>
