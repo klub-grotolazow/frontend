@@ -108,7 +108,7 @@ public class CoursesService {
 			}
 			if(response.getStatus() == StatusCodes.CREATED){
 				Controller.flash(Messages.SUCCESS, Messages.SUCCESS_ADDING_COURSE);
-				return Controller.ok(coursesList.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), CoursesService.getCoursesList()));
+				return Controller.ok(coursesList.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), CoursesService.getCoursesList(), UsersService.getUsersList()));
 			} else{
 				Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_COURSE + response.getStatus() +" "+ response.getStatusText());
 				return Controller.ok(request + " | " +response.getBody()); //Controller.badRequest(courseDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm,course, UsersService.getUsersList()));
@@ -134,8 +134,8 @@ public class CoursesService {
 				return Controller.badRequest(courseDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm,course, UsersService.getUsersList(), id));
 			}
 			if(response.getStatus() == StatusCodes.OK){
-				Controller.flash(Messages.SUCCESS, Messages.SUCCESS_UPDATE_USER);
-				return Controller.ok(coursesList.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), CoursesService.getCoursesList()));
+				Controller.flash(Messages.SUCCESS, Messages.SUCCESS_UPDATE_COURSE);
+				return Controller.ok(coursesList.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), CoursesService.getCoursesList(), UsersService.getUsersList()));
 			} else{
 				Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_USER_DETAILS + response.getStatus() +" "+ response.getStatusText());
 				return Controller.ok(request + " | " +response.getBody()); //return Controller.badRequest(courseDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm,course, UsersService.getUsersList()));

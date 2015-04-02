@@ -28,6 +28,7 @@ GET		/courses/delete/:id			controllers.Courses.deleteCourse(id: String)
 GET 	/courses/edit/:id			controllers.Courses.editCourse(id: String)
 GET		/courses/:id				controllers.Courses.showCourse(id: String)
 
+
 POST 	/courses 					controllers.Courses.saveCourse(id: String)
 #------------------------------------------------------------------------------------------------------------------------------
 
@@ -49,6 +50,7 @@ GET 	/equipments/edit/:id		controllers.Equipments.editEquipment(id: String)
 GET 	/equipments/borrow			controllers.Equipments.borrowEquipment()
 GET 	/equipments/return			controllers.Equipments.returnEquipment()
 GET		/equipments/book			controllers.Equipments.bookEquipment()
+GET 	/equipments/reserve/:id		controllers.Equipments.makeReservation(id: String)
 GET		/equipments/:id				controllers.Equipments.showEquipment(id: String)
 
 
@@ -61,6 +63,7 @@ GET 	/settings/save				controllers.Settings.saveSettings()
 
 #------------------------------------------------------------------------------------------------------------------------------
 
+GET		/:id						controllers.Application.index2(id: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

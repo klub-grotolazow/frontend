@@ -1,0 +1,103 @@
+@(currentUser: User, role: String, equipments: List[Equipment])
+@import helper._
+@import helper.twitterBootstrap._
+
+
+@main(currentUser, role, "Lista użytkowników"){
+<meta charset="UTF-8">
+
+	<div class="container">
+	<h1 align="center">Lista sprzętu</h1>
+	<br>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Nazwa</th>
+					<th>Dostępność</th>
+					<th>Ilość wypożyczeń</th>
+					<th>Rezerwacja</th>
+					@if((session.get("role") == "SuperUser") || (session.get("role") == "WarehouseManager")){
+					<th>Zmień</th>
+					<th>Usuń</th>
+					}
+				</tr>
+			</thead>
+			<tbody>
+			@for(equipment <- equipments) {
+				<tr>
+					<td><a href="@routes.Equipments.editEquipment(equipment._id)"><b>@equipment.name</b></a></td>
+					<td>
+						@if(equipment.isReserved == true){Zarezerwowany}
+						@if(equipment.isHired == true){Wypożyczony}
+						@if(equipment.isServicing == true){W serwisie}
+						@if(equipment.isAvailable == true){Dostępny}
+					
+					</td>
+					<td>
+						@if(equipment.hireHistory != null){
+							@if(equipment.hireHistory.size() != 0){
+								@equipment.hireHistory.size()
+								} else{
+									Nowy sprzęt
+								}
+						
+						
+						}
+					</td>
+					
+					<td>
+						@if(equipment.isAvailable){
+							<a href="@routes.Equipments.makeReservation(currentUser._id)">Zarezerwuj
+						}
+					</td>
+					
+					
+					@if((session.get("role") == "SuperUser") || (session.get("role") == "WarehouseManager")){
+					<td>
+					 		<a href="@routes.Equipments.editEquipment(equipment._id)">
+							<i class="glyphicon glyphicon-pencil"></i></a>
+
+					</td>
+					<td>
+					 		<a data-toggle="modal" data-target="#confirmModal" data-equipment-id="@equipment._id" data-equipment-name="@equipment.name">
+							<i class="glyphicon glyphicon-remove"></i></a>	
+					</td>
+					}
+				</tr>
+			}
+			</tbody>
+		</table>
+		<a href="@routes.Equipments.newEquipment()" class="btn btn-primary" >
+			<i class="glyphicon glyphicon-plus"></i> Dodaj sprzęt
+		</a>
+	</div>
+    
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	            <h3 class="modal-title" id="myModalLabel">Ostrzeżenie o usunięciu sprzętu!</h3>
+	            </div>
+	            <div class="modal-body">
+	                <h5>Uwaga, usunięcie jest <b>nieodwracalne</b>!<br> Czy napewno chcesz <b>usunąć</b> sprzęt - <b id="equipmentToDelete" ></b>?</h5>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+	                <a  id="deleteLink" href="#" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i> Usuń sprzęt</a>
+	        </div>
+	    </div>
+	  </div>
+	</div>
+	<script type="text/javascript">
+		$('#confirmModal').on('show.bs.modal', function(e) {
+			var equipmentName = $(e.relatedTarget).data('equipment-name');
+			var equipmentId = "/equipments/delete/";
+		    equipmentId += $(e.relatedTarget).data('equipment-id');
+		    $(e.currentTarget).find('b[id="equipmentToDelete"]').text(equipmentName);
+		    $(e.currentTarget).find('a[id="deleteLink"]').attr("href", equipmentId);
+		});
+	</script>
+}
+
+
+<!--  @@Author(name="Lukas Pecak")-->

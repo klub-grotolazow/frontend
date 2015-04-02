@@ -1,4 +1,4 @@
-@(currentUser: User, role: String, courses: List[Course])
+@(currentUser: User, role: String, courses: List[Course], users: List[User])
 @import helper._
 @import helper.twitterBootstrap._
 
@@ -16,7 +16,12 @@
 				<th>Nazwa kursu</th>
 
 				<th>Liczka kursantów</th>
-				<th>Zmień/Usuń</th>
+				<th>Ilość spotkań</th>
+				<th>Kierownik kursu</th>
+				@if((session.get("role") == "SuperUser") || (session.get("role") == "CourseManager")){
+				<th>Zmień</th>
+				<th>Usuń</th>
+				}
 				</tr>
 			</thead>
 			<tbody>
@@ -24,21 +29,32 @@
 				<tr>
 					<td><a href="@routes.Courses.editCourse(course._id)"><b>@course.name</b></a></td>
 
-					<td>@course.members_ids.size</td>
-				
+					<td>@if((course != null) && (course.members_ids != null)){@course.members_ids.size()}</td>
+					<td>@if((course != null) && (course.meetingHistory != null)){@course.meetingHistory.size()}</td>
+					<td>@for(user <- users){
+							@if(user._id == course.manager_id){
+								@user.toString()
+							}
+						}</td>
+					@if((session.get("role") == "SuperUser") || (session.get("role") == "CourseManager")){
 					<td>
-						&nbsp&nbsp
 						<a href="@routes.Courses.editCourse(course._id)">
-						<i class="glyphicon glyphicon-pencil"></i></a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+						<i class="glyphicon glyphicon-pencil"></i></a>
+					</td>
+					
+					<td>
 						<a data-toggle="modal" data-target="#confirmModal" data-course-id="@course._id" data-course-name="@course.name"> 
 						<i class="glyphicon glyphicon-remove"></i></a>
 					</td>
+					}
 				</tr>
 				}
 			</tbody>
 		</table>
+		@if((session.get("role") == "SuperUser") || (session.get("role") == "CourseManager")){
 		<a href="@routes.Courses.newCourse()" class="btn btn-primary">
 		<i class="glyphicon glyphicon-plus"></i> Dodaj kurs</a>
+		}
 	</div>
 	
 	<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">

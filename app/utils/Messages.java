@@ -46,6 +46,7 @@ public class Messages {
 	public static final String COURSE_NOT_FOUND =			"Błąd! Nie znaleziono kursu! ";
 	public static final String SUCCESS_DELETED_COURSE =		"Pomyślnie usunięto kurs - ";
 	public static final String ERROR_DELETE_COURSE =		"Wystąpił błąd podas próby usunięcia kursu! ";
+	public static final String SUCCESS_UPDATE_COURSE = 		"Pomyślnie aktualizowano dane kursu! ";
 	
 	//User list messages
 	public static final String CANT_LOAD_USERS =			"Nie można załadować użytkowników! ";
@@ -56,4 +57,14 @@ public class Messages {
 	public static final String PROPERTIRS_FILE_COMMENT = 	"Update apiUrl ";
 	public static final String SAVED_MESSAGE = 				"Zapisano zmiany w konfiguracji systemu! ";
 	public static final String EMPTY_FORM = 				"Nie wprowadzono danych! Dane nie zostały zmienione. ";
+	
+	//Equipments messages
+	public static final String ERROR_DELETING_EQUIPMENT = 	"Podczas próby usunięcia użytkownika wystąpił problem: ";
+	
+	//Equipment list messages
+	public static final String CANT_LOAD_EQUIPMENTS =		"Nie można załadować listy sprzętu! ";
+	
+	//Payments list messages
+	public static final String CANT_LOAD_PAYMENTS =			"Nie można załadować listy płatności! ";
+	
 }

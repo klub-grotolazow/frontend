@@ -5,6 +5,7 @@ package controllers;
  */
 
 
+import models.Course;
 import models.SystemRoleEnum;
 import models.User;
 import models.UserAccount;
@@ -21,10 +22,16 @@ import views.html.userInfo;
 @SuppressWarnings("unused")
 public class Application extends Controller {
 	
-	// Show the info page at sturtup ***********************************************************************************************************
+	// Show the info page at startup ***********************************************************************************************************
 	public static Result index() {
     	response().setContentType("text/html; charset=UTF-8");
         return ok(index.render(UsersService.getUser(session().get("userName")), session().get("role")));
+    }
+	
+	public static Result index2(String id) {
+		Form<Course> courseForm = Form.form(Course.class).bindFromRequest();
+    	response().setContentType("text/html; charset=UTF-8");
+        return ok(index.render(UsersService.getUser(session().get("userName")), session().get("role") + id + courseForm.get().name));
     }
     
     // Show the user info page *****************************************************************************************************************
@@ -33,7 +40,7 @@ public class Application extends Controller {
         return ok(userInfo.render(UsersService.getUser(session().get("userName")), session().get("role")));
     }
 
-    // Show the loging form ********************************************************************************************************************
+    // Show the login form ********************************************************************************************************************
     public static Result login(){
     	Form<UserAccount> loginForm = Form.form(UserAccount.class);
     	return ok(login.render(UsersService.getUser(session().get("userName")), session().get("role"),loginForm));
@@ -55,7 +62,9 @@ public class Application extends Controller {
             session("userName", validatedUser.userId);
             session("role", validatedUser.systemRole.toString());
             User currentUser = UsersService.getUser(session().get("userName"));
-            flash(Messages.SUCCESS, Messages.getLogginSuccess(currentUser.firstName + " " + currentUser.lastName, session().get("role")));//Messages.getLogginSuccess(loginForm.get().userName, SystemRoleEnum.Instructor.toString()));
+            if(currentUser != null){
+            	flash(Messages.SUCCESS, Messages.getLogginSuccess(currentUser.firstName + " " + currentUser.lastName, session().get("role")));//Messages.getLogginSuccess(loginForm.get().userName, SystemRoleEnum.Instructor.toString()));
+            }
             return redirect(routes.Application.index());
         }
     }

@@ -1,4 +1,4 @@
-@(currentUser: User, role: String, courseForm: Form[Course], course: Course, users: List[User])(id: String)
+@(currentUser: User, role: String, courseForm: Form[Course], course: Course, users: List[User], id: String)
 @import helper._
 @import helper.twitterBootstrap._
 @import models.User; var instructor = null; var manager = null
@@ -8,25 +8,84 @@
 	<div class="container col-md-offset-2 col-md-8">
 		@helper.form(action = routes.Courses.saveCourse(id), 'enctype -> "multipart/form-data") {
 			<fieldset>
-				<legend><h1>@courseForm("name").valueOr("Nowy kurs") : @courseForm("courseType").valueOr("")</h1></legend>
-				<div class="col-md-6">
-					<div class="panel panel-default">
-						<div class="col-md-offset-1">
-							<h3>Dane podstawowe</h3>
-							@helper.inputText(courseForm("name"), '_label -> "Nazwa kursu", 'size -> 40)
-							@helper.textarea(courseForm("description"), '_label -> "Opis", 'size -> 40)
-						</div>
-					</div>
-					<div class="">
-					
+			<legend>
+			<div class="container">
+				<div class="row">
+					<div class="col-md-5"><h1>@courseForm("name").valueOr("Nowy kurs") : @courseForm("courseType").valueOr("")</h1></div>
+					    <div class="col-md-5">
+					    	<span class="pull-right">
+					    		<a class="btn btn-default" href="@routes.Courses.getCourses()">Powrót do listy kursów</a> 
+								<input type="submit" class="btn btn-primary" value="Zapisz kurs">
+					    	</span>
+					    </div>
 					</div>
 				</div>
-				<div class="col-md-6">
+			</div>	
+			</legend>	
+				<div class="col-md-4 col-md-offset-2">
+					<div class="panel panel-default">
+						<div class="col-md-offset-1">
+							<h3 align="center">Dane podstawowe</h3>
+							@helper.inputText(courseForm("name"), '_label -> "Nazwa kursu", 'size -> 40)
+							@helper.textarea(courseForm("description"), '_label -> "Opis", 'size -> 40)
+							
+							
+						</div>
+					</div>
+					
+					<div class="panel panel-default">
+						<div class="">
+							
+						<h3 align="center">Spotkania</h3>
+						@if(course != null){
+						@if(course.meetingHistory != null){
+							<table class="table  table-striped" data-url="/courses"  data-click-to-select="true" data-select-item-name="radioMeeting">
+								<thead>
+									<tr>
+										<th data-field="state" data-radio="true"></th>
+							            <th data-field="group" data-align="center">Grupa</th>
+							            <th data-field="date" data-align="center">Data</th>
+							            <th data-field="place" data-align="center">Miejsce</th>
+							            <th data-field="subject" data-align="center">Temat</th>
+									</tr>
+								</thead>
+								<tbody>
+								@for(meeting <- course.meetingHistory){
+									<tr>
+										<td><input id="@meeting._id" type="radio" name="chooseMeeting"></td>
+										<td>@meeting.group</td>
+										<td>@meeting.date</td>
+										<td>@meeting.place</td>
+										<td>@meeting.subject</td>
+									
+									</tr>
+								}
+								</tbody>
+							</table>}else{ <h3>Brak zaplanowanych wydarzeń!</h3>}
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
 					<div class="panel panel-default">
 						<div class="col-md-offset-1">
 							<h3>Odpowiedzialni za prowadzenie kursu</h3>
+							
+							@helper.inputText(courseForm("manager_id"), '_label -> "Kierownik kursu", 'size -> 40)
+												
+							<!-- <div class="clearfix  " id="manager_id_field">
+							    <label for="manager_id">manid</label>
+							    <div class="input">
+							        
+							    <input type="text" id="manager_id" name="manager_id" size="40"/>
+							
+							        <span class="help-inline"></span>
+							        <span class="help-block"></span> 
+							    </div>
+							</div> -->
+							
+							<h5><a id="courseManagerLink" data-toggle="modal" data-target="#chooseModal" ><b>Kierownik : </b><br> </h5><h4 id="courseManager"></h4> 
 							<h5><a id="instrictorLink" data-toggle="modal" data-target="#chooseModal" ><b>Instruktor : </b></a><br> </h5>
-							<h5><b>Kierownik : </b><br> </h5>									
+																
 						</div>
 						<div>
 							
@@ -38,7 +97,7 @@
 				
 		
 			</fieldset>
-			<input type="submit" class="btn btn-primary" value="Save">
+			}
 		}
 	</div>
 	
@@ -88,9 +147,11 @@
 		});
 		
 		$("input[name='chooseUser']").click(function(e){
-			var user = "/courses/";
-			user += this.id;
-			$('#chooseLink').attr('href', user )
+			var user = "@id"
+			//$('#chooseLink').attr('href', user )
+			$("input[name='manager_id']").val(user)
+
+			
 		});
 	</script>
 }

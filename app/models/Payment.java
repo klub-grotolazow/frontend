@@ -13,10 +13,10 @@ public class Payment {
 	public int amount;
 	public enum paymentStatusEnum {WaitingForPayment,NotPayed,Payed};
 	public paymentStatusEnum paymentStatus;
-	public Date dueDate;
-	public User user; 
-	public Course coures;
-	public User Accounter;
+	public String dueDate;
+	public String user_id; 
+	public String course_id;
+	public String accounter_id;
 	
 	public Payment() {}
 	

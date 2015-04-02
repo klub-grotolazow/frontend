@@ -12,24 +12,24 @@ public class Equipment {
 	public String _id;
 	public String serialNumber;
 	public String name;
-	public enum equipmentTypeEnum {Carabiner,Rope};
-	public equipmentTypeEnum equipmentType;
+	/*public enum equipmentTypeEnum {Carabiner,Rope};
+	public equipmentTypeEnum equipmentType;*/
 	public boolean isAvailable;
 	public boolean isServicing;
 	public boolean isReserved;
 	public boolean isHired;
 	public enum allowedForEnum {CandidateMember,CommonMember,HonourableMember,SupportingMember};
 	public List<allowedForEnum> allowedFor;
-	public Option<String> producer;
-	public Option<String> purchaseDate;
-	public Option<String> nextInspectionDate;
-	public Option<Integer> price;
-	public enum conditionEnum {Ok,Dirty,ToService,Damaged};
-	public Option<conditionEnum> condition;
-	public Option<String> description;
-	public Option<RopeParameters> ropeParameters;
-	public enum carabinerTypeEnum {Zakręcany,Niezakręcany};
-	public Option<carabinerTypeEnum> carabinerType; 
+	//public Option<String> producer;
+	public String purchaseDate;
+	public String nextInspectionDate;
+	public Integer price;
+	//public enum conditionEnum {Ok,Dirty,ToService,Damaged};
+	//public Option<conditionEnum> condition;
+	public String description;
+	//public Option<RopeParameters> ropeParameters;
+	//public enum carabinerTypeEnum {Zakręcany,Niezakręcany};
+	//public Option<carabinerTypeEnum> carabinerType; 
 	public List<EquipmentHire> hireHistory;
 	
 	public Equipment() {}

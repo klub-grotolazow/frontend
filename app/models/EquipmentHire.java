@@ -9,14 +9,15 @@ import scala.Option;
  */
 
 public class EquipmentHire {
+	public String _id;
 	public String reservationDate;
-	public Option<Date> hireDate;
-	public Option<Date> receivingDate;
-	public Option<Integer> delayedDays;
+	public String hireDate;
+	public String returnDate;
+	//public Option<Integer> delayedDays;
 	public enum conditionStatusEnum {Ok,Dirty,ToService,Damaged};
 	public conditionStatusEnum conditionStatus;
-	public User user;
-	public User warehouseman;
+	public String user_id;
+	public String warehouseman_id;
 	
 	public EquipmentHire() {}
 	

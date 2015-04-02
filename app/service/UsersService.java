@@ -56,10 +56,10 @@ public class UsersService {
 		account.passwordHash = Codecs.md5(new String("kierownik").getBytes());
 		if(account.userName.equals(userName) && account.passwordHash.equals(passwordHash)) return account;
 		
-		account.userId = "5517d5fd07b4c25ec8c1ca0a";
-		account.userName = "magazynier";
-		account.systemRole = SystemRoleEnum.WarehouseManager;
-		account.passwordHash = Codecs.md5(new String("magazynier").getBytes());
+		account.userId = "5517d50307b4c25ec8c1ca08";
+		account.userName = "student";
+		account.systemRole = SystemRoleEnum.Student;
+		account.passwordHash = Codecs.md5(new String("student").getBytes());
 		if(account.userName.equals(userName) && account.passwordHash.equals(passwordHash)) return account;
 		
 		account.userId = "5517d5fd07b4c25ec8c1ca0a";

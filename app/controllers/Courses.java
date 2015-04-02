@@ -30,10 +30,15 @@ public class Courses extends Controller {
 	private static Form<Course> courseForm = Form.form(Course.class);
 	private static List<Course> cl = new ArrayList<Course>();
 	
+	/*public static Result courseAddManager(id: String, managerId: String){
+		
+		return todo;
+	}*/
+	
 	//Displaying the list of courses ********************************************************************************************************** 
 	public static Result getCourses() throws JSONException {
 		try{
-			return ok(coursesList.render(UsersService.getUser(session().get("userName")), session().get("role"), CoursesService.getCoursesList()));
+			return ok(coursesList.render(UsersService.getUser(session().get("userName")), session().get("role"), CoursesService.getCoursesList(), UsersService.getUsersList()));
 		} catch(Exception exception){
 			flash(Messages.ERROR, Messages.ERROR_LOADING_COURSES);
 			return badRequest(index.render(UsersService.getUser(session().get("userName")), session().get("role")));
@@ -56,7 +61,7 @@ public class Courses extends Controller {
 		Course course = CoursesService.getCourse(id);
 		if(course == null){
 			Controller.flash().put(Messages.ERROR, Messages.COURSE_NOT_FOUND);
-			return ok(coursesList.render(UsersService.getUser(session().get("userName")), session().get("role"), CoursesService.getCoursesList()));
+			return ok(coursesList.render(UsersService.getUser(session().get("userName")), session().get("role"), CoursesService.getCoursesList(), UsersService.getUsersList()));
 		} else{
 			Form<Course> form = courseForm.fill(course);
 			return ok(courseDetails.render(UsersService.getUser(session().get("userName")), session().get("role"), form, course, UsersService.getUsersList(), id));
@@ -66,18 +71,29 @@ public class Courses extends Controller {
 	//Deleting course **************************************************************************************************************************
 	public static Result deleteCourse(String id){
 		CoursesService.deleteCourse(id);	
-		return ok(coursesList.render(UsersService.getUser(session().get("userName")), session().get("role"), CoursesService.getCoursesList()));
+		return ok(coursesList.render(UsersService.getUser(session().get("userName")), session().get("role"), CoursesService.getCoursesList(), UsersService.getUsersList()));
 	}
 	
 	//Adding new course ************************************************************************************************************************
 	public static Result newCourse(){
+		if(Secured.isSuperUser() || Secured.isCourseManager()){
 		return ok(courseDetails.render(UsersService.getUser(session().get("userName")), session().get("role"), courseForm, CoursesService.getCourse(null), UsersService.getUsersList(), null));
+		} else {
+			Controller.session().clear();
+			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
+			return redirect(routes.Application.login());
+		}
 	}
 	
 	// Saving course in database with api backend **********************************************************************************************
 	public static Result saveCourse(String id){
+		if(Secured.isSuperUser() || Secured.isCourseManager()){
 		Form<Course> boundForm = courseForm.bindFromRequest();
-		System.out.println("The boundform description > " + boundForm.get().description);
 		return CoursesService.saveCourse(boundForm, id);
+		} else {
+			Controller.session().clear();
+			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
+			return redirect(routes.Application.login());
+		}
 	}
 }

@@ -7,7 +7,11 @@ package controllers;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import views.html.payment.paymentList;
+import service.EquipmentsService;
+import service.PaymentService;
+import service.UsersService;
+import utils.Messages;
+import views.html.payment.paymentsList;
 import views.html.payment.paymentOverview;
 import views.html.payment.paymentDetails;
 
@@ -16,7 +20,17 @@ public class Payments extends Controller {
 	
 	// Get the list of all payments
 	public static Result getPaymentsList(){
-		return TODO;
+		if(Secured.isSuperUser() || Secured.isPaymentManager() || Secured.isCourseManager()){	
+			try{
+				return ok(paymentsList.render(UsersService.getUser(session().get("userName")), session().get("role"), PaymentService.getPaymentsList(), UsersService.getUsersList()));
+			} catch(Exception exception){
+				return badRequest();
+			}
+		} else {
+			Controller.session().clear();
+			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
+			return redirect(routes.Application.login());
+		}
 	}
 	
 	// Create a payment in the system

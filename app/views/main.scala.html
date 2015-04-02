@@ -72,24 +72,28 @@
 		        </li>
 		        }
 		        
-		        @if((session.get("role") == "SuperUser") || (session.get("role") == "CourseManager")){
+		        @if((session.get("role") == "SuperUser") || (session.get("role") == "CourseManager") || (session.get("role") == "Student") ){
 		        <!-- Defining the dropdown list for avalible course functions -->
 		        <li class="dropdown">
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="glyphicon glyphicon-tree-conifer"></i> Kursy <span class="caret"></span></a>
 		          <ul class="dropdown-menu" role="menu">
+		          	@if((session.get("role") == "SuperUser") || (session.get("role") == "CourseManager")){
 		            <li><a href="/courses/new">Nowy kurs</a></li><!-- Adding new course -->
+		            }
 		            <li class="divider"></li>
 		            <li><a href="/courses">Lista kursów</a></li><!-- Displaying the courses List -->
 		          </ul>
 		        </li>
 		        }
 		        
-		        @if((session.get("role") == "SuperUser")){
+		        @if((session.get("role") == "SuperUser") || (session.get("role") == "Student") || (session.get("role") == "Instructor") || (session.get("role") == "WarehouseManager") || (session.get("role") == "ClubMemeber")){
 		        <!-- Defining the dropdown list for avalible warehouse functions -->
 		        <li class="dropdown">
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="glyphicon glyphicon-th"></i> Magazyn <span class="caret"></span></a>
 		          <ul class="dropdown-menu" role="menu">
-		            <li><a href="@routes.Equipments.newEquipment()">Dodaj sprzęt </a></li><!-- Adding new equipment to warehouse -->
+		          	@if((session.get("role") == "SuperUser") || (session.get("role") == "WarehouseManager")){
+		            	<li><a href="@routes.Equipments.newEquipment()">Dodaj sprzęt </a></li><!-- Adding new equipment to warehouse -->
+		            }
 		            <li><a href="@routes.Equipments.borrowEquipment()">Wypożycz sprzęt </a></li><!-- Borrow equipment from warehouse -->
 		            <li><a href="@routes.Equipments.returnEquipment()">Oddaj sprzęt </a></li><!-- Return equipment to warehouse -->
 		            <li class="divider"></li>
