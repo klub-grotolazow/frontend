@@ -6,12 +6,16 @@ package utils;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import play.mvc.Controller;
+import java.util.Arrays;
 import models.Setting;
 
 public class Utils {
+	public static final String DRAFT_COURSE = "draft_course";
 	public static final String USERS_JSON_TABLE = "users";
 	public static final String API_URL = "apiUrl";
 	public static final String PROPERTIES_FILE = "config.properties";
@@ -70,5 +74,29 @@ public class Utils {
 		return builder.toString();
 	}
 
-
+	//Spliting a coma separated string into string list
+	@SuppressWarnings("unchecked")
+	public static List<String> toStringList(String css){
+		if((css.length() == 0) || (css == null)){
+			return new ArrayList<String>();
+		} else{
+			return Arrays.asList(css.split("\\s*,\\s*"));
+		}
+	}
+	
+	//Concatenate in a coma separated string from a string list
+	@SuppressWarnings("unchecked")
+	public static String toCSS(List<String> list){
+		StringBuilder builder = new StringBuilder();
+		if((list == null) || (list.size() == 0)){
+			return "";
+		} else{
+			for(int i=0; i<list.size(); i++){
+				if(i != 0) builder.append(",");
+				builder.append(list.get(i));
+			}
+		return builder.toString();
+		}
+	}
+	
 }

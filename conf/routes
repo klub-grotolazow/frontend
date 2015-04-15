@@ -22,14 +22,20 @@ POST 	/users					    controllers.Users.saveUser(id: String)
 #------------------------------------------------------------------------------------------------------------------------------
 
 # Courses urls ----------------------------------------------------------------------------------------------------------------
-GET 	/courses					controllers.Courses.getCourses()
-GET		/courses/new				controllers.Courses.newCourse()
-GET		/courses/delete/:id			controllers.Courses.deleteCourse(id: String)
-GET 	/courses/edit/:id			controllers.Courses.editCourse(id: String)
-GET		/courses/:id				controllers.Courses.showCourse(id: String)
+GET 	/courses													controllers.Courses.getCourses()
+GET		/courses/new												controllers.Courses.newCourse()
+GET		/courses/delete/:id											controllers.Courses.deleteCourse(id: String)
+GET 	/courses/edit/:id											controllers.Courses.editCourse(id: String)
+GET 	/courses/draft												controllers.Courses.loadCourseDraft()
+GET		/courses/:courseId/meetings/:meetingId						controllers.Courses.loadCourseMeeting(courseId: String, meetingId: String)
+GET		/courses/:id												controllers.Courses.showCourse(id: String)
+	
+POST 	/courses 													controllers.Courses.saveCourse(id: String)
+POST	/courses/draft												controllers.Courses.saveCourseDraft()
+POST	/courses/draft/meetings/new									controllers.Courses.newCourseMeeting(id: String)
+POST	/courses/:courseId/meetings/save							controllers.Courses.saveCourseMeeting(courseId: String, meetingId: String)
 
-
-POST 	/courses 					controllers.Courses.saveCourse(id: String)
+DELETE	/courses/:courseId/meetings/delete/:meetingId				controllers.Courses.deleteCourseMeeting(courseId: String, meetingId: String)
 #------------------------------------------------------------------------------------------------------------------------------
 
 # Payments urls ---------------------------------------------------------------------------------------------------------------

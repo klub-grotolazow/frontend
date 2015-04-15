@@ -1,4 +1,4 @@
-@(currentUser: User, role: String, title: String)(content: Html)
+@(currentUser: User, role: String, title: String, navbarDisabled: Boolean)(content: Html)
 @import helper._
 @import helper.twitterBootstrap._
 
@@ -37,7 +37,7 @@
 		</div>
 		}
 		
-  		<nav class="navbar navbar-default">
+  		<nav class="disabled navbar navbar-default">
 		  <div class="container-fluid">
 		    <!-- Brand and toggle get grouped for better mobile display -->
 		    <div class="navbar-header">
@@ -47,12 +47,13 @@
 		        <span class="icon-bar"></span>
 		        <span class="icon-bar"></span>
 		      </button>
-		      <a class="navbar-brand" href="http://www.akg.krakow.pl/">
+		      <a class="navbar-brand" @if(!navbarDisabled){ href="http://www.akg.krakow.pl/"}>
 		        <img  alt="Brand" src="@routes.Assets.at("images/akgSm.png")">
 		      </a>  
-		      <a class="navbar-brand" href="http://www.akg.krakow.pl/"><b>AKG</b>tool</a>
+		      <a class="navbar-brand" @if(!navbarDisabled){ href="http://www.akg.krakow.pl/"}><b>AKG</b>tool</a>
 		    </div>
-		
+			
+			@if(!navbarDisabled){ <!-- Disable some navbar elements -->		
 		    <!-- Collect the nav links, forms, and other content for toggling -->
 		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		      <ul class="nav navbar-nav">
@@ -117,32 +118,33 @@
 		      }
 		      
 		      </ul>
-		      
+		      } <!-- The end of disabling navbar elements -->
 		      
 		      
 		      <!-- Defining the nav-bars right side components -->
 		      <ul class="nav navbar-nav navbar-right">
 		        
 		        @if(session.containsKey("userName")){
-		        	<li><a href="/account"><i class="glyphicon glyphicon-user"></i> Moje konto</a></li><!-- User account details -->
+		        	<li><a @if(!navbarDisabled){ href="/account"}><i class="glyphicon glyphicon-user"></i> Moje konto</a></li><!-- User account details -->
 		        }
 		        
 		        <!-- Defining the link for logout -->
 		        @if(session.containsKey("userName")){
-		        	<li><a href="/logout"><i class="glyphicon glyphicon-log-out"></i> Wyloguj <b>@if(currentUser != null){@currentUser.firstName @currentUser.lastName}</b></a></li><!-- User deauthentication -->
+		        	<li><a @if(!navbarDisabled){ href="/logout"}><i class="glyphicon glyphicon-log-out"></i> Wyloguj <b>@if(currentUser != null){@currentUser.firstName @currentUser.lastName}</b></a></li><!-- User deauthentication -->
 		        }
 		      	
 		      
 		      	<!-- Defining the link for login in -->
 		      	@if(!session.containsKey("userName")){
-		      	<li><a href="/login"><i class="glyphicon glyphicon-log-in"></i> Zaloguj</a></li><!-- User authentication -->
+		      	<li><a @if(!navbarDisabled){ href="/login"}><i class="glyphicon glyphicon-log-in"></i> Zaloguj</a></li><!-- User authentication -->
 		        }
 		        
 		        @if((session.get("role") == "SuperUser")){
 		        <!-- Defining the link for access the system settings -->
-		        <li><a href="/settings"><i class="glyphicon glyphicon-cog"></i></a></li><!-- Displaying the settings panel -->
+		        <li><a @if(!navbarDisabled){ href="/settings"}><i class="glyphicon glyphicon-cog"></i></a></li><!-- Displaying the settings panel -->
 		      	}
 		      </ul>
+		      
 		    </div><!-- /.navbar-collapse -->
 		  </div><!-- /.container-fluid -->
 		</nav>

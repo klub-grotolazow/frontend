@@ -2,7 +2,7 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@main(currentUser, role, "Użytkownik"){
+@main(currentUser, role, "Użytkownik", false){
 	<meta charset="UTF-8">
 		<div class="container col-md-offset-2 col-md-8">
 		@helper.form(action = routes.Users.saveUser(id), 'class -> "form-inline", 'enctype -> "multipart/form-data") {

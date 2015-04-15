@@ -1,42 +1,118 @@
-@(currentUser: User, role: String, courseForm: Form[Course], course: Course, users: List[User], id: String)
+@(currentUser: User, role: String, courseForm: Form[Course], course: Course, users: List[User], courseId: String)
 @import helper._
 @import helper.twitterBootstrap._
 @import models.User; var instructor = null; var manager = null
+@import scala.Predef; var i = 0
 
-@main(currentUser, role, "Kurs"){
+@main(currentUser, role, "Kurs", true){
 	<meta charset="UTF-8">
 	<div class="container col-md-offset-2 col-md-8">
-		@helper.form(action = routes.Courses.saveCourse(id), 'enctype -> "multipart/form-data") {
+		@helper.form(action = routes.Courses.saveCourse(courseId), 'enctype -> "multipart/form-data") {
 			<fieldset>
 			<legend>
-			<div class="container">
-				<div class="row">
-					<div class="col-md-5"><h1>@courseForm("name").valueOr("Nowy kurs") : @courseForm("courseType").valueOr("")</h1></div>
-					    <div class="col-md-5">
-					    	<span class="pull-right">
-					    		<a class="btn btn-default" href="@routes.Courses.getCourses()">Powrót do listy kursów</a> 
-								<input type="submit" class="btn btn-primary" value="Zapisz kurs">
-					    	</span>
-					    </div>
+				<div class="container row">
+					<div class="col-md-5">
+						<h1>@courseForm("name").valueOr("Nowy kurs") : @courseForm("courseType").valueOr("")</h1>
+					</div>
+					<div class="col-md-6">
+					    <span class="pull-right">
+					    	<a class="btn btn-danger" href="@routes.Courses.getCourses()">Powrót do listy kursów bez zapisywania</a> 
+							<input type="submit" class="btn btn-primary" value="Zapisz kurs">
+					    </span>
 					</div>
 				</div>
-			</div>	
+	
 			</legend>	
-				<div class="col-md-4 col-md-offset-2">
-					<div class="panel panel-default">
-						<div class="col-md-offset-1">
-							<h3 align="center">Dane podstawowe</h3>
-							@helper.inputText(courseForm("name"), '_label -> "Nazwa kursu", 'size -> 40)
-							@helper.textarea(courseForm("description"), '_label -> "Opis", 'size -> 40)
-							
-							
-						</div>
+			
+
+				<div class="col-md-5 panel panel-default">
+					<div class="col-md-offset-1">
+						<h3 align="center">Dane podstawowe</h3>
+							@helper.inputText(courseForm("name"), '_label -> "Nazwa kursu", 'size -> 30)		
+							@helper.textarea(courseForm("description"), '_label -> "Opis", 'size -> 30, 'rows -> 3)	
 					</div>
 					
-					<div class="panel panel-default">
-						<div class="">
+					
+				</div>
+				
+				
+					<!-- The panel with the information about people responsible for the course -->	
+					<div class="col-md-6 col-md-offset-1  panel panel-default">			
+							<h3 align="center">Odpowiedzialni za prowadzenie kursu</h3>
 							
-						<h3 align="center">Spotkania</h3>
+							<!-- Part for the course manager -->	
+							<hr>	
+							<div class="clearfix col-md-offset-1 row center" id="manager_id_field">
+								
+								<div class="col-md-8">
+									<span class="pull-left">
+								    	<label for="manager_id">Kierownik kursu :  </label>
+								    	<b id="manager_name">
+										    @if(course != null){
+											    @if((course.manager_id != null) && (course.manager_id != "")){
+												    @for(user <- users){
+														@if(user._id == course.manager_id){
+															 @user.toString()
+														}
+													}
+											  	} else{
+											  		Brak!
+											  	}
+											}
+								    	</b>
+							    	</span>
+							    </div>	
+							    
+							    <div class="col-md-2">
+							    	<span class="pull-right">
+								    	<a class="link" id="courseManagerLink" data-toggle="modal" data-target="#chooseModal">
+								    		@if((course.manager_id == null) || (course.manager_id == "")){		
+								    			<i id="add_change_icon" class="glyphicon glyphicon-plus"><!-- <p id="add_change_manager">Dodaj </p> --></i>								    		
+								    		} else{
+								    			<i class="glyphicon glyphicon-edit"><!-- <p>Zmień </p> --></i>
+								    		}
+								    	</a>								    	
+							    	</span>
+							    </div>
+							    
+								<input hidden id="manager_id" name="manager_id" value="@course.manager_id"></input> 
+							</div>
+							<hr>					
+							<!-- Part for the instructors involved with the course -->
+							<div class="clearfix col-md-offset-1 col-md-10" id="instructors_ids_field">
+							    
+								@if(course != null){
+									@if((course.instructors_ids == null) || (course.instructors_ids.size() == 0)){
+										<b>Brak instruktorów przydzielonych do kursu!</b>
+									} else{
+										<b>Lista instruktorów związanych z kursem :<br> </b>
+										@for(instructor <- course.instructors_ids) {
+											@for(user <- users){
+												@if(user._id == instructor){
+													@if(i != 0) {, }
+													@user.toString()
+													@{i = i+1}
+												} 
+											}
+											  
+										}
+									}
+								}
+															    	
+							</div>
+							<br>
+							<br>
+							<br>													
+				</div>
+	
+			
+			<div class="col-md-12 panel panel-default">
+			
+						<h3 align="center">Spotkania grup kursowych <span class="pull-right">
+							<a class="btn btn-default" href="#">Zmień</a>
+							<a id="deleteMeetingButton" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteMeetingModal" data-course-id="@courseId" data-meeting-name="@course.name">Usuń</a>
+							<input type="submit" class="btn btn-primary" value="Dodaj" id="addGroup"></input></span> </h3>
+			
 						@if(course != null){
 						@if(course.meetingHistory != null){
 							<table class="table  table-striped" data-url="/courses"  data-click-to-select="true" data-select-item-name="radioMeeting">
@@ -52,7 +128,7 @@
 								<tbody>
 								@for(meeting <- course.meetingHistory){
 									<tr>
-										<td><input id="@meeting._id" type="radio" name="chooseMeeting"></td>
+										<td><input id="@meeting._id" type="radio" name="chooseMeeting" data-meeting-name="Grupa @meeting.group Spotkanie : @meeting.subject"></td>
 										<td>@meeting.group</td>
 										<td>@meeting.date</td>
 										<td>@meeting.place</td>
@@ -62,38 +138,8 @@
 								}
 								</tbody>
 							</table>}else{ <h3>Brak zaplanowanych wydarzeń!</h3>}
-						</div>
+						
 					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="panel panel-default">
-						<div class="col-md-offset-1">
-							<h3>Odpowiedzialni za prowadzenie kursu</h3>
-							
-							@helper.inputText(courseForm("manager_id"), '_label -> "Kierownik kursu", 'size -> 40)
-												
-							<!-- <div class="clearfix  " id="manager_id_field">
-							    <label for="manager_id">manid</label>
-							    <div class="input">
-							        
-							    <input type="text" id="manager_id" name="manager_id" size="40"/>
-							
-							        <span class="help-inline"></span>
-							        <span class="help-block"></span> 
-							    </div>
-							</div> -->
-							
-							<h5><a id="courseManagerLink" data-toggle="modal" data-target="#chooseModal" ><b>Kierownik : </b><br> </h5><h4 id="courseManager"></h4> 
-							<h5><a id="instrictorLink" data-toggle="modal" data-target="#chooseModal" ><b>Instruktor : </b></a><br> </h5>
-																
-						</div>
-						<div>
-							
-						</div>
-					</div>
-				
-				</div>
-				
 				
 		
 			</fieldset>
@@ -101,7 +147,26 @@
 		}
 	</div>
 	
-	 
+	<!-- The modal for meeting delete confirmation -->
+	<div class="modal fade" id="confirmDeleteMeetingModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	            <h3 class="modal-title" id="myModalLabel">Ostrzeżenie o usunięciu spotkania kursowego!</h3>
+	            <br>
+	            </div>
+	            <div class="modal-body">
+	                <h5>Uwaga, usunięcie jest <b>nieodwracalne</b>!<br> Czy napewno chcesz <b>usunąć</b> - <b id="meetingToDelete"></b>?</h5>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+	                <a  id="deleteMeetingLink" href="#" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i> Usuń spotaknie</a>
+	        </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<!-- The modal for chosing the course manager --> 
 	<div class="modal fade" id="chooseModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
 	    <div class="modal-dialog">
 	        <div class="modal-content">
@@ -123,7 +188,7 @@
 						<tbody>
 						@for(user <- users) {
 							<tr>
-								<td><input id="@user._id" type="radio" name="chooseUser"></td>
+								<td><input id="@user._id" data-manager-name="@user.toString()" type="radio" name="chooseUser"></td>
 								<td>@user.firstName</td>
 								<td>@user.lastName</td>
 								<td>@user.email</td>
@@ -135,7 +200,7 @@
 	            </div>
 	            <div class="modal-footer">
 	                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
-	                <a  id="chooseLink" href="#" class="btn btn-danger"><i class="glyphicon glyphicon-ok"></i> Wybierz</a>
+	                <a  id="chooseLink" href="#" class="btn btn-danger" data-dismiss="modal"><i class="glyphicon glyphicon-ok"></i> Wybierz</a>
 	        </div>
 	    </div>
 	  </div>
@@ -146,13 +211,45 @@
 		    
 		});
 		
-		$("input[name='chooseUser']").click(function(e){
-			var user = "@id"
-			//$('#chooseLink').attr('href', user )
-			$("input[name='manager_id']").val(user)
-
-			
+		$('#confirmDeleteMeetingModal').on('show.bs.modal', function(e) {
+		
 		});
+		
+		 $("input[name='chooseUser']").click(function(e){
+			var user = $("input[name='chooseUser']:checked").attr('id')
+			var userName = $("input[name='chooseUser']:checked").attr('data-manager-name')
+			$("input[id='manager_id']").val(user)
+			$("b[id='manager_name']").text(userName)
+			//$(e.relatedTarget).data('course-name')
+			$("i[id='add_change_icon']").attr('class',"glyphicon glyphicon-edit")
+			//$("i[id='add_change_icon']").text(' Zmień')
+		}); 
+		 
+		$("input[name='chooseMeeting']").click(function(e){
+			var deleteLink = "/courses/"
+			deleteLink = deleteLink + "@courseId"
+			deleteLink = deleteLink + "/meetings/"
+			deleteLink = deleteLink + $("input[name='chooseMeeting']:checked").attr('id')
+			$('#deleteMeetingLink').attr('href', deleteLink)
+			var toDeleteName = $("input[name='chooseMeeting']:checked").attr('data-meeting-name')	
+			$('#meetingToDelete').text(toDeleteName)
+		});
+		
+		$("a[id='chooseLink']").click(function(e){
+			var user = $("input[name='chooseUser']:checked").attr('id')
+			var userName = $("input[name='chooseUser']:checked").attr('data-manager-name')
+			$("input[id='manager_id']").val(user)
+			$("b[id='manager_name']").text(userName)
+			$("i[id='add_change_icon']").attr('class',"glyphicon glyphicon-edit")
+			/* $("p[id='add_change_manager']").text(' Zmień') */
+
+		});
+		
+		$('#addGroup').click(function(e){
+			var add = "@routes.Courses.newCourseMeeting(courseId)"
+			$('form').attr('action', add)
+		});
+		
 	</script>
 }
 

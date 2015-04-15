@@ -1,0 +1,272 @@
+@(currentUser: User, role: String, meetingForm: Form[CourseMeeting], meeting: CourseMeeting, users: List[User], courseId: String, meetingId: String)
+@import helper._
+@import helper.twitterBootstrap._
+@import models.User; var courseSession = null; var manager = null
+
+
+@main(currentUser, role, "Spotkanie grupy kursowej", true){
+	<meta charset="UTF-8">
+	<div class="container col-md-offset-2 col-md-8">
+		<!-- <h1 align="center">Spotkanie grupy kursowej</h1> -->
+		
+		@helper.form(action = routes.Courses.saveCourseMeeting(courseId, meetingId), 'enctype -> "multipart/form-data") {
+			<fieldset>
+			<legend>
+				<div class="container row">
+					<div class="col-md-5">
+						<h1>Spotkanie grupy kursowej</h1>
+					</div>
+					<div class="col-md-6">
+					    <span class="pull-right">
+					    	<a class="btn btn-danger" href="@routes.Courses.editCourse(courseId)">Powrót do kursu bez zapisywania</a> 
+							<input type="submit" class="btn btn-primary" value="Zapisz i wróć do kursu">
+					    </span>
+					</div>
+				</div>
+	
+			</legend>	
+			
+
+				<div class="col-md-12 panel panel-default">
+					<div class="col-md-offset-1 col-md-5">
+					<br>
+							@helper.inputText(meetingForm("group"), '_label -> "Grupa", 'size -> 30)
+							@helper.inputText(meetingForm("place"), '_label -> "Miejsce kursu", 'size -> 30)
+							@helper.inputText(meetingForm("date"), '_label -> "Data spotkania", 'size -> 30)
+							@helper.inputText(meetingForm("subject"), '_label -> "Temat zajęć", 'size -> 30)		
+							@helper.textarea(meetingForm("description"), '_label -> "Opis", 'size -> 30, 'rows -> 3)
+							@select(meetingForm("meetingStatus"),
+										options("Planned"->"Planowane spotkanie",
+												"Done"->"Zajęcia odbyły się",
+												"Cancelled"->"Zajęcia odwołane"),
+										'_label -> "Status spotkania", '_size -> 30)
+							<br>
+							<br>
+					</div>
+					
+					<div class="col-md-6">
+					<br>
+					<br>
+						<div class="clearfix col-md-offset-1 row center" id="instructor_id_field">
+								
+								<div class="col-md-8">
+									<span class="pull-left">
+									
+								    	<label for="instructor_id">Instruktor odpowiedzialny za grupę :  </label>
+								    	<b id="instructor_name">
+										    @if(meeting != null){
+											    @if((meeting.instructor_id != null) && (meeting.instructor_id != "")){
+												    @for(user <- users){
+														@if(user._id == meeting.instructor_id){
+															 @user.toString()
+														}
+													}
+											  	} else{
+											  		Brak!
+											  	}
+											} else{
+												Brak!
+											}
+								    	</b>
+							    	</span>
+							    </div>	
+							    
+							    <div class="col-md-2">
+							    	<span class="pull-right">
+								    	<a class="link" id="courseManagerLink" data-toggle="modal" data-target="#chooseModal">
+									    	@if(meeting != null){
+									    		@if((meeting.instructor_id == null) || (meeting.instructor_id == "")){		
+									    			<i id="add_member_icon" class="glyphicon glyphicon-plus"></i>								    		
+									    		} else{
+									    			<i class="glyphicon glyphicon-edit"></i>
+									    		}
+									    	} else{
+									    		<i id="add_member_icon" class="glyphicon glyphicon-plus"></i>
+									    	}	
+								    	</a>								    	
+							    	</span>
+							    </div>
+							    
+								<input hidden id="instructor_id" name="instructor_id" value="@if(meeting != null ){meeting.instructor_id}"></input> 
+							</div>
+							
+							<hr>
+							
+							<div class="clearfix col-md-offset-1" id="presentMembers_ids_field">
+							    <div class="col-md-8">
+								@if(meeting != null){
+									@if((meeting.presentMembers_ids == null) || (meeting.presentMembers_ids.size() == 0)){
+										<b id="course_present_list">Brak kursantów obecnych na zajęciach!</b>
+									} else{
+										<b>Lista kursantów obecnych na zajęciach :<br> </b>
+										@for(member <- meeting.presentMembers_ids) {
+											@for(user <- users){
+												@if(user._id == member){
+													@user.toString() ,
+												} 
+											}
+											  
+										}
+									}
+								} else {
+									<b id="course_present_list">Brak kursantów obecnych na zajęciach!</b>
+								}
+								<br>
+								<br>
+								<p id="members_names"></p>
+								</div>
+								<div class="col-md-2">
+									<span class="pull-right">
+								    	<a class="link" id="presentMemberLink" data-toggle="modal" data-target="#presentModal">
+								    		<i class="glyphicon glyphicon-plus"></i>
+								    	</a>
+								    </span>
+								    <!-- This will be hidden -->
+								    <input hidden id="presentMembers_ids" name="presentMembers_ids" value="@if(meeting != null ){meeting.presentMembers_ids}"></input>
+								</div>
+															    	
+							</div>
+					</div>
+					
+					
+				</div>
+			}
+		
+		
+	</div>
+	
+	
+	
+	<!-- Modal window with user chose option -->
+	<div class="modal fade" id="chooseModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	            <h3 class="modal-title" id="myModalLabel">Wybierz użytkowanika</h3>
+	            </div>
+	            
+	            <div class="modal-body">
+					<!-- <table data-url="/users" data-height="299" data-click-to-select="true" data-select-item-name="radioName">-->
+					<table class="table  table-striped" data-url="/users"  data-click-to-select="true" data-select-item-name="radioName">
+						<thead>
+							<tr>
+								<th data-field="state" data-radio="true"></th>
+					            <th data-field="firstName" data-align="right">Imię</th>
+					            <th data-field="lastName" data-align="center">Nazwisko</th>
+					            <th data-field="email" data-align="left">email</th>
+							</tr>
+						</thead>
+						<tbody>
+						@for(user <- users) {
+							<tr>
+								<td><input id="@user._id" data-manager-name="@user.toString()" type="radio" name="chooseUser"></td>
+								<td>@user.firstName</td>
+								<td>@user.lastName</td>
+								<td>@user.email</td>
+							</tr>
+						}
+						</tbody>
+					</table>
+					<h1 id="speaker"></h1>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+	                <a  id="chooseLink" href="#" class="btn btn-danger" data-dismiss="modal"><i class="glyphicon glyphicon-ok"></i> Wybierz</a>
+	        </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<!-- Modal window with user chose option -->
+	<div class="modal fade" id="presentModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	            <h3 class="modal-title" id="myModalLabel">Wybierz użytkowanika</h3>
+	            </div>
+	            
+	            <div class="modal-body">
+					<!-- <table data-url="/users" data-height="299" data-click-to-select="true" data-select-item-name="radioName">-->
+					<table class="table  table-striped" data-url="/users"  data-click-to-select="true" data-select-item-name="radioName">
+						<thead>
+							<tr>
+								<th data-field="state" data-radio="true"></th>
+					            <th data-field="firstName" data-align="right">Imię</th>
+					            <th data-field="lastName" data-align="center">Nazwisko</th>
+					            <th data-field="email" data-align="left">email</th>
+							</tr>
+						</thead>
+						<tbody>
+						@for(user <- users) {
+							<tr>
+								<td><input id="@user._id" data-manager-name="@user.toString()" type="radio" name="chooseUser"></td>
+								<td>@user.firstName</td>
+								<td>@user.lastName</td>
+								<td>@user.email</td>
+							</tr>
+						}
+						</tbody>
+					</table>
+					<h1 id="speaker"></h1>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+	                <a  id="presentLink" href="#" class="btn btn-danger" data-dismiss="modal"><i class="glyphicon glyphicon-ok"></i> Wybierz</a>
+	        </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<script type="text/javascript">
+		$('#chooseModal').on('show.bs.modal', function(e) {
+		    
+		});
+		
+		/* $("input[name='chooseUser']").click(function(e){
+			var user = $("input[name='chooseUser']:checked").attr('id')
+			var userName = $("input[name='chooseUser']:checked").attr('data-manager-name')
+			$("input[id='instructor_id']").val(user)
+			$("b[id='instructor_name']").text(userName)
+			//$(e.relatedTarget).data('course-name')
+			$("i[id='add_change_icon']").attr('class',"glyphicon glyphicon-edit")
+			//$("i[id='add_change_icon']").text(' Zmień')
+		});  */
+		
+		$("a[id='chooseLink']").click(function(e){
+			var user = $("input[name='chooseUser']:checked").attr('id')
+			var userName = $("input[name='chooseUser']:checked").attr('data-manager-name')
+			$("input[id='instructor_id']").val(user)
+			$("#instructor_name").text(userName)
+			$("#add_member_icon").attr('class',"glyphicon glyphicon-edit")
+
+		});
+		
+		$("a[id='presentLink']").click(function(e){
+			var members = $("#presentMembers_ids").val()
+			if(members != "") members = members + ","
+			members = members + $("input[name='chooseUser']:checked").attr('id')	
+			$("#presentMembers_ids").val(members)
+			
+			var names = $("#members_names").text()
+			if(names != "") names = names + ", "
+			names = names + $("input[name='chooseUser']:checked").attr('data-manager-name')
+			
+			$("#members_names").text(names)
+			$("#course_present_list").text("Lista kursantów obecnych na zajęciach :")
+
+		});
+		
+		/* $("#add_member_icon").click(function(e){
+			//e.relatedTarget).find("")
+			
+			$("#chooseLink").attr('id', "chose_member")
+			var name = $("#chooseLink").attr('name')
+			
+			
+			
+
+		}); */
+	</script>
+}
+
+<!--  @@Author(name="Lukas Pecak") -->
