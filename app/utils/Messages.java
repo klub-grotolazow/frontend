@@ -54,6 +54,7 @@ public class Messages {
 	public static final String ERROR_ADDING_COURSE_MEETING = 		"Nastąpił błąd podczas dodawania informacji o spotkaniu do kursu ! ";
 	public static final String ERROR_SAVING_COURSE_MEETING = 		"Nastąpił błąd podczas zapisywaniu inforamcji o spotkaniu ! ";
 	public static final String WARNING_CORRECT_MEETING_FORM_DATA = 	"Popraw lub uzupełnij dane w formularzu ! ";
+	public static final String ERROR_DELETING_MEETING = 			"Nieznany błąd podczas próby usunięcia spotkania kursowego! ";
 	
 	//User list messages
 	public static final String CANT_LOAD_USERS =					"Nie można załadować użytkowników! ";

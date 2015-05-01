@@ -63,14 +63,16 @@ public class Courses extends Controller {
 	}
 	
 	//Edit course *****************************************************************************************************************************
-	public static Result editCourse(String id){
-		Course course = CoursesService.getCourse(id);
+	public static Result editCourse(String courseId){
+		System.out.println("the courseid value in editCourse method is : " + courseId);
+		Course course = CoursesService.getCourse(courseId);
 		if(course == null){
 			Controller.flash().put(Messages.ERROR, Messages.COURSE_NOT_FOUND);
 			return ok(coursesList.render(UsersService.getUser(session().get("userName")), session().get("role"), CoursesService.getCoursesList(), UsersService.getUsersList()));
 		} else{
+			CoursesService.saveCourseDraft(course, courseId);
 			Form<Course> form = courseForm.fill(course);
-			return ok(courseDetails.render(UsersService.getUser(session().get("userName")), session().get("role"), form, course, UsersService.getUsersList(), id));
+			return ok(courseDetails.render(UsersService.getUser(session().get("userName")), session().get("role"), form, course, UsersService.getUsersList(), courseId));
 		}
 	}
 		
@@ -83,7 +85,13 @@ public class Courses extends Controller {
 	//Adding new course ************************************************************************************************************************
 	public static Result newCourse(){
 		if(Secured.isSuperUser() || Secured.isCourseManager()){
-		return ok(courseDetails.render(UsersService.getUser(session().get("userName")), session().get("role"), courseForm, new Course(), UsersService.getUsersList(), ""));
+			Course course = new Course();
+			if(session().containsKey(Utils.DRAFT_COURSE)) {
+				Gson gson = new Gson();
+				course = gson.fromJson(session().get(Utils.DRAFT_COURSE), Course.class);
+			}
+			if(course._id != "new") session().remove(Utils.DRAFT_COURSE);
+			return ok(courseDetails.render(UsersService.getUser(session().get("userName")), session().get("role"), courseForm, new Course(), UsersService.getUsersList(), "new"));
 		} else {
 			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
 			return redirect(routes.Application.index());
@@ -91,11 +99,15 @@ public class Courses extends Controller {
 	}
 	
 	// Saving course in database with api backend **********************************************************************************************
-	public static Result saveCourse(String id){
+	public static Result saveCourse(String courseId){
 		if(Secured.isSuperUser() || Secured.isCourseManager()){
 		Form<Course> boundForm = courseForm.bindFromRequest();
+		if(boundForm.hasErrors()) {
+			Controller.flash(Messages.WARNING, Messages.CORRECT_FORM);
+			return Controller.badRequest(courseDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm, boundForm.get(), UsersService.getUsersList(), courseId));
+		}
 		//System.out.println("Manager_id : "+ boundForm.get().manager_id);
-		return CoursesService.saveCourse(boundForm, id);
+		return CoursesService.saveCourse(boundForm.get(), courseId);
 		} else {
 			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
 			return redirect(routes.Application.index());
@@ -110,7 +122,15 @@ public class Courses extends Controller {
 	
 	// Load course draft ************************************************************************************************************************
 		public static Result loadCourseDraft(){
-			return TODO;
+			Gson gson = new Gson();
+			Course course;
+			if(session().containsKey(Utils.DRAFT_COURSE)){
+				course = gson.fromJson(session().get(Utils.DRAFT_COURSE), Course.class);
+				return ok(courseDetails.render(UsersService.getUser(session().get("userName")), session().get("role"), courseForm.fill(course), course, UsersService.getUsersList(), course._id));
+			} else {
+				Course emptyCourse = new Course();
+				return ok(courseDetails.render(UsersService.getUser(session().get("userName")), session().get("role"), courseForm.fill(emptyCourse), emptyCourse, UsersService.getUsersList(), emptyCourse._id));
+			}
 		}
 	
 	// Load the course meeting details view *****************************************************************************************************
@@ -118,14 +138,21 @@ public class Courses extends Controller {
 		if(Secured.isSuperUser() || Secured.isCourseManager()){
 			System.out.println("The id in newCourseMeeting is -> "+courseId);
 			Form<Course> boundForm = courseForm.bindFromRequest();
-			//System.out.println("bound form is -> " +boundForm);
-			//System.out.println("The session draft param is : " + session().get(Utils.DRAFT_COURSE));
-			if(Controller.session().containsKey(Utils.DRAFT_COURSE)){ 
-				Controller.session().remove(Utils.DRAFT_COURSE);
-			} 
-			String draftId = CoursesService.saveCourseDraft(boundForm, courseId);
-			System.out.println("The id in newCourseMeeting is -> "+draftId);
-			Controller.session().put(Utils.DRAFT_COURSE, draftId);
+			
+			Course course = boundForm.get();
+			
+			if(boundForm.hasErrors()) {
+				Controller.flash(Messages.WARNING, Messages.CORRECT_FORM);
+				return badRequest(courseDetails.render(UsersService.getUser(session().get("userName")), session().get("role"), boundForm, CoursesService.getCourse(courseId), UsersService.getUsersList(), courseId));
+			}
+			
+			Course draft = CoursesService.loadCourseDraft();
+			if(draft == null) draft = new Course();
+ 			if(draft.name != course.name) draft.name = course.name;
+			if(draft.description != course.description) draft.description = course.description;
+			if(draft.manager_id != course.manager_id) draft.manager_id = course.manager_id;
+			
+			CoursesService.saveCourseDraft(draft, courseId);
 			
 			if(!(Controller.session().containsKey(Utils.DRAFT_COURSE) || (Controller.session().get(Utils.DRAFT_COURSE) == ""))){
 				flash().put(Messages.ERROR, Messages.ERROR_SAVING_COURSE_DRAFT);
@@ -154,13 +181,15 @@ public class Courses extends Controller {
 	
 	// Save course meeting **********************************************************************************************************************
 	public static Result saveCourseMeeting(String courseId, String meetingId){
+		System.out.println("the courseid value in savemeeting method is : " + courseId);
 		Form<CourseMeeting> boundForm = meetingForm.bindFromRequest();
 		return CoursesService.saveCourseMeeting(boundForm, courseId, meetingId);
 	}
 	
 	// Delete course meeting ********************************************************************************************************************
 	public static Result deleteCourseMeeting(String courseId, String meetingId){
-		return TODO;
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> In delete meeting function" + courseId + " | "+meetingId);
+		return CoursesService.deleteMeeting(courseId, meetingId);
 	}
 	
 	

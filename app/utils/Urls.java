@@ -76,18 +76,33 @@ public class Urls {
 	}
 	
 	//Put course meeting url
-		public static String getCourseMeetingPutUrl(String courseId, String meetingId){
-			if((courseId != null) && (meetingId != null)){
-				//System.out.println("the meeting id is ->"+courseId+"<-");
-				StringBuilder builder = new StringBuilder();
-				builder.append("/courses/")
-						.append(courseId)
-						.append("/meetings/")
-						.append(meetingId);
-				return builder.toString();
-			} else{
-				return "/courses/notfound/meetings";
-			}
+	public static String getCourseMeetingPutUrl(String courseId, String meetingId){
+		if((courseId != null) && (meetingId != null)){
+			//System.out.println("the meeting id is ->"+courseId+"<-");
+			StringBuilder builder = new StringBuilder();
+			builder.append("/courses/")
+					.append(courseId)
+					.append("/meetings/")
+					.append(meetingId);
+			return builder.toString();
+		} else{
+			return "/courses/notfound/meetings";
 		}
+	}
+	
+	//Put course url
+	public static String getCoursePutUrl(String courseId){
+		if(courseId != null){
+			//System.out.println("the meeting id is ->"+courseId+"<-");
+			StringBuilder builder = new StringBuilder();
+			builder.append("/courses/")
+					.append(courseId);
+			return builder.toString();
+		} else{
+			return "/courses/notfound";
+		}
+	}
+	
+
 	
 }

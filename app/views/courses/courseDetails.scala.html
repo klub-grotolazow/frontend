@@ -7,7 +7,7 @@
 @main(currentUser, role, "Kurs", true){
 	<meta charset="UTF-8">
 	<div class="container col-md-offset-2 col-md-8">
-		@helper.form(action = routes.Courses.saveCourse(courseId), 'enctype -> "multipart/form-data") {
+		@helper.form(action = routes.Courses.saveCourse(courseId),  'enctype -> "multipart/form-data") {
 			<fieldset>
 			<legend>
 				<div class="container row">
@@ -27,7 +27,6 @@
 
 				<div class="col-md-5 panel panel-default">
 					<div class="col-md-offset-1">
-						<h3 align="center">Dane podstawowe</h3>
 							@helper.inputText(courseForm("name"), '_label -> "Nazwa kursu", 'size -> 30)		
 							@helper.textarea(courseForm("description"), '_label -> "Opis", 'size -> 30, 'rows -> 3)	
 					</div>
@@ -228,7 +227,7 @@
 		$("input[name='chooseMeeting']").click(function(e){
 			var deleteLink = "/courses/"
 			deleteLink = deleteLink + "@courseId"
-			deleteLink = deleteLink + "/meetings/"
+			deleteLink = deleteLink + "/meetings/delete/"
 			deleteLink = deleteLink + $("input[name='chooseMeeting']:checked").attr('id')
 			$('#deleteMeetingLink').attr('href', deleteLink)
 			var toDeleteName = $("input[name='chooseMeeting']:checked").attr('data-meeting-name')	
@@ -249,6 +248,8 @@
 			var add = "@routes.Courses.newCourseMeeting(courseId)"
 			$('form').attr('action', add)
 		});
+		
+		
 		
 	</script>
 }

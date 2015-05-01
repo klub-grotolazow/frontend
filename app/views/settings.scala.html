@@ -8,7 +8,7 @@
 		<h1 align="center">System settings</h1>
 		<br>
 		<br>
-		<h3>Api server location&nbsp&nbsp&nbsp <i class="glyphicon glyphicon-floppy-saved"></i> &nbsp  @name </h3>
+		<h3>Api server location<i class="glyphicon glyphicon-floppy-saved"></i>  @name </h3>
 		@helper.form(action = routes.Settings.saveSettings(), 'enctype -> "multipart/form-data"){
 			<fieldset>
 				@helper.inputText(settingForm("apiUrl"), '_label -> "New Api server location", 'size -> 60)		

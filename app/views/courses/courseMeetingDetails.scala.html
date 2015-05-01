@@ -4,12 +4,15 @@
 @import models.User; var courseSession = null; var manager = null
 
 
+
 @main(currentUser, role, "Spotkanie grupy kursowej", true){
 	<meta charset="UTF-8">
 	<div class="container col-md-offset-2 col-md-8">
 		<!-- <h1 align="center">Spotkanie grupy kursowej</h1> -->
 		
-		@helper.form(action = routes.Courses.saveCourseMeeting(courseId, meetingId), 'enctype -> "multipart/form-data") {
+		
+		
+		@helper.form(action = routes.Courses.saveCourseMeeting(courseId, meetingId),'id -> "courseForm", 'enctype -> "multipart/form-data") {
 			<fieldset>
 			<legend>
 				<div class="container row">
@@ -18,8 +21,9 @@
 					</div>
 					<div class="col-md-6">
 					    <span class="pull-right">
-					    	<a class="btn btn-danger" href="@routes.Courses.editCourse(courseId)">Powrót do kursu bez zapisywania</a> 
-							<input type="submit" class="btn btn-primary" value="Zapisz i wróć do kursu">
+					    	<!-- editCourse(courseId) -->
+					    	<a class="btn btn-danger" href="@routes.Courses.loadCourseDraft()">Powrót do kursu bez zapisywania</a> 
+							<input id="saveButton" type="submit" class="btn btn-primary" value="Zapisz i wróć do kursu">
 					    </span>
 					</div>
 				</div>
@@ -255,6 +259,11 @@
 			$("#course_present_list").text("Lista kursantów obecnych na zajęciach :")
 
 		});
+		
+		 /* $('#saveButton').click(function(e){
+			var atribute = 'lukas'
+			$('#courseForm').attr('action', atribute)
+		});  */
 		
 		/* $("#add_member_icon").click(function(e){
 			//e.relatedTarget).find("")
