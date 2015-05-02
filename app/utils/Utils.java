@@ -18,6 +18,7 @@ public class Utils {
 	public static final String 		DRAFT_COURSE = "draft_course";
 	public static final String 		USERS_JSON_TABLE = "users";
 	public static final String		API_URL = "apiUrl";
+	public static final String		NEW = "new";
 	public static final String 		PROPERTIES_FILE = "config.properties";
 	public static final int 		WAIT_FOR_RESPONSE = 5000;
 	
