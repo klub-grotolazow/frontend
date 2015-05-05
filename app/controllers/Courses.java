@@ -34,7 +34,7 @@ import views.html.courses.courseMeetingDetails;
 public class Courses extends Controller {
 	private static Form<Course> courseForm = Form.form(Course.class);
 	private static Form<CourseMeeting> meetingForm = Form.form(CourseMeeting.class);
-	//private static List<Course> cl = new ArrayList<Course>();
+	private static List<Course> cl = new ArrayList<Course>();
 
 	//Displaying the list of courses ********************************************************************************************************** 
 	public static Result getCourses() throws JSONException {
@@ -200,7 +200,7 @@ public class Courses extends Controller {
 	// Load the course meeting details view *****************************************************************************************************
 	public static Result editCourseMeeting(String courseId, String meetingId){
 		CourseMeeting meeting = null;
-		Course course = CoursesService.loadCourseDraftForFormFilling();
+		Course course = CoursesService.loadCourseDraft();
 		for(CourseMeeting courseMeeting : course.meetingHistory){
 			if(courseMeeting._id.equals(meetingId)){
 				meeting = courseMeeting;
@@ -211,6 +211,12 @@ public class Courses extends Controller {
 			meeting = new CourseMeeting();
 			meeting.presentMembers_ids = new ArrayList<String>();
 		}
+		String presentMenbersString = Utils.toCSS(meeting.presentMembers_ids);
+		System.out.println("the tocss output is : "+presentMenbersString);
+		meeting.presentMembers_ids.clear();
+		meeting.presentMembers_ids.add(presentMenbersString);
+		if(meeting.presentMembers_ids.size() == 0) meeting.presentMembers_ids.add("");
+		meetingForm.fill(meeting);
 		return ok(courseMeetingDetails.render(UsersService.getUser(session().get("userName")), 
 												session().get("role"), 
 												meetingForm.fill(meeting), 

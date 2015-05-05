@@ -19,24 +19,14 @@ public class RestService {
 	public static WSResponse callREST(String requestUrl, String requestJson, Class requestJsonClass, Boolean contentJson, restServiceEnum httpMetod){
 		String url = Utils.getApiUrl();
 		if(requestUrl != null) url += requestUrl;
-		System.out.println("url is : "+url);
 		String request = null;
-		
-		/*if((requestJson != null) && (requestJsonClass != null)){
-			Gson gson = new Gson();
-			request = gson.toJson(request, requestJsonClass);
-		}*/
-		
 		if((httpMetod != null) && (contentJson != null)){
 			System.out.println("In not null");
 			try{
 				Promise<WSResponse> result = null;
-				
 				if(contentJson.equals(true)){
-					System.out.println("In content json");
 					// For GET method ________________________________________________________________
 					if(httpMetod.equals(restServiceEnum.GET)){
-						System.out.println("In get");
 						result = WS	.url(url)
 									.setContentType(Urls.CONTENT_TYPE_JSON)
 									//.setAuth(Utils.getAuthenticationHeader())
@@ -107,7 +97,6 @@ public class RestService {
 				}
 				
 			} catch(Exception exception){
-				System.out.println("in cactch!");
 				return null;
 			}
 		}

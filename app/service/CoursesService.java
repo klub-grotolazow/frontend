@@ -228,6 +228,7 @@ public class CoursesService {
 			if(course.meetingHistory != null){
 				for(CourseMeeting meeting : course.meetingHistory){
 					String presentMembers = Utils.toCSS(meeting.presentMembers_ids);
+					System.out.println(presentMembers);
 					meeting.presentMembers_ids.clear();
 					meeting.presentMembers_ids.add(presentMembers);
 				}
@@ -282,79 +283,79 @@ public class CoursesService {
 	}
 	
 	// Save CourseMeeting or update course ***********************************************************************************************************
-		public static Result saveCourseMeeting(Form<CourseMeeting> boundForm, String courseId, String meetingId){
-			CourseMeeting meeting = null;
-			try {
-				meeting = boundForm.get();
-				meeting._id = meetingId;
-			}
-			catch(Exception exception){
-				Controller.flash().put(Messages.WARNING, Messages.WARNING_CORRECT_MEETING_FORM_DATA + exception);
-				return Controller.badRequest(courseMeetingDetails.render(UsersService.getUser(Controller.session().get("userName")), 
-																			Controller.session().get("role"), 
-																			boundForm, 
-																			meeting, 
-																			UsersService.getUsersList(), 
-																			Controller.session().get(Utils.DRAFT_COURSE), 
-																			meetingId));
-			}
-			if(boundForm.hasErrors()) {
-				Controller.flash(Messages.WARNING, Messages.CORRECT_FORM);
-				return Controller.badRequest(courseMeetingDetails.render(UsersService.getUser(Controller.session().get("userName")), 
-																			Controller.session().get("role"), 
-																			boundForm, 
-																			meeting, 
-																			UsersService.getUsersList(), 
-																			Controller.session().get(Utils.DRAFT_COURSE), 
-																			meetingId));
-			}
-			meeting.presentMembers_ids = Utils.toStringList(meeting.presentMembers_ids.get(0));		
-			Gson gson = new Gson();
-			String request;
-			WSResponse response = null;
-			if(meeting.presentMembers_ids == null) meeting.presentMembers_ids = new ArrayList<String>();
-			Course draft = CoursesService.loadCourseDraft();
-			if(draft == null) {
-				draft = new Course();
-			}
-			if(draft.meetingHistory == null) draft.meetingHistory = new ArrayList<CourseMeeting>();
-			if(draft.graduatedMembers_ids == null) draft.graduatedMembers_ids = new ArrayList<String>();
-			if(draft.members_ids == null) draft.members_ids = new ArrayList<String>();
-			if(draft.instructors_ids == null) draft.instructors_ids = new ArrayList<String>();
+	public static Result saveCourseMeeting(Form<CourseMeeting> boundForm, String courseId, String meetingId){
+		CourseMeeting meeting = null;
+		try {
+			meeting = boundForm.get();
+			meeting._id = meetingId;
+		}
+		catch(Exception exception){
+			Controller.flash().put(Messages.WARNING, Messages.WARNING_CORRECT_MEETING_FORM_DATA + exception);
+			return Controller.badRequest(courseMeetingDetails.render(UsersService.getUser(Controller.session().get("userName")), 
+																		Controller.session().get("role"), 
+																		boundForm, 
+																		meeting, 
+																		UsersService.getUsersList(), 
+																		Controller.session().get(Utils.DRAFT_COURSE), 
+																		meetingId));
+		}
+		if(boundForm.hasErrors()) {
+			Controller.flash(Messages.WARNING, Messages.CORRECT_FORM);
+			return Controller.badRequest(courseMeetingDetails.render(UsersService.getUser(Controller.session().get("userName")), 
+																		Controller.session().get("role"), 
+																		boundForm, 
+																		meeting, 
+																		UsersService.getUsersList(), 
+																		Controller.session().get(Utils.DRAFT_COURSE), 
+																		meetingId));
+		}
+		meeting.presentMembers_ids = Utils.toStringList(meeting.presentMembers_ids.get(0));	
+		Gson gson = new Gson();
+		String request;
+		WSResponse response = null;
+		if(meeting.presentMembers_ids == null) meeting.presentMembers_ids = new ArrayList<String>();
+		Course draft = CoursesService.loadCourseDraft();
+		if(draft == null) {
+			draft = new Course();
+		}
+		if(draft.meetingHistory == null) draft.meetingHistory = new ArrayList<CourseMeeting>();
+		if(draft.graduatedMembers_ids == null) draft.graduatedMembers_ids = new ArrayList<String>();
+		if(draft.members_ids == null) draft.members_ids = new ArrayList<String>();
+		if(draft.instructors_ids == null) draft.instructors_ids = new ArrayList<String>();
 			
-			//The case for new course meeting save --------------------------------------------------------------			
-			if("new".equals(courseId)){
-				meeting._id = "1";
-				for(CourseMeeting courseMeeting : draft.meetingHistory){
-					if(courseMeeting._id.length() <= meeting._id.length()) meeting._id = courseMeeting._id + "1";
-				}
+		//The case for new course meeting save --------------------------------------------------------------			
+		if("new".equals(courseId)){
+			meeting._id = "1";
+			for(CourseMeeting courseMeeting : draft.meetingHistory){
+				if(courseMeeting._id.length() <= meeting._id.length()) meeting._id = courseMeeting._id + "1";
 			}
-			if(draft.meetingHistory == null) draft.meetingHistory = new ArrayList<CourseMeeting>(); 	
-			if((meetingId == null) || (meetingId == "")){
-				meeting._id = "1";
+		}
+		if(draft.meetingHistory == null) draft.meetingHistory = new ArrayList<CourseMeeting>(); 	
+		if((meetingId == null) || (meetingId == "")){
+			meeting._id = "1";
+			for(CourseMeeting courseMeeting : draft.meetingHistory){
+				if(courseMeeting._id.length() <= meeting._id.length()) meeting._id = courseMeeting._id + "1";
+			}
+			draft.meetingHistory.add(meeting);
+			} else{
 				for(CourseMeeting courseMeeting : draft.meetingHistory){
-					if(courseMeeting._id.length() <= meeting._id.length()) meeting._id = courseMeeting._id + "1";
-				}
-				draft.meetingHistory.add(meeting);
-				} else{
-					for(CourseMeeting courseMeeting : draft.meetingHistory){
-						if(courseMeeting._id.equals(meetingId)){
-							meeting._id = courseId;
-							draft.meetingHistory.remove(courseMeeting);
-							draft.meetingHistory.add(meeting);
-							break;
-						}
+					if(courseMeeting._id.equals(meetingId)){
+						meeting._id = courseId;
+						draft.meetingHistory.remove(courseMeeting);
+						draft.meetingHistory.add(meeting);
+						break;
 					}
 				}
-				if(!draft.instructors_ids.contains(meeting.instructor_id)) draft.instructors_ids.add(meeting.instructor_id);
-				CoursesService.saveCourseDraft(draft, draft._id);
-				return Controller.ok(courseDetails.render(UsersService.getUser(Controller.session().get("userName")), 
-															Controller.session().get("role"), 
-															courseForm.fill(draft), 
-															draft, 
-															UsersService.getUsersList(), 
-															courseId));
-		}
+			}
+			if(!draft.instructors_ids.contains(meeting.instructor_id)) draft.instructors_ids.add(meeting.instructor_id);
+			CoursesService.saveCourseDraft(draft, draft._id);
+			return Controller.ok(courseDetails.render(UsersService.getUser(Controller.session().get("userName")), 
+														Controller.session().get("role"), 
+														courseForm.fill(draft), 
+														draft, 
+														UsersService.getUsersList(), 
+														courseId));
+	}
 
 	
 }
