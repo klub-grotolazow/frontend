@@ -296,7 +296,7 @@ public class CoursesService {
 																		boundForm, 
 																		meeting, 
 																		UsersService.getUsersList(), 
-																		Controller.session().get(Utils.DRAFT_COURSE), 
+																		courseId, 
 																		meetingId));
 		}
 		if(boundForm.hasErrors()) {
@@ -306,7 +306,7 @@ public class CoursesService {
 																		boundForm, 
 																		meeting, 
 																		UsersService.getUsersList(), 
-																		Controller.session().get(Utils.DRAFT_COURSE), 
+																		courseId, 
 																		meetingId));
 		}
 		meeting.presentMembers_ids = Utils.toStringList(meeting.presentMembers_ids.get(0));	
@@ -324,23 +324,24 @@ public class CoursesService {
 		if(draft.instructors_ids == null) draft.instructors_ids = new ArrayList<String>();
 			
 		//The case for new course meeting save --------------------------------------------------------------			
-		if("new".equals(courseId)){
+		/*if("new".equals(courseId)){
 			meeting._id = "1";
 			for(CourseMeeting courseMeeting : draft.meetingHistory){
 				if(courseMeeting._id.length() <= meeting._id.length()) meeting._id = courseMeeting._id + "1";
 			}
-		}
+		}*/
 		if(draft.meetingHistory == null) draft.meetingHistory = new ArrayList<CourseMeeting>(); 	
 		if((meetingId == null) || (meetingId == "")){
-			meeting._id = "1";
-			for(CourseMeeting courseMeeting : draft.meetingHistory){
+			meeting._id = Utils.generateKey();;
+			/*for(CourseMeeting courseMeeting : draft.meetingHistory){
+				
 				if(courseMeeting._id.length() <= meeting._id.length()) meeting._id = courseMeeting._id + "1";
-			}
+			}*/
 			draft.meetingHistory.add(meeting);
 			} else{
 				for(CourseMeeting courseMeeting : draft.meetingHistory){
 					if(courseMeeting._id.equals(meetingId)){
-						meeting._id = courseId;
+						meeting._id = meetingId;
 						draft.meetingHistory.remove(courseMeeting);
 						draft.meetingHistory.add(meeting);
 						break;
@@ -349,6 +350,7 @@ public class CoursesService {
 			}
 			if(!draft.instructors_ids.contains(meeting.instructor_id)) draft.instructors_ids.add(meeting.instructor_id);
 			CoursesService.saveCourseDraft(draft, draft._id);
+			System.out.println("After save meeting in session is : "+Controller.session().get(Utils.DRAFT_COURSE));
 			return Controller.ok(courseDetails.render(UsersService.getUser(Controller.session().get("userName")), 
 														Controller.session().get("role"), 
 														courseForm.fill(draft), 

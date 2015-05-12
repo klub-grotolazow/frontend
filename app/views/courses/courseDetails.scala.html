@@ -16,8 +16,8 @@
 						</div>
 						<div class="col-md-6">
 					   		<span class="pull-right">
-					    		<a class="btn btn-danger" href="@routes.Courses.getCourses()">Powrót do listy kursów bez zapisywania</a> 
-								<input type="submit" class="btn btn-primary" value="Zapisz kurs">
+					    		<a rel="tooltip" title="Powrót bez zapisywania zamian" class="btn btn-danger" href="@routes.Courses.getCourses()">Powrót</a> 
+								<input rel="tooltip" title="Zapisz zmiany w kursie" type="submit" class="btn btn-primary" value="Zapisz kurs">
 					    	</span>
 						</div>
 					</div>
@@ -57,9 +57,9 @@
 								<span class="pull-right">
 									<a class="link" id="courseManagerLink" data-toggle="modal" data-target="#chooseModal">
 								    @if((course.manager_id == null) || (course.manager_id == "")){		
-								    	<i id="add_change_icon" class="glyphicon glyphicon-plus"><!-- <p id="add_change_manager">Dodaj </p> --></i>								    		
+								    	<i rel="tooltip" title="Dodaj/Zmień kierownika kursu" id="add_change_icon" class="glyphicon glyphicon-plus"></i>								    		
 								    } else{
-								    	<i class="glyphicon glyphicon-edit"><!-- <p>Zmień </p> --></i>
+								    	<i rel="tooltip" title="Zmień kierownika kursu"  class="glyphicon glyphicon-edit"></i>
 								    }
 								    </a>								    	
 							    </span>
@@ -92,26 +92,23 @@
 				</div>
 				<div class="col-md-12 panel panel-default">
 					<h3 align="center">Spotkania grup kursowych <span class="pull-right">
-					<a id="editButton" class="btn btn-default" href="#">Zmień</a>
-					<a id="deleteMeetingButton" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteMeetingModal" data-course-id="@courseId" data-meeting-name="@course.name">Usuń</a>
-					<input type="submit" class="btn btn-primary" value="Dodaj" id="addGroup"></input></span> </h3>
+					<input rel="tooltip" title="Nowe spotkanie" type="submit" class="btn btn-primary" value="Dodaj" id="addMeeting"></input></span> </h3>
 					@if(course != null){
 						@if(course.meetingHistory != null){
 							<table class="table  table-striped" data-url="/courses"  data-click-to-select="true" data-select-item-name="radioMeeting">
 								<thead>
 									<tr>
-										<th data-field="state" data-radio="true"></th>
 							            <th data-field="group" data-align="center">Grupa</th>
 							            <th data-field="instructor" data-align="center">Instruktor</th>
 							            <th data-field="date" data-align="center">Data</th>
 							            <th data-field="place" data-align="center">Miejsce</th>
 							            <th data-field="subject" data-align="center">Temat</th>
+							            <th data-align="center">Zmień / Usuń</th>  
 									</tr>
 								</thead>
 								<tbody>
 									@for(meeting <- course.meetingHistory){
 										<tr>
-											<td><input id="@meeting._id" type="radio" name="chooseMeeting" data-meeting-name="Grupa @meeting.group Spotkanie : @meeting.subject"></td>
 											<td>@meeting.group</td>
 											<td>@for(user <- users){
 													@if(user._id == meeting.instructor_id){
@@ -122,7 +119,18 @@
 											<td>@meeting.date</td>
 											<td>@meeting.place</td>
 											<td>@meeting.subject</td>
-										
+											<td>
+												<span class="col-md-offset-1">	
+													<a>	
+														<i rel="tooltip" title="Edytuj dane spotkania" name="editMeeting" data-meeting-to-edit="@meeting._id" class="glyphicon glyphicon-pencil"></i>
+													</a>
+					 							</span>
+											 	<span class="col-md-offset-2">
+											 		<a data-toggle="modal" data-target="#confirmDeleteMeetingModal" data-meeting-id="@meeting._id" data-meeting-name="Grupa @meeting.group Spotkanie : @meeting.subject">
+														<i rel="tooltip" title="Usuń spotkanie" class="glyphicon glyphicon-remove"></i>
+													</a>
+											 	</span>
+											 </td>
 										</tr>
 									}
 								</tbody>
@@ -145,7 +153,7 @@
 		            <br>
 	            </div>
 	            <div class="modal-body">
-	                <h5>Uwaga, usunięcie jest <b>nieodwracalne</b>!<br> Czy napewno chcesz <b>usunąć</b> - <b id="meetingToDelete"></b>?</h5>
+	                <h5>Uwaga, usunięcie jest <b>nieodwracalne</b>!<br> Czy napewno chcesz <b>usunąć</b> grupę - <b id="meetingToDelete"></b>?</h5>
 	            </div>
 	            <div class="modal-footer">
 	                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
@@ -199,6 +207,13 @@
 		});
 		
 		$('#confirmDeleteMeetingModal').on('show.bs.modal', function(e) {
+			var meetingName = $(e.relatedTarget).data('meeting-name');
+			var deleteString = "/courses/"
+			deleteString += "@courseId"
+			deleteString += "/meetings/delete/"
+			deleteString += $(e.relatedTarget).data("meeting-id")
+		    $(e.currentTarget).find('b[id="meetingToDelete"]').text(meetingName)
+		    $(e.currentTarget).find('a[id="deleteMeetingLink"]').attr("href", deleteString)
 		});
 		
 		 $("input[name='chooseUser']").click(function(e){
@@ -208,21 +223,6 @@
 			$("b[id='manager_name']").text(userName)
 			$("i[id='add_change_icon']").attr('class',"glyphicon glyphicon-edit")
 		}); 
-		 
-		$("input[name='chooseMeeting']").click(function(e){
-			var deleteLink = "/courses/"
-			deleteLink = deleteLink + "@courseId"
-			deleteLink = deleteLink + "/meetings/delete/"
-			deleteLink = deleteLink + $("input[name='chooseMeeting']:checked").attr('id')
-			var editLink = "/courses/"
-			editLink = editLink + "@courseId"
-			editLink = editLink + "/meetings/"
-			editLink = editLink + $("input[name='chooseMeeting']:checked").attr('id')
-			$('#deleteMeetingLink').attr('href', deleteLink)
-			$('#editButton').attr('href',editLink)
-			var toDeleteName = $("input[name='chooseMeeting']:checked").attr('data-meeting-name')	
-			$('#meetingToDelete').text(toDeleteName)
-		});
 		
 		$("a[id='chooseLink']").click(function(e){
 			var user = $("input[name='chooseUser']:checked").attr('id')
@@ -230,12 +230,34 @@
 			$("input[id='manager_id']").val(user)
 			$("b[id='manager_name']").text(userName)
 			$("i[id='add_change_icon']").attr('class',"glyphicon glyphicon-edit")
+			$("i[id='add_change_icon']").attr('title',"Zmień kierownika kursu")
 		});
 		
-		$('#addGroup').click(function(e){
+		$('#addMeeting').click(function(e){
 			var add = "@routes.Courses.newCourseMeeting(courseId)"
 			$('form').attr('action', add)
 		});	
+		
+		$("input[name='editIconInput']").click(function(e){
+			var edit = "/courses/"
+			edit += "@courseId"
+			edit += "/meetings/"
+			edit += $(this).data("meeting-to-edit")
+			$('form').attr('action', edit)
+		});	
+		
+		$("i[name='editMeeting']").click(function(e){
+			var edit = "/courses/"
+			edit += "@courseId"
+			edit += "/meetings/"
+			edit += $(this).data("meeting-to-edit")
+			$('form').attr('action', edit)
+			$('form').submit()
+		});	
+		
+		$(document).ready(function(){
+		    $("[rel=tooltip]").tooltip({ placement: 'bottom'});
+		});
 	</script>
 }
 

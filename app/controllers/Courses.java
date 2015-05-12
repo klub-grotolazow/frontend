@@ -133,27 +133,27 @@ public class Courses extends Controller {
 
 	
 	// Load course draft ************************************************************************************************************************
-		public static Result loadCourseDraft(){
-			Gson gson = new Gson();
-			Course course;
-			if(session().containsKey(Utils.DRAFT_COURSE)){
-				course = gson.fromJson(session().get(Utils.DRAFT_COURSE), Course.class);
-				return ok(courseDetails.render(UsersService.getUser(session().get("userName")), 
-												session().get("role"), 
-												courseForm.fill(course), 
-												course, 
-												UsersService.getUsersList(), 
-												course._id));
-			} else {
-				Course emptyCourse = new Course();
-				return ok(courseDetails.render(UsersService.getUser(session().get("userName")), 
-												session().get("role"), 
-												courseForm.fill(emptyCourse), 
-												emptyCourse, 
-												UsersService.getUsersList(), 
-												emptyCourse._id));
-			}
+	public static Result loadCourseDraft(String courseId){
+		Gson gson = new Gson();
+		Course course;
+		if(session().containsKey(Utils.DRAFT_COURSE)){
+			course = gson.fromJson(session().get(Utils.DRAFT_COURSE), Course.class);
+			return ok(courseDetails.render(UsersService.getUser(session().get("userName")), 
+											session().get("role"), 
+											courseForm.fill(course), 
+											course, 
+											UsersService.getUsersList(), 
+											courseId));
+		} else {
+			Course emptyCourse = new Course();
+			return ok(courseDetails.render(UsersService.getUser(session().get("userName")), 
+											session().get("role"), 
+											courseForm.fill(emptyCourse), 
+											emptyCourse, 
+											UsersService.getUsersList(), 
+											emptyCourse._id));
 		}
+	}
 	
 	// Load the course meeting details view *****************************************************************************************************
 	public static Result newCourseMeeting(String courseId){
@@ -199,8 +199,26 @@ public class Courses extends Controller {
 		
 	// Load the course meeting details view *****************************************************************************************************
 	public static Result editCourseMeeting(String courseId, String meetingId){
+		Form<Course> boundForm = courseForm.bindFromRequest();
+		Course course = boundForm.get();
+		if(boundForm.hasErrors()) {
+			Controller.flash(Messages.WARNING, Messages.CORRECT_FORM);
+			return badRequest(courseDetails.render(UsersService.getUser(session().get("userName")), 
+													session().get("role"), 
+													boundForm, 
+													CoursesService.getCourse(courseId), 
+													UsersService.getUsersList(), 
+													courseId));
+		}
+		Course draft = CoursesService.loadCourseDraft();
+		if(draft == null) draft = new Course();
+			if(draft.name != course.name) draft.name = course.name;
+		if(draft.description != course.description) draft.description = course.description;
+		if(draft.manager_id != course.manager_id) draft.manager_id = course.manager_id;
+		CoursesService.saveCourseDraft(draft, courseId);
+		
 		CourseMeeting meeting = null;
-		Course course = CoursesService.loadCourseDraft();
+		course = draft;
 		for(CourseMeeting courseMeeting : course.meetingHistory){
 			if(courseMeeting._id.equals(meetingId)){
 				meeting = courseMeeting;

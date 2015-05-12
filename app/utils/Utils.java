@@ -6,12 +6,16 @@ package utils;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import play.mvc.Controller;
+
 import java.util.Arrays;
+
 import models.Setting;
 
 public class Utils {
@@ -105,6 +109,14 @@ public class Utils {
 			}
 		return builder.toString();
 		}
+	}
+	
+	//Generate the random id key
+	public static String generateKey() {
+		SecureRandom random = new SecureRandom();
+		String key = new  BigInteger(130, random).toString(32);
+		System.out.println("Generated key is : " +key);
+		return key;
 	}
 	
 }

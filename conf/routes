@@ -26,7 +26,7 @@ GET 	/courses													controllers.Courses.getCourses()
 GET		/courses/new												controllers.Courses.newCourse()
 GET		/courses/delete/:id											controllers.Courses.deleteCourse(id: String)
 GET 	/courses/edit/:id											controllers.Courses.editCourse(id: String)
-GET 	/courses/draft/save											controllers.Courses.loadCourseDraft()
+GET 	/courses/draft/load											controllers.Courses.loadCourseDraft(courseId: String) 
 GET 	/courses/:courseId/meetings/delete/:meetingId				controllers.Courses.deleteCourseMeeting(courseId: String, meetingId: String)
 GET		/courses/:courseId/meetings/:meetingId						controllers.Courses.editCourseMeeting(courseId: String, meetingId: String)
 GET		/courses/:id												controllers.Courses.showCourse(id: String)
@@ -35,7 +35,7 @@ POST 	/courses 													controllers.Courses.saveCourse(id: String)
 
 POST	/courses/draft/meetings/new									controllers.Courses.newCourseMeeting(courseId: String)
 POST	/courses/:courseId/meetings/save							controllers.Courses.saveCourseMeeting(courseId: String, meetingId: String)
-
+POST	/courses/:courseId/meetings/:meetingId						controllers.Courses.editCourseMeeting(courseId: String, meetingId: String)
 
 #------------------------------------------------------------------------------------------------------------------------------
 
