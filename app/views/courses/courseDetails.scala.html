@@ -12,7 +12,7 @@
 				<legend>
 					<div class="container row">
 						<div class="col-md-5">
-							<h1>@courseForm("name").valueOr("Nowy kurs")  @courseForm("courseType").valueOr("")</h1>
+							<h1>@courseForm("name").valueOr("Nowy kurs")  @if(courseForm("name").value() == ""){Kurs bez nazwy !}</h1>
 						</div>
 						<div class="col-md-6">
 					   		<span class="pull-right">
@@ -23,20 +23,22 @@
 					</div>
 				</legend>	
 				<div class="col-md-5 panel panel-default">
-					<div class="col-md-offset-1">
+					<div class="col-md-offset-0">
 						<h3 align="center">Dane kursu</h3>
-						@helper.inputText(courseForm("name"), '_label -> "Nazwa kursu", 'size -> 30)		
-						@helper.textarea(courseForm("description"), '_label -> "Opis", 'size -> 30, 'rows -> 3)	
+						<hr>
+						@helper.inputText(courseForm("name"), '_label -> "Nazwa kursu",  'class -> "form-control", 'placeholder -> "Wprowadź nazwę kursu")		
+						@helper.textarea(courseForm("description"), '_label -> "Opis",  'class -> "form-control", 'placeholder -> "Informacje o kursie", 'rows -> 10)
+						<br>	
 					</div>
 				</div>
 				<!-- The panel with the information about people responsible for the course -->	
 				<div class="col-md-6 col-md-offset-1  panel panel-default">			
-					<h3 align="center">Odpowiedzialni za prowadzenie kursu</h3>
+					<h3 align="center">Osoby związane z kursem</h3>
 					<!-- Part for the course manager -->	
 					<hr>	
 						<div class="clearfix col-md-offset-1 row center" id="manager_id_field">
-							<div class="col-md-8">
-								<span class="pull-left">
+							<div class="col-md-11">
+								<!-- <span class="pull-left"> -->
 									<label for="manager_id">Kierownik kursu :  </label>
 								    <b id="manager_name">
 									@if(course != null){
@@ -51,10 +53,7 @@
 										}
 									}
 								   	</b>
-							    </span>
-							</div>	
-							<div class="col-md-2">
-								<span class="pull-right">
+								   	<span class="pull-right">
 									<a class="link" id="courseManagerLink" data-toggle="modal" data-target="#chooseModal">
 								    @if((course.manager_id == null) || (course.manager_id == "")){		
 								    	<i rel="tooltip" title="Dodaj/Zmień kierownika kursu" id="add_change_icon" class="glyphicon glyphicon-plus"></i>								    		
@@ -63,7 +62,8 @@
 								    }
 								    </a>								    	
 							    </span>
-							</div>
+							    <!-- </span> -->
+							</div>	
 							<input hidden id="manager_id" name="manager_id" value="@course.manager_id"></input> 
 						</div>
 						<hr>					
@@ -88,14 +88,74 @@
 						</div>
 						<br>
 						<br>
+						<hr>
+						<div class="col-md-offset-1 col-md-10 row center">
+							<table class="table">
+								<thead>
+									<th data-align="center">Uczestnicy kursu</th>
+							        <th data-align="center">Usuń <span class="pull-right"><a rel="tooltip" title="Dodaj nowego kursanta"><i class="glyphicon glyphicon-plus"></i></a></span></th>
+								</thead>
+								<tbody>
+								<tr>
+									<td>Lukas Pecak</td>
+									<td>
+										<a rel="tooltip" title="Usuń kursanta">
+											<i class="glyphicon glyphicon-remove"></i>
+										</a>	
+									</td>
+								</tr>
+								<tr>
+									<td>Danie Pęcak</td>
+									<td>
+										<a rel="tooltip" title="Usuń kursanta">
+											<i class="glyphicon glyphicon-remove"></i>
+										</a>	
+									</td>
+								</tr>
+								<tr>
+									<td>Julia Pecak</td>
+									<td>
+										<a rel="tooltip" title="Usuń kursanta">
+											<i class="glyphicon glyphicon-remove"></i>
+										</a>	
+									</td>
+								</tr>
+								<tr>
+									<td>Bronek Pecak</td>
+									<td>
+										<a rel="tooltip" title="Usuń kursanta">
+											<i class="glyphicon glyphicon-remove"></i>
+										</a>	
+									</td>
+								</tr>
+								<tr>
+									<td>Lukas Kowalski</td>
+									<td>
+										<a rel="tooltip" title="Usuń kursanta">
+											<i class="glyphicon glyphicon-remove"></i>
+										</a>	
+									</td>
+								</tr>
+									
+									
+									
+									
+									
+								</tbody>
+							</table>
+							
+						</div>
+						<br>
+						<br>
 						<br>													
 				</div>
 				<div class="col-md-12 panel panel-default">
 					<h3 align="center">Spotkania grup kursowych <span class="pull-right">
 					<input rel="tooltip" title="Nowe spotkanie" type="submit" class="btn btn-primary" value="Dodaj" id="addMeeting"></input></span> </h3>
+					<br>
 					@if(course != null){
 						@if(course.meetingHistory != null){
-							<table class="table  table-striped" data-url="/courses"  data-click-to-select="true" data-select-item-name="radioMeeting">
+							<table class="table  table-striped" data-url="/courses">
 								<thead>
 									<tr>
 							            <th data-field="group" data-align="center">Grupa</th>
@@ -136,7 +196,7 @@
 								</tbody>
 							</table>
 						}else{ 
-							<h3>Brak zaplanowanych wydarzeń!</h3>
+							<h4>Brak zaplanowanych wydarzeń!</h4>
 						}
 					}
 				</div>

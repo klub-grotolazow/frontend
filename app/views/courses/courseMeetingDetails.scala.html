@@ -8,7 +8,7 @@
 @main(currentUser, role, "Spotkanie grupy kursowej", true){
 	<meta charset="UTF-8">
 	<div class="container col-md-offset-2 col-md-8">
-		@helper.form(action = routes.Courses.saveCourseMeeting(courseId, meetingId),'id -> "courseForm", 'enctype -> "multipart/form-data") {
+		<form class="form-horizontal" action="@routes.Courses.saveCourseMeeting(courseId, meetingId)" method="POST" id="courseForm" enctype="multipart/form-data">
 			<fieldset>
 				<legend>
 					<div class="container row">
@@ -18,52 +18,30 @@
 						<div class="col-md-6">
 						    <span class="pull-right">
 						    	<!-- editCourse(courseId) -->
-						    	<a class="btn btn-danger" href="@routes.Courses.loadCourseDraft(courseId)">Powrót do kursu bez zapisywania</a> 
-								<input id="saveButton" type="submit" class="btn btn-primary" value="Zapisz i wróć do kursu">
+						    	<a rel="tooltip" title="Pwrót do kursu bez zapisywania" class="btn btn-danger" href="@routes.Courses.loadCourseDraft(courseId)">Powrót</a> 
+								<input rel="tooltip" title="Zapisz i wróć do kursu" id="saveButton" type="submit" class="btn btn-primary" value="Zapisz">
 						    </span>
 						</div>
 					</div>
 				</legend>	
 				<div class="col-md-12 panel panel-default">
-					<div class="col-md-offset-1 col-md-5">
-						<br>
-						@helper.inputText(meetingForm("group"), '_label -> "Grupa", 'size -> 30)
-						@helper.inputText(meetingForm("place"), '_label -> "Miejsce zajęć", 'size -> 30)
-						<!-- @helper.inputText(meetingForm("date"), '_label -> "Data spotkania", 'size -> 30) -->
-						
-						<div class="container">
-						    <div class="row">
-						        <div class='col-sm-6'>
-						            <div class="form-group">
-						                <div class='input-group date' id='datetimepicker1'>
-						                 	<label for="date">Data spotkania</label>
-						                     <input type="text" id="date" name="date" value="" size="30"/>
-						                    <span class="input-group-addon">
-						                        <span class="glyphicon glyphicon-calendar"></span>
-						                    </span>
-						                </div>
-						            </div>
-						        </div>
-						        <script type="text/javascript">
-						            $(function () {
-						                $('#datetimepicker1').datetimepicker();
-						            });
-						        </script>
-						    </div>
-						</div>
-						
-						@helper.inputText(meetingForm("subject"), '_label -> "Temat zajęć", 'size -> 30)		
-						@helper.textarea(meetingForm("description"), '_label -> "Opis", 'size -> 30, 'rows -> 3)
+					<div class="col-md-offset-0 col-md-5">
+						<br>				 
+						@helper.inputText(meetingForm("group"), '_label -> "Grupa",  'class -> "form-control", 'placeholder -> "Wprowadź numer grupy")
+						@helper.inputText(meetingForm("place"), '_label -> "Miejsce zajęć",  'class -> "form-control", 'placeholder -> "Wprowadź miejsce spotkania")
+						@helper.inputText(meetingForm("date"), '_label -> "Data spotkania",  'class -> "form-control", 'placeholder -> "Wprowadź datę spotkania") 
+						@helper.inputText(meetingForm("subject"), '_label -> "Temat zajęć",  'class -> "form-control", 'placeholder -> "Wprowadź temat spotkania")		
+						@helper.textarea(meetingForm("description"), '_label -> "Opis",  'class -> "form-control", 'rows -> 3, 'placeholder -> "Dodatkowe informacje o spotkaniu")
 						@select(meetingForm("meetingStatus"),
 								options("Planned"->"Planowane spotkanie",
 										"Done"->"Zajęcia odbyły się",
 										"Cancelled"->"Zajęcia odwołane"),
 										'_label -> "Status spotkania",
-										'_size -> 30)
+										'class -> "form-control")
 						<br>
 						<br>
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-offset-1 col-md-6">
 						<br>
 						<br>
 						<div class="clearfix col-md-offset-1 row center" id="instructor_id_field">	
@@ -92,9 +70,9 @@
 									<a class="link" id="courseManagerLink" data-toggle="modal" data-target="#chooseModal">
 									@if(meeting != null){
 										@if((meeting.instructor_id == null) || (meeting.instructor_id == "")){		
-											<i id="add_member_icon" class="glyphicon glyphicon-plus"></i>								    		
+											<i rel="tooltip" title="Dodaj instruktora" id="add_member_icon" class="glyphicon glyphicon-plus"></i>								    		
 										} else{
-											<i class="glyphicon glyphicon-edit"></i>
+											<i rel="tooltip" title="Zmień instruktora" class="glyphicon glyphicon-edit"></i>
 										}
 									} else{
 										<i id="add_member_icon" class="glyphicon glyphicon-plus"></i>
@@ -130,7 +108,7 @@
 									<div class="col-md-2">
 										<span class="pull-right">
 									    	<a class="link" id="presentMemberLink" data-toggle="modal" data-target="#presentModal">
-									    	<i class="glyphicon glyphicon-plus"></i>
+									    	<i rel="tooltip" title="Sprawdź obecność" class="glyphicon glyphicon-plus"></i>
 									    	</a>
 									    </span>
 									    <!-- This will be hidden -->
@@ -139,8 +117,8 @@
 								</div>
 					</div>		
 				</div>
-			</fieldset>
-		}		
+			</fieldset>	
+		</form>	
 	</div>
 	
 	<!-- Modal window with user chose option -->
@@ -244,6 +222,10 @@
 			names = names + $("input[name='chooseUser']:checked").attr('data-manager-name')
 			$("#members_names").text(names)
 			$("#course_present_list").text("Lista kursantów obecnych na zajęciach :")
+		});
+		
+		$(document).ready(function(){
+		    $("[rel=tooltip]").tooltip({ placement: 'bottom'});
 		});
 	</script>
 }
