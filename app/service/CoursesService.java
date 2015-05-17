@@ -102,11 +102,13 @@ public class CoursesService {
 		Course draft;
 		if(Controller.session().containsKey(Utils.DRAFT_COURSE)) 
 			draft = gson.fromJson(Controller.session().get(Utils.DRAFT_COURSE), Course.class);
-		else
+		else 
 			draft = course;
 		if(draft.name != course.name) draft.name = course.name;
 		if(draft.description != course.description) draft.description = course.description;
 		if(draft.manager_id != course.manager_id) draft.manager_id = course.manager_id;
+		if(draft.members_ids == null) draft.members_ids = new ArrayList<String>();
+		draft.members_ids = Utils.toStringList(course.members_ids.get(0));
 		course = draft;
 		String request = gson.toJson(course, Course.class);
 		WSResponse response = null;
@@ -135,6 +137,7 @@ public class CoursesService {
 				Controller.session().remove(Utils.DRAFT_COURSE);
 			} catch(Exception exception){
 				Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_COURSE + exception);
+				course = Utils.prepareForHtml(course);
 				return Controller.badRequest(courseDetails.render(UsersService.getUser(Controller.session().get("userName")), 
 																	Controller.session().get("role"), 
 																	courseForm.fill(course),
@@ -150,6 +153,7 @@ public class CoursesService {
 														UsersService.getUsersList()));
 			} else{
 				Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_COURSE + response.getStatus() +" "+ response.getStatusText());
+				course = Utils.prepareForHtml(course);
 				return Controller.badRequest(courseDetails.render(UsersService.getUser(Controller.session().get("userName")), 
 																	Controller.session().get("role"), 
 																	courseForm.fill(course),
@@ -167,6 +171,7 @@ public class CoursesService {
 				Controller.session().remove(Utils.DRAFT_COURSE);
 			} catch(Exception exception){
 				Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_COURSE + exception);
+				course = Utils.prepareForHtml(course);
 				return Controller.badRequest(courseDetails.render(UsersService.getUser(Controller.session().get("userName")), 
 																	Controller.session().get("role"), 
 																	courseForm.fill(course),
@@ -183,6 +188,7 @@ public class CoursesService {
 													UsersService.getUsersList()));
 		} else{
 			Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_USER_DETAILS + response.getStatus() +" "+ response.getStatusText());
+			course = Utils.prepareForHtml(course);
 			return Controller.badRequest(courseDetails.render(UsersService.getUser(Controller.session().get("userName")), 
 																Controller.session().get("role"), 
 																courseForm.fill(course),
@@ -208,6 +214,7 @@ public class CoursesService {
 		String request = gson.toJson(course, Course.class);
 		if(Controller.session().containsKey(Utils.DRAFT_COURSE)) Controller.session().remove(Utils.DRAFT_COURSE);
 		Controller.session().put(Utils.DRAFT_COURSE, request);
+		System.out.println(request);
 		return courseId;
 	}
 	
@@ -256,8 +263,14 @@ public class CoursesService {
 	}
 	
 	// Deleting meeting with the given id *********************************************************************************************************************************************
-	public static Result deleteMeeting(String courseId, String meetingId){
-		Course course = loadCourseDraft();
+	public static Result deleteMeeting(Form<Course> courseForm, String courseId, String meetingId){
+		Course draft = loadCourseDraft();
+		Course course = courseForm.get();
+		if(draft.name != course.name) draft.name = course.name;
+		if(draft.description != course.description) draft.description = course.description;
+		if(draft.manager_id != course.manager_id) draft.manager_id = course.manager_id;
+		draft.members_ids = course.members_ids;
+		course = draft;
 		if(course != null){
 			if(course.meetingHistory != null){
 				for(CourseMeeting meeting : course.meetingHistory){					
@@ -265,9 +278,11 @@ public class CoursesService {
 						if(meeting._id.equals(meetingId)) {
 							course.meetingHistory.remove(meeting);
 							saveCourseDraft(course, courseId);
+							course = Utils.prepareForHtml(course);
 							return Controller.ok(courseDetails.render(UsersService.getUser(Controller.session().get("userName")),
 																		Controller.session().get("role"), 
-																		courseForm.fill(course),course, 
+																		courseForm.fill(course),
+																		course, 
 																		UsersService.getUsersList(), 
 																		courseId));
 						}
@@ -285,6 +300,17 @@ public class CoursesService {
 	// Save CourseMeeting or update course ***********************************************************************************************************
 	public static Result saveCourseMeeting(Form<CourseMeeting> boundForm, String courseId, String meetingId){
 		CourseMeeting meeting = null;
+		Course course = null;
+		if(Controller.session().containsKey(Utils.DRAFT_COURSE)){
+			Gson gson = new Gson();
+			course = gson.fromJson(Controller.session().get(Utils.DRAFT_COURSE), Course.class);		
+		} else{
+			course = CoursesService.getCourse(courseId);
+			if(course == null) {
+				course = new Course();
+				course.members_ids = new ArrayList<String>();
+			}
+		}
 		try {
 			meeting = boundForm.get();
 			meeting._id = meetingId;
@@ -295,7 +321,8 @@ public class CoursesService {
 																		Controller.session().get("role"), 
 																		boundForm, 
 																		meeting, 
-																		UsersService.getUsersList(), 
+																		UsersService.getUsersList(),
+																		course.members_ids,
 																		courseId, 
 																		meetingId));
 		}
@@ -306,6 +333,7 @@ public class CoursesService {
 																		boundForm, 
 																		meeting, 
 																		UsersService.getUsersList(), 
+																		course.members_ids,
 																		courseId, 
 																		meetingId));
 		}
@@ -322,21 +350,9 @@ public class CoursesService {
 		if(draft.graduatedMembers_ids == null) draft.graduatedMembers_ids = new ArrayList<String>();
 		if(draft.members_ids == null) draft.members_ids = new ArrayList<String>();
 		if(draft.instructors_ids == null) draft.instructors_ids = new ArrayList<String>();
-			
-		//The case for new course meeting save --------------------------------------------------------------			
-		/*if("new".equals(courseId)){
-			meeting._id = "1";
-			for(CourseMeeting courseMeeting : draft.meetingHistory){
-				if(courseMeeting._id.length() <= meeting._id.length()) meeting._id = courseMeeting._id + "1";
-			}
-		}*/
 		if(draft.meetingHistory == null) draft.meetingHistory = new ArrayList<CourseMeeting>(); 	
 		if((meetingId == null) || (meetingId == "")){
-			meeting._id = Utils.generateKey();;
-			/*for(CourseMeeting courseMeeting : draft.meetingHistory){
-				
-				if(courseMeeting._id.length() <= meeting._id.length()) meeting._id = courseMeeting._id + "1";
-			}*/
+			meeting._id = Utils.generateKey();
 			draft.meetingHistory.add(meeting);
 			} else{
 				for(CourseMeeting courseMeeting : draft.meetingHistory){
@@ -350,7 +366,7 @@ public class CoursesService {
 			}
 			if(!draft.instructors_ids.contains(meeting.instructor_id)) draft.instructors_ids.add(meeting.instructor_id);
 			CoursesService.saveCourseDraft(draft, draft._id);
-			System.out.println("After save meeting in session is : "+Controller.session().get(Utils.DRAFT_COURSE));
+			draft = Utils.prepareForHtml(draft);
 			return Controller.ok(courseDetails.render(UsersService.getUser(Controller.session().get("userName")), 
 														Controller.session().get("role"), 
 														courseForm.fill(draft), 

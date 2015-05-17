@@ -34,6 +34,9 @@
 				<!-- The panel with the information about people responsible for the course -->	
 				<div class="col-md-6 col-md-offset-1  panel panel-default">			
 					<h3 align="center">Osoby związane z kursem</h3>
+					
+					<h3 id="console">Console</h3>
+					
 					<!-- Part for the course manager -->	
 					<hr>	
 						<div class="clearfix col-md-offset-1 row center" id="manager_id_field">
@@ -93,7 +96,7 @@
 							<table class="table">
 								<thead>
 									<th data-align="center">Uczestnicy kursu</th>
-							        <th data-align="center">Usuń <span class="pull-right"><a rel="tooltip" title="Dodaj nowego kursanta"><i class="glyphicon glyphicon-plus"></i></a></span></th>
+							        <th data-align="center">Usuń <span class="pull-right"><a id="addCourseMember" data-toggle="modal" data-target="#memebersModal" rel="tooltip" title="Dodaj nowego kursanta"><i class="glyphicon glyphicon-plus"></i></a></span></th>
 								</thead>
 								<tbody>
 								<tr>
@@ -143,7 +146,7 @@
 									
 								</tbody>
 							</table>
-							
+							<input id="members_ids" name="members_ids" value="@if(course.members_ids != null){@course.members_ids.get(0)}"></input>
 						</div>
 						<br>
 						<br>
@@ -223,6 +226,46 @@
 	  	</div>
 	</div>
 	
+	<!-- Modal window with user chose option -->
+	<div class="modal fade" id="memebersModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	            <h3 class="modal-title" id="myModalLabel">Wybierz użytkowanika</h3>
+	            </div>
+	            
+	            <div class="modal-body">
+					<!-- <table data-url="/users" data-height="299" data-click-to-select="true" data-select-item-name="radioName">-->
+					<table class="table  table-striped" data-url="/users"  data-click-to-select="true" data-select-item-name="radioName">
+						<thead>
+							<tr>
+								<th data-field="state" data-radio="true"></th>
+					            <th data-field="firstName" data-align="right">Imię</th>
+					            <th data-field="lastName" data-align="center">Nazwisko</th>
+					            <th data-field="email" data-align="left">email</th>
+							</tr>
+						</thead>
+						<tbody>
+						@for(user <- users) {
+							<tr value="@user._id">
+								<td><input value="@user._id" data-manager-name="@user.toString()" type="checkbox" name="chooseUser"></td>
+								<td>@user.firstName</td>
+								<td>@user.lastName</td>
+								<td>@user.email</td>
+							</tr>
+						}
+						</tbody>
+					</table>
+					<h1 id="speaker"></h1>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+	                <a  id="membersLink" href="#" class="btn btn-danger" data-dismiss="modal"><i class="glyphicon glyphicon-ok"></i> Wybierz</a>
+	        	</div>
+			</div>
+		</div>
+	</div>
+	
 	<!-- The modal for chosing the course manager --> 
 	<div class="modal fade" id="chooseModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
 	    <div class="modal-dialog">
@@ -273,7 +316,12 @@
 			deleteString += "/meetings/delete/"
 			deleteString += $(e.relatedTarget).data("meeting-id")
 		    $(e.currentTarget).find('b[id="meetingToDelete"]').text(meetingName)
-		    $(e.currentTarget).find('a[id="deleteMeetingLink"]').attr("href", deleteString)
+		    //$(e.currentTarget).find('a[id="deleteMeetingLink"]').attr("href", deleteString)
+		    $('form').attr('action', deleteString)
+		});
+		
+		$('#deleteMeetingLink').click(function(e){
+			$('form').submit()
 		});
 		
 		 $("input[name='chooseUser']").click(function(e){
@@ -296,7 +344,67 @@
 		$('#addMeeting').click(function(e){
 			var add = "@routes.Courses.newCourseMeeting(courseId)"
 			$('form').attr('action', add)
-		});	
+		});
+		
+		//The function for the cours member adding
+		$('#addCourseMember').click(function(e){
+			$('#membersLink').attr('value',"")
+			$("input[name='chooseUser']").attr('checked', false)
+			var membersFromInput =  $('#members_ids').val()
+			var membersTab = membersFromInput.split(",")
+			
+			for(i=0; i<membersTab.length; i++){
+				var find = "input[value='"
+				find += membersTab[i]
+				find += "']"
+				$(find).attr('checked', true);
+				var findTr = "tr[value='"
+				findTr += membersTab[i]
+				findTr += "']"
+				$(findTr).attr('style',"display:none;")
+			} 
+						
+		});
+		
+		// The function for member checkbox selection change
+		$("input[name='chooseUser']").click(function(e){
+			var toAdd
+			if($(this).is(':checked')){
+				toAdd = $('#membersLink').attr('value')
+				if(toAdd.length > 0) {
+					toAdd += ","
+				}
+				toAdd += $(this).attr('value')
+
+				$('#membersLink').attr('value', toAdd)
+			} else{
+				var toRemove = $(this).attr('value')
+				var membLink = $('#membersLink').attr('value')
+				var membLinkTab = membLink.split(",")
+				var delIndex = membLinkTab.indexOf(toRemove)
+				membLinkTab.splice(delIndex,1)
+				toAdd = ""
+				for(i=0; i<membLinkTab.length; i++){
+					if(toAdd.length > 0) {
+						toAdd += ","
+					}
+					toAdd += membLinkTab[i]
+				}
+				$('#console').text(toAdd)
+				$('#membersLink').attr('value', toAdd)
+			}
+		});
+		
+		// The function for acception changes in coure members
+		$('#membersLink').click(function(e){
+			var members = $('#members_ids').val()
+			if((members.length > 0) && ($(this).attr('value').length > 0)) {
+					members += ","
+				}
+			members += $(this).attr('value')
+			$('#members_ids').val(members)
+			
+		});
 		
 		$("input[name='editIconInput']").click(function(e){
 			var edit = "/courses/"
@@ -314,6 +422,7 @@
 			$('form').attr('action', edit)
 			$('form').submit()
 		});	
+			
 		
 		$(document).ready(function(){
 		    $("[rel=tooltip]").tooltip({ placement: 'bottom'});

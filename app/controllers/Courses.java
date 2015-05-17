@@ -72,6 +72,7 @@ public class Courses extends Controller {
 		} else{
 			CoursesService.saveCourseDraft(course, courseId);
 			Form<Course> form = courseForm.fill(course);
+			course = Utils.prepareForHtml(course);
 			return ok(courseDetails.render(UsersService.getUser(session().get("userName")), 
 											session().get("role"), 
 											form, 
@@ -99,10 +100,12 @@ public class Courses extends Controller {
 				course = gson.fromJson(session().get(Utils.DRAFT_COURSE), Course.class);
 			}
 			if(course._id != "new") session().remove(Utils.DRAFT_COURSE);
+			course = new Course();
+			course = Utils.prepareForHtml(course);
 			return ok(courseDetails.render(UsersService.getUser(session().get("userName")), 
 											session().get("role"), 
 											courseForm, 
-											new Course(), 
+											course, 
 											UsersService.getUsersList(), 
 											Utils.NEW));
 		} else {
@@ -138,6 +141,7 @@ public class Courses extends Controller {
 		Course course;
 		if(session().containsKey(Utils.DRAFT_COURSE)){
 			course = gson.fromJson(session().get(Utils.DRAFT_COURSE), Course.class);
+			course = Utils.prepareForHtml(course);
 			return ok(courseDetails.render(UsersService.getUser(session().get("userName")), 
 											session().get("role"), 
 											courseForm.fill(course), 
@@ -146,6 +150,7 @@ public class Courses extends Controller {
 											courseId));
 		} else {
 			Course emptyCourse = new Course();
+			emptyCourse = Utils.prepareForHtml(emptyCourse);
 			return ok(courseDetails.render(UsersService.getUser(session().get("userName")), 
 											session().get("role"), 
 											courseForm.fill(emptyCourse), 
@@ -162,10 +167,12 @@ public class Courses extends Controller {
 			Course course = boundForm.get();
 			if(boundForm.hasErrors()) {
 				Controller.flash(Messages.WARNING, Messages.CORRECT_FORM);
+				Course gettedCourse = CoursesService.getCourse(courseId);
+				gettedCourse = Utils.prepareForHtml(gettedCourse);
 				return badRequest(courseDetails.render(UsersService.getUser(session().get("userName")), 
 														session().get("role"), 
 														boundForm, 
-														CoursesService.getCourse(courseId), 
+														gettedCourse, 
 														UsersService.getUsersList(), 
 														courseId));
 			}
@@ -174,13 +181,17 @@ public class Courses extends Controller {
  			if(draft.name != course.name) draft.name = course.name;
 			if(draft.description != course.description) draft.description = course.description;
 			if(draft.manager_id != course.manager_id) draft.manager_id = course.manager_id;
+			if(draft.members_ids == null) draft.members_ids = new ArrayList<String>();
+			draft.members_ids = Utils.toStringList(course.members_ids.get(0));
 			CoursesService.saveCourseDraft(draft, courseId);
 			if(!(Controller.session().containsKey(Utils.DRAFT_COURSE) || (Controller.session().get(Utils.DRAFT_COURSE) == ""))){
 				flash().put(Messages.ERROR, Messages.ERROR_SAVING_COURSE_DRAFT);
+				Course gettedCourse = CoursesService.getCourse(courseId);
+				gettedCourse = Utils.prepareForHtml(gettedCourse);
 				return badRequest(courseDetails.render(UsersService.getUser(session().get("userName")), 
 														session().get("role"), 
 														boundForm, 
-														CoursesService.getCourse(courseId), 
+														gettedCourse, 
 														UsersService.getUsersList(), 
 														courseId));
 			} else{
@@ -189,7 +200,9 @@ public class Courses extends Controller {
 														meetingForm, 
 														new CourseMeeting(),
 														UsersService.getUsersList(),
-														courseId, ""));
+														draft.members_ids,
+														courseId,
+														""));
 			}
 		} else {
 			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
@@ -206,7 +219,7 @@ public class Courses extends Controller {
 			return badRequest(courseDetails.render(UsersService.getUser(session().get("userName")), 
 													session().get("role"), 
 													boundForm, 
-													CoursesService.getCourse(courseId), 
+													boundForm.get(), 
 													UsersService.getUsersList(), 
 													courseId));
 		}
@@ -215,6 +228,12 @@ public class Courses extends Controller {
 			if(draft.name != course.name) draft.name = course.name;
 		if(draft.description != course.description) draft.description = course.description;
 		if(draft.manager_id != course.manager_id) draft.manager_id = course.manager_id;
+		if(draft.members_ids != null){
+			draft.members_ids.clear();
+			draft.members_ids = Utils.toStringList(course.members_ids.get(0));
+		} else{
+			draft.members_ids = new ArrayList<String>();
+		}
 		CoursesService.saveCourseDraft(draft, courseId);
 		
 		CourseMeeting meeting = null;
@@ -239,7 +258,8 @@ public class Courses extends Controller {
 												session().get("role"), 
 												meetingForm.fill(meeting), 
 												meeting, 
-												UsersService.getUsersList(), 
+												UsersService.getUsersList(),
+												course.members_ids, 
 												courseId,
 												meetingId));
 	}
@@ -252,7 +272,8 @@ public class Courses extends Controller {
 	
 	// Delete course meeting ********************************************************************************************************************
 	public static Result deleteCourseMeeting(String courseId, String meetingId){
-		return CoursesService.deleteMeeting(courseId, meetingId);
+		Form<Course> boundForm = courseForm.bindFromRequest();
+		return CoursesService.deleteMeeting(boundForm, courseId, meetingId);
 	}
 	
 	

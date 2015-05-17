@@ -16,6 +16,7 @@ import play.mvc.Controller;
 
 import java.util.Arrays;
 
+import models.Course;
 import models.Setting;
 
 public class Utils {
@@ -109,6 +110,20 @@ public class Utils {
 			}
 		return builder.toString();
 		}
+	}
+	
+	//Converts the list to css sting and return the proper object 
+	public static Course prepareForHtml(Course course){
+		String members = null;
+		if(course.members_ids  != null){
+			members = Utils.toCSS(course.members_ids);
+			course.members_ids.clear();
+			course.members_ids.add(members);
+		} else{
+			course.members_ids = new ArrayList<String>();
+			course.members_ids.add("");
+		}
+		return course;
 	}
 	
 	//Generate the random id key

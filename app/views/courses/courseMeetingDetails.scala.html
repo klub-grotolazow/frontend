@@ -1,4 +1,4 @@
-@(currentUser: User, role: String, meetingForm: Form[CourseMeeting], meeting: CourseMeeting, users: List[User], courseId: String, meetingId: String)
+@(currentUser: User, role: String, meetingForm: Form[CourseMeeting], meeting: CourseMeeting, users: List[User], courseMembers: List[String], courseId: String, meetingId: String)
 @import helper._
 @import helper.twitterBootstrap._
 @import models.User; var courseSession = null; var manager = null
@@ -80,7 +80,7 @@
 									</a>								    	
 								</span>
 							</div>    
-							<input hidden id="instructor_id" name="instructor_id" value="@if(meeting != null ){@meeting.instructor_id}"></input> 
+							<input id="instructor_id" name="instructor_id" value="@if(meeting != null ){@meeting.instructor_id}"></input> 
 							</div>
 								<hr>
 								<div class="clearfix col-md-offset-1" id="presentMembers_ids_field">
@@ -182,7 +182,7 @@
 						<tbody>
 						@for(user <- users) {
 							<tr>
-								<td><input id="@user._id" data-manager-name="@user.toString()" type="radio" name="chooseUser"></td>
+								<td><input id="@user._id" data-manager-name="@user.toString()" type="checkbox" name="chooseUser"></td>
 								<td>@user.firstName</td>
 								<td>@user.lastName</td>
 								<td>@user.email</td>
@@ -203,6 +203,12 @@
 	<script type="text/javascript">
 		$('#chooseModal').on('show.bs.modal', function(e) {   
 		});
+		
+		$('somethingClickedOn').click(function(e) {
+			//var presentMembers = []
+			
+		});
+		
 		
 		$("a[id='chooseLink']").click(function(e){
 			var user = $("input[name='chooseUser']:checked").attr('id')
