@@ -200,6 +200,7 @@ public class Courses extends Controller {
 														meetingForm, 
 														new CourseMeeting(),
 														UsersService.getUsersList(),
+														UsersService.getCourseMembers(draft),
 														draft.members_ids,
 														courseId,
 														""));
@@ -259,6 +260,7 @@ public class Courses extends Controller {
 												meetingForm.fill(meeting), 
 												meeting, 
 												UsersService.getUsersList(),
+												UsersService.getCourseMembers(course),
 												course.members_ids, 
 												courseId,
 												meetingId));

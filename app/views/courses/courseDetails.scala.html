@@ -4,7 +4,7 @@
 @import models.User; var instructor = null; var manager = null
 @import scala.Predef; var i = 0
 
-@main(currentUser, role, "Kurs", true){
+@main(currentUser, role, "Kurs", false){
 	<meta charset="UTF-8">
 	<div class="container col-md-offset-2 col-md-8">
 		@helper.form(action = routes.Courses.saveCourse(courseId),  'enctype -> "multipart/form-data") {
@@ -34,9 +34,6 @@
 				<!-- The panel with the information about people responsible for the course -->	
 				<div class="col-md-6 col-md-offset-1  panel panel-default">			
 					<h3 align="center">Osoby związane z kursem</h3>
-					
-					<h3 id="console">Console</h3>
-					
 					<!-- Part for the course manager -->	
 					<hr>	
 						<div class="clearfix col-md-offset-1 row center" id="manager_id_field">
@@ -93,60 +90,30 @@
 						<br>
 						<hr>
 						<div class="col-md-offset-1 col-md-10 row center">
-							<table class="table">
+							<table id="membersTab" class="table">
 								<thead>
 									<th data-align="center">Uczestnicy kursu</th>
 							        <th data-align="center">Usuń <span class="pull-right"><a id="addCourseMember" data-toggle="modal" data-target="#memebersModal" rel="tooltip" title="Dodaj nowego kursanta"><i class="glyphicon glyphicon-plus"></i></a></span></th>
 								</thead>
 								<tbody>
-								<tr>
-									<td>Lukas Pecak</td>
-									<td>
-										<a rel="tooltip" title="Usuń kursanta">
-											<i class="glyphicon glyphicon-remove"></i>
-										</a>	
-									</td>
-								</tr>
-								<tr>
-									<td>Danie Pęcak</td>
-									<td>
-										<a rel="tooltip" title="Usuń kursanta">
-											<i class="glyphicon glyphicon-remove"></i>
-										</a>	
-									</td>
-								</tr>
-								<tr>
-									<td>Julia Pecak</td>
-									<td>
-										<a rel="tooltip" title="Usuń kursanta">
-											<i class="glyphicon glyphicon-remove"></i>
-										</a>	
-									</td>
-								</tr>
-								<tr>
-									<td>Bronek Pecak</td>
-									<td>
-										<a rel="tooltip" title="Usuń kursanta">
-											<i class="glyphicon glyphicon-remove"></i>
-										</a>	
-									</td>
-								</tr>
-								<tr>
-									<td>Lukas Kowalski</td>
-									<td>
-										<a rel="tooltip" title="Usuń kursanta">
-											<i class="glyphicon glyphicon-remove"></i>
-										</a>	
-									</td>
-								</tr>
-									
-									
-									
-									
+									@for(user <- users){
+										@if(course.members_ids != null){
+											@if(course.members_ids.get(0).contains(user._id)){
+												<tr id="row@user._id">
+													<td>@user.toString()</td>
+													<td>
+														<a rel="tooltip" title="Usuń kursanta" value="@user._id" name="deleteMember">
+															<i class="glyphicon glyphicon-remove"></i>
+														</a>	
+													</td>
+												</tr>
+											}
+										}		
+									}
 									
 								</tbody>
 							</table>
-							<input id="members_ids" name="members_ids" value="@if(course.members_ids != null){@course.members_ids.get(0)}"></input>
+							<input hidden id="members_ids" name="members_ids" value="@if(course.members_ids != null){@course.members_ids.get(0)}"></input>
 						</div>
 						<br>
 						<br>
@@ -226,7 +193,7 @@
 	  	</div>
 	</div>
 	
-	<!-- Modal window with user chose option -->
+	<!-- Modal window with user chose - chosing the courese members -->
 	<div class="modal fade" id="memebersModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
 	    <div class="modal-dialog">
 	        <div class="modal-content">
@@ -236,7 +203,7 @@
 	            
 	            <div class="modal-body">
 					<!-- <table data-url="/users" data-height="299" data-click-to-select="true" data-select-item-name="radioName">-->
-					<table class="table  table-striped" data-url="/users"  data-click-to-select="true" data-select-item-name="radioName">
+					<table class="table" data-url="/users"  data-click-to-select="true" data-select-item-name="radioName">
 						<thead>
 							<tr>
 								<th data-field="state" data-radio="true"></th>
@@ -275,7 +242,7 @@
 	            </div> 
 	            <div class="modal-body">
 					<!-- <table data-url="/users" data-height="299" data-click-to-select="true" data-select-item-name="radioName">-->
-					<table class="table  table-striped" data-url="/users"  data-click-to-select="true" data-select-item-name="radioName">
+					<table class="table" data-url="/users"  data-click-to-select="true" data-select-item-name="radioName">
 						<thead>
 							<tr>
 								<th data-field="state" data-radio="true"></th>
@@ -287,7 +254,7 @@
 						<tbody>
 							@for(user <- users) {
 								<tr>
-									<td><input id="@user._id" data-manager-name="@user.toString()" type="radio" name="chooseUser"></td>
+									<td><input id="@user._id" data-manager-name="@user.toString()" type="radio" name="chooseManager"></td>
 									<td>@user.firstName</td>
 									<td>@user.lastName</td>
 									<td>@user.email</td>
@@ -316,7 +283,6 @@
 			deleteString += "/meetings/delete/"
 			deleteString += $(e.relatedTarget).data("meeting-id")
 		    $(e.currentTarget).find('b[id="meetingToDelete"]').text(meetingName)
-		    //$(e.currentTarget).find('a[id="deleteMeetingLink"]').attr("href", deleteString)
 		    $('form').attr('action', deleteString)
 		});
 		
@@ -324,17 +290,17 @@
 			$('form').submit()
 		});
 		
-		 $("input[name='chooseUser']").click(function(e){
-			var user = $("input[name='chooseUser']:checked").attr('id')
-			var userName = $("input[name='chooseUser']:checked").attr('data-manager-name')
+		 /* $("input[name='chooseManager']").click(function(e){
+			var user = $("input[name='chooseManager']:checked").attr('id')
+			var userName = $("input[name='chooseManager']:checked").attr('data-manager-name')
 			$("input[id='manager_id']").val(user)
 			$("b[id='manager_name']").text(userName)
 			$("i[id='add_change_icon']").attr('class',"glyphicon glyphicon-edit")
-		}); 
+		});  */
 		
 		$("a[id='chooseLink']").click(function(e){
-			var user = $("input[name='chooseUser']:checked").attr('id')
-			var userName = $("input[name='chooseUser']:checked").attr('data-manager-name')
+			var user = $("input[name='chooseManager']:checked").attr('id')
+			var userName = $("input[name='chooseManager']:checked").attr('data-manager-name')
 			$("input[id='manager_id']").val(user)
 			$("b[id='manager_name']").text(userName)
 			$("i[id='add_change_icon']").attr('class',"glyphicon glyphicon-edit")
@@ -361,7 +327,7 @@
 				var findTr = "tr[value='"
 				findTr += membersTab[i]
 				findTr += "']"
-				$(findTr).attr('style',"display:none;")
+				$(findTr).hide()
 			} 
 						
 		});
@@ -390,7 +356,6 @@
 					}
 					toAdd += membLinkTab[i]
 				}
-				$('#console').text(toAdd)
 				$('#membersLink').attr('value', toAdd)
 			}
 		});
@@ -402,8 +367,47 @@
 					members += ","
 				}
 			members += $(this).attr('value')
+			var membersArray = members.split(",")
 			$('#members_ids').val(members)
-			
+			$('#membersTab tbody').empty()
+			for(i=0; i<membersArray.length; i++){
+				var row = '<tr><td>'
+				row += $('input[id="'+membersArray[i]+'"]').attr('data-manager-name')
+				row += '</td><td><a rel="tooltip" title="Usuń kursanta" value="'
+				row += membersArray[i]
+				row += '" name="deleteMember"><i class="glyphicon glyphicon-remove"></i></a></td></tr>'
+				$('#membersTab tbody').append(row)
+			}
+		});
+		
+		//Delete member
+		$( "#membersTab tbody" ).on( "click", "a", function() {
+			var members = $('#members_ids').val()
+			var membersArray = members.split(",")
+			var toRemove = $(this).attr('value')
+			var delIndex = membersArray.indexOf(toRemove)
+			membersArray.splice(delIndex,1)
+			members = ""
+			for(i=0; i<membersArray.length; i++){
+				if(members.length > 0) {
+					members += ","
+				}
+				members += membersArray[i]
+			}
+			$('#members_ids').val(members)
+			$('#membersTab tbody:last').empty()
+			for(i=0; i<membersArray.length; i++){
+				var row = '<tr><td>'
+				row += $('input[id="'+membersArray[i]+'"]').attr('data-manager-name')
+				row += '</td><td><a rel="tooltip" title="Usuń kursanta" value="'
+				row += membersArray[i]
+				row += '" name="deleteMember"><i class="glyphicon glyphicon-remove"></i></a></td></tr>'
+				$('#membersTab tbody:last').append(row)
+			}
+			var findTr = "tr[value='"
+				findTr += toRemove
+				findTr += "']"
+					$(findTr).show()
 		});
 		
 		$("input[name='editIconInput']").click(function(e){

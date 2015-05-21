@@ -22,6 +22,7 @@ import utils.Utils;
 
 
 
+import models.Course;
 import models.SystemRoleEnum;
 import models.User;
 import models.UserAccount;
@@ -190,5 +191,18 @@ public class UsersService {
 		}	
 	}
 	
+	//Get course members list
+	public static List<User> getCourseMembers(Course course){
+		List<User> result = new ArrayList<User>();
+		List<User> usersList = getUsersList();
+		if((usersList != null) && (course != null) && (course.members_ids != null)){
+			for(User user : usersList){
+				if(course.members_ids.contains(user._id)){
+					result.add(user);
+				}
+			}
+		}
+		return result;
+	}
 
 }

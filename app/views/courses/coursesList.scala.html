@@ -4,24 +4,20 @@
 
 @main(currentUser, role, "Lista kursów", false){
 <meta charset="UTF-8">
-
-	
-
 	<div class="container">
 		<h1 align="center">Lista kursów</h1>
 		<br>
 		<table class="table table-striped">
 			<thead>
 				<tr>
-				<th>Nazwa kursu</th>
-
-				<th>Liczka kursantów</th>
-				<th>Ilość spotkań</th>
-				<th>Kierownik kursu</th>
-				@if((session.get("role") == "SuperUser") || (session.get("role") == "CourseManager")){
-				<th>Zmień</th>
-				<th>Usuń</th>
-				}
+					<th>Nazwa kursu</th>
+					<th>Liczka kursantów</th>
+					<th>Ilość spotkań</th>
+					<th>Kierownik kursu</th>
+					@if((session.get("role") == "SuperUser") || (session.get("role") == "CourseManager")){
+						<th>Zmień</th>
+						<th>Usuń</th>
+					}
 				</tr>
 			</thead>
 			<tbody>

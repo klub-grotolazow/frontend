@@ -255,7 +255,7 @@ public class CoursesService {
 				User user = new Gson().fromJson(response.getBody(), User.class);
 				Controller.flash().put(Messages.SUCCESS, Messages.SUCCESS_DELETED_COURSE + course.name);
 			} else{
-				Controller.ok(response.getBody()); //Controller.flash().put(Messages.ERROR, Messages.ERROR_DELETE_COURSE + response.getStatus() + " " + response.getStatusText());
+				Controller.flash().put(Messages.ERROR, Messages.ERROR_DELETE_COURSE + response.getStatus() + " " + response.getStatusText());
 			}
 		} catch(Exception exception){
 			Controller.flash(Messages.ERROR, Messages.ERROR_DELETE_COURSE + exception);
@@ -322,6 +322,7 @@ public class CoursesService {
 																		boundForm, 
 																		meeting, 
 																		UsersService.getUsersList(),
+																		UsersService.getCourseMembers(course),
 																		course.members_ids,
 																		courseId, 
 																		meetingId));
@@ -332,7 +333,8 @@ public class CoursesService {
 																		Controller.session().get("role"), 
 																		boundForm, 
 																		meeting, 
-																		UsersService.getUsersList(), 
+																		UsersService.getUsersList(),
+																		UsersService.getCourseMembers(course), 
 																		course.members_ids,
 																		courseId, 
 																		meetingId));
@@ -374,6 +376,8 @@ public class CoursesService {
 														UsersService.getUsersList(), 
 														courseId));
 	}
+	
+	
 
 	
 }

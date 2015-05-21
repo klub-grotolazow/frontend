@@ -1,11 +1,11 @@
-@(currentUser: User, role: String, meetingForm: Form[CourseMeeting], meeting: CourseMeeting, users: List[User], courseMembers: List[String], courseId: String, meetingId: String)
+@(currentUser: User, role: String, meetingForm: Form[CourseMeeting], meeting: CourseMeeting, users: List[User], members: List[User], courseMembers: List[String], courseId: String, meetingId: String)
 @import helper._
 @import helper.twitterBootstrap._
 @import models.User; var courseSession = null; var manager = null
 
 
 
-@main(currentUser, role, "Spotkanie grupy kursowej", true){
+@main(currentUser, role, "Spotkanie grupy kursowej", false){
 	<meta charset="UTF-8">
 	<div class="container col-md-offset-2 col-md-8">
 		<form class="form-horizontal" action="@routes.Courses.saveCourseMeeting(courseId, meetingId)" method="POST" id="courseForm" enctype="multipart/form-data">
@@ -45,9 +45,10 @@
 						<br>
 						<br>
 						<div class="clearfix col-md-offset-1 row center" id="instructor_id_field">	
-							<div class="col-md-8">
+							<div class="col-md-11">
 								<span class="pull-left">
 									<label for="instructor_id">Instruktor odpowiedzialny za grupę :  </label>
+									<br>
 									<b id="instructor_name">
 									@if(meeting != null){
 										@if((meeting.instructor_id != null) && (meeting.instructor_id != "")){
@@ -64,8 +65,6 @@
 									}
 									</b>
 								</span>
-							</div>	  
-							<div class="col-md-2">
 								<span class="pull-right">
 									<a class="link" id="courseManagerLink" data-toggle="modal" data-target="#chooseModal">
 									@if(meeting != null){
@@ -80,48 +79,64 @@
 									</a>								    	
 								</span>
 							</div>    
-							<input id="instructor_id" name="instructor_id" value="@if(meeting != null ){@meeting.instructor_id}"></input> 
-							</div>
-								<hr>
-								<div class="clearfix col-md-offset-1" id="presentMembers_ids_field">
-								    <div class="col-md-8">
-										@if(meeting != null){
-											@if((meeting.presentMembers_ids == null) || (meeting.presentMembers_ids.size() == 0)){
-												<b id="course_present_list">Brak kursantów obecnych na zajęciach!</b>
-											} else{
-												<b>Lista kursantów obecnych na zajęciach :<br> </b>
-												@for(member <- meeting.presentMembers_ids) {
-													@for(user <- users){
-														@if(user._id == member){
-															@user.toString() ,
-														} 
-													}	  
+							<input hidden id="instructor_id" name="instructor_id" value="@if(meeting != null ){@meeting.instructor_id}"></input> 
+						</div>
+						<hr>
+						<div class="clearfix col-md-offset-0 row center" id="presentMembers_ids_field">
+							<div class="col-md-11">
+								<span class="pull-left col-md-10">
+									<table id="membersTab" class="table">
+											<thead>
+												<th data-align="center">Obecni na zajęciach</th>
+										        <th data-align="center">Usuń <span class="pull-right"><!-- <a id="addCourseMember" data-toggle="modal" data-target="#memebersModal" rel="tooltip" title="Dodaj do listy obecności"><i class="glyphicon glyphicon-plus"></i></a> --></span></th>
+											</thead>
+											<tbody>
+												@for(user <- users){
+													@if(meeting.presentMembers_ids != null){
+														@if(meeting.presentMembers_ids.get(0).contains(user._id)){
+															<tr>
+																<td>@user.toString()</td>
+																<td>
+																	<a rel="tooltip" title="Usuń obecność" value="@user._id" name="deleteMember">
+																		<i class="glyphicon glyphicon-remove"></i>
+																	</a>	
+																</td>
+															</tr>
+														}
+													}		
 												}
-											}
-										} else {
-											<b id="course_present_list">Brak kursantów obecnych na zajęciach!</b>
-										}
-										<br>
-										<br>
-										<p id="members_names"></p>
-									</div>
-									<div class="col-md-2">
-										<span class="pull-right">
-									    	<a class="link" id="presentMemberLink" data-toggle="modal" data-target="#presentModal">
-									    	<i rel="tooltip" title="Sprawdź obecność" class="glyphicon glyphicon-plus"></i>
-									    	</a>
-									    </span>
-									    <!-- This will be hidden -->
-									    	<input hidden id="presentMembers_ids" name="presentMembers_ids" value="@if(meeting != null ){@meeting.presentMembers_ids}"></input>
-									</div>							    	
-								</div>
+												
+											</tbody>
+										</table>
+								</span>
+								<span class="pull-right">
+									<a id="addCourseMember" data-toggle="modal" data-target="#presentModal" rel="tooltip" title="Dodaj do listy obecności"><i class="glyphicon glyphicon-plus"></i></a>
+								</span>
+							</div>
+							<!-- This will be hidden -->
+							<input hidden id="presentMembers_ids" name="presentMembers_ids" value="@if(meeting.presentMembers_ids != null){@meeting.presentMembers_ids.get(0)}"></input>						    	
+							<div class="container">
+						</div>
 					</div>		
+					<div class="row">
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group date' id='datetimepicker1'>
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+   	</div>
+</div>
 				</div>
 			</fieldset>	
 		</form>	
 	</div>
-	
-	<!-- Modal window with user chose option -->
+		
+	<!-- Modal window with user chose option - chosing the instructor responsible for the meeting -->
 	<div class="modal fade" id="chooseModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
 	    <div class="modal-dialog">
 	        <div class="modal-content">
@@ -130,7 +145,7 @@
 	            </div>
 	            <div class="modal-body">
 					<!-- <table data-url="/users" data-height="299" data-click-to-select="true" data-select-item-name="radioName">-->
-					<table class="table  table-striped" data-url="/users"  data-click-to-select="true" data-select-item-name="radioName">
+					<table class="table" data-url="/users"  data-click-to-select="true" data-select-item-name="radioName">
 						<thead>
 							<tr>
 								<th data-field="state" data-radio="true"></th>
@@ -142,7 +157,7 @@
 						<tbody>
 							@for(user <- users) {
 								<tr>
-									<td><input id="@user._id" data-manager-name="@user.toString()" type="radio" name="chooseUser"></td>
+									<td><input id="@user._id" data-manager-name="@user.toString()" type="radio" name="chooseInstructor"></td>
 									<td>@user.firstName</td>
 									<td>@user.lastName</td>
 									<td>@user.email</td>
@@ -160,7 +175,7 @@
 	  </div>
 	</div>
 	
-	<!-- Modal window with user chose option -->
+	<!-- Modal window with user chose option - chosing the meeting present members -->
 	<div class="modal fade" id="presentModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
 	    <div class="modal-dialog">
 	        <div class="modal-content">
@@ -170,7 +185,7 @@
 	            
 	            <div class="modal-body">
 					<!-- <table data-url="/users" data-height="299" data-click-to-select="true" data-select-item-name="radioName">-->
-					<table class="table  table-striped" data-url="/users"  data-click-to-select="true" data-select-item-name="radioName">
+					<table class="table" data-url="/users"  data-click-to-select="true" data-select-item-name="radioName">
 						<thead>
 							<tr>
 								<th data-field="state" data-radio="true"></th>
@@ -180,17 +195,16 @@
 							</tr>
 						</thead>
 						<tbody>
-						@for(user <- users) {
-							<tr>
-								<td><input id="@user._id" data-manager-name="@user.toString()" type="checkbox" name="chooseUser"></td>
-								<td>@user.firstName</td>
-								<td>@user.lastName</td>
-								<td>@user.email</td>
+						@for(member <- members) {
+							<tr value="@member._id">
+								<td><input value="@member._id" data-manager-name="@member.toString()" type="checkbox" name="choosePresentMember"></td>
+								<td>@member.firstName</td>
+								<td>@member.lastName</td>
+								<td>@member.email</td>
 							</tr>
 						}
 						</tbody>
 					</table>
-					<h1 id="speaker"></h1>
 	            </div>
 	            <div class="modal-footer">
 	                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
@@ -204,35 +218,121 @@
 		$('#chooseModal').on('show.bs.modal', function(e) {   
 		});
 		
-		$('somethingClickedOn').click(function(e) {
-			//var presentMembers = []
+		//The function for the cours member adding
+		$('#addCourseMember').click(function(e){
+			$('#presentLink').attr('value',"")
+			$("input[name='choosePresentMember']").attr('checked', false)
+			var membersFromInput =  $('#presentMembers_ids').val()
+			var membersTab = membersFromInput.split(",")
 			
+			for(i=0; i<membersTab.length; i++){
+				var find = "input[value='"
+				find += membersTab[i]
+				find += "']"
+				$(find).attr('checked', true);
+				var findTr = "tr[value='"
+				findTr += membersTab[i]
+				findTr += "']"
+				$(findTr).hide()
+			} 
+						
 		});
 		
+		// The function for member checkbox selection change
+		$("input[name='choosePresentMember']").click(function(e){
+			var toAdd
+			if($(this).is(':checked')){
+				toAdd = $('#presentLink').attr('value')
+				if(toAdd.length > 0) {
+					toAdd += ","
+				}
+				toAdd += $(this).attr('value')
+
+				$('#presentLink').attr('value', toAdd)
+			} else{
+				var toRemove = $(this).attr('value')
+				var membLink = $('#presentLink').attr('value')
+				var membLinkTab = membLink.split(",")
+				var delIndex = membLinkTab.indexOf(toRemove)
+				membLinkTab.splice(delIndex,1)
+				toAdd = ""
+				for(i=0; i<membLinkTab.length; i++){
+					if(toAdd.length > 0) {
+						toAdd += ","
+					}
+					toAdd += membLinkTab[i]
+				}
+				$('#presentLink').attr('value', toAdd)
+			}
+		});
 		
+		// The function for acception changes in coure members
+		$('#presentLink').click(function(e){
+			var members = $('#presentMembers_ids').val()
+			if((members.length > 0) && ($(this).attr('value').length > 0)) {
+					members += ","
+				}
+			members += $(this).attr('value')
+			var membersArray = members.split(",")
+			$('#presentMembers_ids').val(members)
+			$('#membersTab tbody').empty()
+			for(i=0; i<membersArray.length; i++){
+				var row = '<tr><td>'
+				row += $('input[id="'+membersArray[i]+'"]').attr('data-manager-name')
+				row += '</td><td><a rel="tooltip" title="Usuń obecność" value="'
+				row += membersArray[i]
+				row += '" name="deleteMember"><i class="glyphicon glyphicon-remove"></i></a></td></tr>'
+				$('#membersTab tbody').append(row)
+			}
+		});
+		
+		//Delete member
+		$( "#membersTab tbody" ).on( "click", "a", function() {
+			var members = $('#presentMembers_ids').val()
+			var membersArray = members.split(",")
+			var toRemove = $(this).attr('value')
+			var delIndex = membersArray.indexOf(toRemove)
+			membersArray.splice(delIndex,1)
+			members = ""
+			for(i=0; i<membersArray.length; i++){
+				if(members.length > 0) {
+					members += ","
+				}
+				members += membersArray[i]
+			}
+			$('#presentMembers_ids').val(members)
+			$('#membersTab tbody:last').empty()
+			for(i=0; i<membersArray.length; i++){
+				var row = '<tr><td>'
+				row += $('input[id="'+membersArray[i]+'"]').attr('data-manager-name')
+				row += '</td><td><a rel="tooltip" title="Usuń obecność" value="'
+				row += membersArray[i]
+				row += '" name="deleteMember"><i class="glyphicon glyphicon-remove"></i></a></td></tr>'
+				$('#membersTab tbody:last').append(row)
+			}
+			var findTr = "tr[value='"
+				findTr += toRemove
+				findTr += "']"
+					$(findTr).show()
+		});
+		
+		//Add, change the meeting group instructor
 		$("a[id='chooseLink']").click(function(e){
-			var user = $("input[name='chooseUser']:checked").attr('id')
-			var userName = $("input[name='chooseUser']:checked").attr('data-manager-name')
+			var user = $("input[name='chooseInstructor']:checked").attr('id')
+			var userName = $("input[name='chooseInstructor']:checked").attr('data-manager-name')
 			$("input[id='instructor_id']").val(user)
 			$("#instructor_name").text(userName)
 			$("#add_member_icon").attr('class',"glyphicon glyphicon-edit")
 		});
 		
-		$("a[id='presentLink']").click(function(e){
-			var members = $("#presentMembers_ids").val()
-			if(members != "") members = members + ","
-			members = members + $("input[name='chooseUser']:checked").attr('id')	
-			$("#presentMembers_ids").val(members)
-			var names = $("#members_names").text()
-			if(names != "") names = names + ", "
-			names = names + $("input[name='chooseUser']:checked").attr('data-manager-name')
-			$("#members_names").text(names)
-			$("#course_present_list").text("Lista kursantów obecnych na zajęciach :")
-		});
-		
+
 		$(document).ready(function(){
 		    $("[rel=tooltip]").tooltip({ placement: 'bottom'});
 		});
+		
+		$(function () {
+            $('#datetimepicker1').datetimepicker();
+        });
 	</script>
 }
 
