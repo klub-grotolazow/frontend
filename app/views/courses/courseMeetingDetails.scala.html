@@ -29,7 +29,7 @@
 						<br>				 
 						@helper.inputText(meetingForm("group"), '_label -> "Grupa",  'class -> "form-control", 'placeholder -> "Wprowadź numer grupy")
 						@helper.inputText(meetingForm("place"), '_label -> "Miejsce zajęć",  'class -> "form-control", 'placeholder -> "Wprowadź miejsce spotkania")
-						@helper.inputText(meetingForm("date"), '_label -> "Data spotkania",  'class -> "form-control", 'placeholder -> "Wprowadź datę spotkania") 
+						@helper.inputText(meetingForm("date"), '_label -> "Data spotkania",  'class -> "form-control datepicker", 'placeholder -> "Wprowadź datę spotkania")
 						@helper.inputText(meetingForm("subject"), '_label -> "Temat zajęć",  'class -> "form-control", 'placeholder -> "Wprowadź temat spotkania")		
 						@helper.textarea(meetingForm("description"), '_label -> "Opis",  'class -> "form-control", 'rows -> 3, 'placeholder -> "Dodatkowe informacje o spotkaniu")
 						@select(meetingForm("meetingStatus"),
@@ -115,22 +115,8 @@
 							</div>
 							<!-- This will be hidden -->
 							<input hidden id="presentMembers_ids" name="presentMembers_ids" value="@if(meeting.presentMembers_ids != null){@meeting.presentMembers_ids.get(0)}"></input>						    	
-							<div class="container">
-						</div>
-					</div>		
-					<div class="row">
-        <div class='col-sm-6'>
-            <div class="form-group">
-                <div class='input-group date' id='datetimepicker1'>
-                    <input type='text' class="form-control" />
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
-            </div>
-        </div>
-   	</div>
-</div>
+						</div>		
+					</div>
 				</div>
 			</fieldset>	
 		</form>	
@@ -216,6 +202,10 @@
 	
 	<script type="text/javascript">
 		$('#chooseModal').on('show.bs.modal', function(e) {   
+		});
+		
+		$(function(){
+			$('.datepicker').datepicker()
 		});
 		
 		//The function for the cours member adding
@@ -330,9 +320,6 @@
 		    $("[rel=tooltip]").tooltip({ placement: 'bottom'});
 		});
 		
-		$(function () {
-            $('#datetimepicker1').datetimepicker();
-        });
 	</script>
 }
 

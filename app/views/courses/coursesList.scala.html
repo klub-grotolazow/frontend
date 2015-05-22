@@ -5,7 +5,9 @@
 @main(currentUser, role, "Lista kursów", false){
 <meta charset="UTF-8">
 	<div class="container">
-		<h1 align="center">Lista kursów</h1>
+		<h1 align="center">Lista kursów <span class="pull-right">@if((session.get("role") == "SuperUser") || (session.get("role") == "CourseManager")){
+			<a rel="tooltip" title="Dodaj nowy kursu" href="@routes.Courses.newCourse()" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> Dodaj</a>
+		}</span></h1>
 		<br>
 		<table class="table table-striped">
 			<thead>
@@ -34,12 +36,12 @@
 						}</td>
 					@if((session.get("role") == "SuperUser") || (session.get("role") == "CourseManager")){
 					<td>
-						<a href="@routes.Courses.editCourse(course._id)">
+						<a rel="tooltip" title="Zmień dane kursu" href="@routes.Courses.editCourse(course._id)">
 						<i class="glyphicon glyphicon-pencil"></i></a>
 					</td>
 					
 					<td>
-						<a data-toggle="modal" data-target="#confirmModal" data-course-id="@course._id" data-course-name="@course.name"> 
+						<a rel="tooltip" title="Usuń kurs" data-toggle="modal" data-target="#confirmModal" data-course-id="@course._id" data-course-name="@course.name"> 
 						<i class="glyphicon glyphicon-remove"></i></a>
 					</td>
 					}
@@ -47,10 +49,7 @@
 				}
 			</tbody>
 		</table>
-		@if((session.get("role") == "SuperUser") || (session.get("role") == "CourseManager")){
-		<a href="@routes.Courses.newCourse()" class="btn btn-primary">
-		<i class="glyphicon glyphicon-plus"></i> Dodaj kurs</a>
-		}
+		
 	</div>
 	
 	<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
