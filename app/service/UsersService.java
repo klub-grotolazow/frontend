@@ -45,6 +45,12 @@ public class UsersService {
 		account.passwordHash = Codecs.md5(new String("root").getBytes());
 		if(account.userName.equals(userName) && account.passwordHash.equals(passwordHash)) return account;
 		
+		account.userId = "552568ce397a10473066f356";
+		account.userName = "lukaspecak";
+		account.systemRole = SystemRoleEnum.SuperUser;
+		account.passwordHash = "ca513602238bd1cda290fa1eb2a74ab1";
+		if(account.userName.equals(userName) && account.passwordHash.equals(passwordHash)) return account;
+		
 		account.userId = "5517d4db07b4c25ec8c1ca07";
 		account.userName = "instruktor";
 		account.systemRole = SystemRoleEnum.Instructor;

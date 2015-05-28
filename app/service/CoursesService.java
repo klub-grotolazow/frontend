@@ -108,7 +108,11 @@ public class CoursesService {
 		if(draft.description != course.description) draft.description = course.description;
 		if(draft.manager_id != course.manager_id) draft.manager_id = course.manager_id;
 		if(draft.members_ids == null) draft.members_ids = new ArrayList<String>();
+		if(course.members_ids.size() > 0){
 		draft.members_ids = Utils.toStringList(course.members_ids.get(0));
+		} else{
+			draft.members_ids = new ArrayList<String>();
+		}
 		course = draft;
 		String request = gson.toJson(course, Course.class);
 		WSResponse response = null;

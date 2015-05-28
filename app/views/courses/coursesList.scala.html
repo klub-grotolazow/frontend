@@ -4,7 +4,7 @@
 
 @main(currentUser, role, "Lista kursów", false){
 <meta charset="UTF-8">
-	<div class="container">
+	<div class="container panel panel-default">
 		<h1 align="center">Lista kursów <span class="pull-right">@if((session.get("role") == "SuperUser") || (session.get("role") == "CourseManager")){
 			<a rel="tooltip" title="Dodaj nowy kursu" href="@routes.Courses.newCourse()" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> Dodaj</a>
 		}</span></h1>
@@ -23,6 +23,13 @@
 				</tr>
 			</thead>
 			<tbody>
+				@if(courses.size() == 0){
+					<tr>
+						<td>
+							<h3>Brak kursów !</h3>
+						</td>
+					</tr>
+				}
 				@for(course <- courses) {
 				<tr>
 					<td><a href="@routes.Courses.editCourse(course._id)"><b>@course.name</b></a></td>
@@ -49,7 +56,7 @@
 				}
 			</tbody>
 		</table>
-		
+		<br>
 	</div>
 	
 	<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">

@@ -6,8 +6,10 @@
 @main(currentUser, role, "Lista użytkowników", false){
 <meta charset="UTF-8">
 
-	<div class="container">
-	<h1 align="center">Lista użytkowników</h1>
+	<div class="container panel panel-default">
+	<h1 align="center">Lista użytkowników <span class="pull-right">@if((session.get("role") == "SuperUser")){
+			<a rel="tooltip" title="Dodaj nowego użytkownika użytkownika" href="@routes.Users.newUser()" class="btn btn-primary" >
+			<i class="glyphicon glyphicon-plus"></i> Dodaj</a>}</span></h1>
 	<br>
 		<table class="table table-striped">
 			<thead>
@@ -16,43 +18,41 @@
 					<th>Nazwisko</th>
 					<th>email</th>
 					<th>Wiek</th>
-					<th>Zmień/Usuń</th>
+					<th>Zmień</th>
+					<th>Usuń</th>
 				</tr>
 			</thead>
 			<tbody>
+			@if(users.size() == 0){
+				<tr>
+					<td>
+						<h3>Brak użytkowników !</h3>
+					</td>
+				</tr>
+			}
 			@for(user <- users) {
 				<tr>
 					<td><a href="@routes.Users.editUser(user._id)"><b>@user.firstName</b></a></td>
 					<td><a href="@routes.Users.editUser(user._id)"><b>@user.lastName</b></a></td>
 					<td>@user.email</td>
+					<td>@user.age</td>
 					<td>
-						@user.age
-					</td>
-					
+						<a rel="tooltip" title="Zmień dane użytkownika" href="@routes.Users.editUser(user._id)">
+							<i class="glyphicon glyphicon-pencil"></i>
+						</a>
+					</td>	
 					<td>
-					 	<span class="col-md-offset-1">
-					 		<a href="@routes.Users.editUser(user._id)">
-								<i class="glyphicon glyphicon-pencil"></i>
-							</a>
-					 	</span>
-					 	<span class="col-md-offset-2">
-					 		<a data-toggle="modal" data-target="#confirmModal" data-user-id="@user._id" data-user-first-name="@user.firstName" data-user-last-name="@user.lastName">
-								<i class="glyphicon glyphicon-remove"></i>
-							</a>
-					 	</span>
-						
-						
-						
+						<a rel="tooltip" title="Usuń użytkownika" data-toggle="modal" data-target="#confirmModal" data-user-id="@user._id" data-user-first-name="@user.firstName" data-user-last-name="@user.lastName">
+							<i class="glyphicon glyphicon-remove"></i>
+						</a>
 					</td>
 				</tr>
 			}
 			</tbody>
 		</table>
-		<a href="@routes.Users.newUser()" class="btn btn-primary" >
-			<i class="glyphicon glyphicon-plus"></i> Dodaj użytkownika
-		</a>
+		<br>	
 	</div>
-    
+  
     <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
 	    <div class="modal-dialog">
 	        <div class="modal-content">
@@ -69,6 +69,7 @@
 	    </div>
 	  </div>
 	</div>
+	
 	<script type="text/javascript">
 		$('#confirmModal').on('show.bs.modal', function(e) {
 			var userName = $(e.relatedTarget).data('user-first-name');

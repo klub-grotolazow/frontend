@@ -7,115 +7,116 @@
 
 @main(currentUser, role, "Spotkanie grupy kursowej", false){
 	<meta charset="UTF-8">
-	<div class="container col-md-offset-2 col-md-8">
+	<div class="container">
 		<form class="form-horizontal" action="@routes.Courses.saveCourseMeeting(courseId, meetingId)" method="POST" id="courseForm" enctype="multipart/form-data">
 			<fieldset>
 				<legend>
 					<div class="container row">
-						<div class="col-md-5">
-							<h1>Spotkanie grupy kursowej</h1>
-						</div>
-						<div class="col-md-6">
-						    <span class="pull-right">
-						    	<!-- editCourse(courseId) -->
-						    	<a rel="tooltip" title="Pwrót do kursu bez zapisywania" class="btn btn-danger" href="@routes.Courses.loadCourseDraft(courseId)">Powrót</a> 
-								<input rel="tooltip" title="Zapisz i wróć do kursu" id="saveButton" type="submit" class="btn btn-primary" value="Zapisz">
-						    </span>
+						<div class="col-md-12">
+							<h1>Spotkanie grupy kursowej 
+								<span class="pull-right">
+							    	<!-- editCourse(courseId) -->
+							    	<a rel="tooltip" title="Pwrót do kursu bez zapisywania" class="btn btn-warning" href="@routes.Courses.loadCourseDraft(courseId)">Powrót</a> 
+									<input rel="tooltip" title="Zapisz i wróć do kursu" id="saveButton" type="submit" class="btn btn-primary" value="Zapisz">
+						    	</span>
+							</h1>
 						</div>
 					</div>
 				</legend>	
-				<div class="col-md-12 panel panel-default">
-					<div class="col-md-offset-0 col-md-5">
-						<br>				 
-						@helper.inputText(meetingForm("group"), '_label -> "Grupa",  'class -> "form-control", 'placeholder -> "Wprowadź numer grupy")
-						@helper.inputText(meetingForm("place"), '_label -> "Miejsce zajęć",  'class -> "form-control", 'placeholder -> "Wprowadź miejsce spotkania")
-						@helper.inputText(meetingForm("date"), '_label -> "Data spotkania",  'class -> "form-control datepicker", 'placeholder -> "Wprowadź datę spotkania")
-						@helper.inputText(meetingForm("subject"), '_label -> "Temat zajęć",  'class -> "form-control", 'placeholder -> "Wprowadź temat spotkania")		
-						@helper.textarea(meetingForm("description"), '_label -> "Opis",  'class -> "form-control", 'rows -> 3, 'placeholder -> "Dodatkowe informacje o spotkaniu")
-						@select(meetingForm("meetingStatus"),
-								options("Planned"->"Planowane spotkanie",
-										"Done"->"Zajęcia odbyły się",
-										"Cancelled"->"Zajęcia odwołane"),
-										'_label -> "Status spotkania",
-										'class -> "form-control")
-						<br>
-						<br>
-					</div>
-					<div class="col-md-offset-1 col-md-6">
-						<br>
-						<br>
-						<div class="clearfix col-md-offset-1 row center" id="instructor_id_field">	
-							<div class="col-md-11">
-								<span class="pull-left">
-									<label for="instructor_id">Instruktor odpowiedzialny za grupę :  </label>
-									<br>
-									<b id="instructor_name">
-									@if(meeting != null){
-										@if((meeting.instructor_id != null) && (meeting.instructor_id != "")){
-											@for(user <- users){
-												@if(user._id == meeting.instructor_id){
-													@user.toString()
+				<div class="col-md-12">
+					<div class="panel panel-default col-md-12 container">
+						<div class="col-md-offset-0 col-md-5">
+							<br>				 
+							@helper.inputText(meetingForm("group"), '_label -> "Grupa",  'class -> "form-control", 'placeholder -> "Wprowadź numer grupy")
+							@helper.inputText(meetingForm("place"), '_label -> "Miejsce zajęć",  'class -> "form-control", 'placeholder -> "Wprowadź miejsce spotkania")
+							@helper.inputText(meetingForm("date"), '_label -> "Data spotkania",  'class -> "form-control datepicker", 'placeholder -> "Wprowadź datę spotkania")
+							@helper.inputText(meetingForm("subject"), '_label -> "Temat zajęć",  'class -> "form-control", 'placeholder -> "Wprowadź temat spotkania")		
+							@helper.textarea(meetingForm("description"), '_label -> "Opis",  'class -> "form-control", 'rows -> 3, 'placeholder -> "Dodatkowe informacje o spotkaniu",'style -> "resize: none;")
+							@select(meetingForm("meetingStatus"),
+									options("Planned"->"Planowane spotkanie",
+											"Done"->"Zajęcia odbyły się",
+											"Cancelled"->"Zajęcia odwołane"),
+											'_label -> "Status spotkania",
+											'class -> "form-control")
+							<br>
+							<br>
+						</div>
+						<div class="col-md-offset-1 col-md-5">
+							<br>
+							<br>
+							<div class="clearfix col-md-offset-1 row center" id="instructor_id_field">	
+								<div class="col-md-11">
+									<span class="pull-left">
+										<label for="instructor_id">Instruktor odpowiedzialny za grupę :  </label>
+										<br>
+										<b id="instructor_name">
+										@if(meeting != null){
+											@if((meeting.instructor_id != null) && (meeting.instructor_id != "")){
+												@for(user <- users){
+													@if(user._id == meeting.instructor_id){
+														@user.toString()
+													}
 												}
+											} else{
+												Brak!
 											}
 										} else{
 											Brak!
 										}
-									} else{
-										Brak!
-									}
-									</b>
-								</span>
-								<span class="pull-right">
-									<a class="link" id="courseManagerLink" data-toggle="modal" data-target="#chooseModal">
-									@if(meeting != null){
-										@if((meeting.instructor_id == null) || (meeting.instructor_id == "")){		
-											<i rel="tooltip" title="Dodaj instruktora" id="add_member_icon" class="glyphicon glyphicon-plus"></i>								    		
+										</b>
+									</span>
+									<span class="pull-right">
+										<a class="link" id="courseManagerLink" data-toggle="modal" data-target="#chooseModal">
+										@if(meeting != null){
+											@if((meeting.instructor_id == null) || (meeting.instructor_id == "")){		
+												<i rel="tooltip" title="Dodaj instruktora" id="add_member_icon" class="glyphicon glyphicon-plus"></i>								    		
+											} else{
+												<i rel="tooltip" title="Zmień instruktora" class="glyphicon glyphicon-edit"></i>
+											}
 										} else{
-											<i rel="tooltip" title="Zmień instruktora" class="glyphicon glyphicon-edit"></i>
-										}
-									} else{
-										<i id="add_member_icon" class="glyphicon glyphicon-plus"></i>
-									}	
-									</a>								    	
-								</span>
-							</div>    
-							<input hidden id="instructor_id" name="instructor_id" value="@if(meeting != null ){@meeting.instructor_id}"></input> 
-						</div>
-						<hr>
-						<div class="clearfix col-md-offset-0 row center" id="presentMembers_ids_field">
-							<div class="col-md-11">
-								<span class="pull-left col-md-10">
-									<table id="membersTab" class="table">
-											<thead>
-												<th data-align="center">Obecni na zajęciach</th>
-										        <th data-align="center">Usuń <span class="pull-right"><!-- <a id="addCourseMember" data-toggle="modal" data-target="#memebersModal" rel="tooltip" title="Dodaj do listy obecności"><i class="glyphicon glyphicon-plus"></i></a> --></span></th>
-											</thead>
-											<tbody>
-												@for(user <- users){
-													@if(meeting.presentMembers_ids != null){
-														@if(meeting.presentMembers_ids.get(0).contains(user._id)){
-															<tr>
-																<td>@user.toString()</td>
-																<td>
-																	<a rel="tooltip" title="Usuń obecność" value="@user._id" name="deleteMember">
-																		<i class="glyphicon glyphicon-remove"></i>
-																	</a>	
-																</td>
-															</tr>
-														}
-													}		
-												}
-												
-											</tbody>
-										</table>
-								</span>
-								<span class="pull-right">
-									<a id="addCourseMember" data-toggle="modal" data-target="#presentModal" rel="tooltip" title="Dodaj do listy obecności"><i class="glyphicon glyphicon-plus"></i></a>
-								</span>
+											<i id="add_member_icon" class="glyphicon glyphicon-plus"></i>
+										}	
+										</a>								    	
+									</span>
+								</div>    
+								<input hidden id="instructor_id" name="instructor_id" value="@if(meeting != null ){@meeting.instructor_id}"></input> 
 							</div>
-							<!-- This will be hidden -->
-							<input hidden id="presentMembers_ids" name="presentMembers_ids" value="@if(meeting.presentMembers_ids != null){@meeting.presentMembers_ids.get(0)}"></input>						    	
-						</div>		
+							<hr>
+							<div class="clearfix col-md-offset-0 row center" id="presentMembers_ids_field">
+								<div class="col-md-11">
+									<span class="pull-left col-md-10">
+										<table id="membersTab" class="table">
+												<thead>
+													<th data-align="center">Obecni na zajęciach</th>
+											        <th data-align="center">Usuń <span class="pull-right"><!-- <a id="addCourseMember" data-toggle="modal" data-target="#memebersModal" rel="tooltip" title="Dodaj do listy obecności"><i class="glyphicon glyphicon-plus"></i></a> --></span></th>
+												</thead>
+												<tbody>
+													@for(user <- users){
+														@if(meeting.presentMembers_ids != null){
+															@if(meeting.presentMembers_ids.get(0).contains(user._id)){
+																<tr>
+																	<td>@user.toString()</td>
+																	<td>
+																		<a rel="tooltip" title="Usuń obecność" value="@user._id" name="deleteMember">
+																			<i class="glyphicon glyphicon-remove"></i>
+																		</a>	
+																	</td>
+																</tr>
+															}
+														}		
+													}
+													
+												</tbody>
+											</table>
+									</span>
+									<span class="pull-right">
+										<a id="addCourseMember" data-toggle="modal" data-target="#presentModal" rel="tooltip" title="Dodaj do listy obecności"><i class="glyphicon glyphicon-plus"></i></a>
+									</span>
+								</div>
+								<!-- This will be hidden -->
+								<input hidden id="presentMembers_ids" name="presentMembers_ids" value="@if(meeting.presentMembers_ids != null){@meeting.presentMembers_ids.get(0)}"></input>						    	
+							</div>		
+						</div>
 					</div>
 				</div>
 			</fieldset>	

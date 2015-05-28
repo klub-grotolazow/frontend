@@ -1,4 +1,67 @@
+@(currentUser: User, role: String, equipmentForm: Form[Equipment], id: String)
+@import helper._
+@import helper.twitterBootstrap._
 
+@main(currentUser, role, "Sprzęt", false){
+	<meta charset="UTF-8">
+		<div class="container">
+		@helper.form(action = routes.Equipments.saveEquipment(id),  'enctype -> "multipart/form-data") {
+			<fieldset>
+				<legend>
+					<div class="container row">
+						<div class="col-md-12">
+							<h1>Sprzęt
+								<span class="pull-right">
+							    	<a rel="tooltip" title="Powrót do magazynu bez zapisywania" class="btn btn-warning" href="@routes.Equipments.getEquipmentsList()">Powrót</a> 
+									<input rel="tooltip" title="Zapisz i wróć do magazynu" id="saveButton" type="submit" class="btn btn-primary" value="Zapisz">
+						    </span>
+							</h1>
+						</div>
+					</div>
+				</legend>	
+				<div class="col-md-12">
+					<div class="col-md-12  panel panel-default">
+						<div class="col-md-5">
+							<br>
+							@helper.inputText(equipmentForm("name"), '_label -> "Nazwa",  'class -> "form-control", 'placeholder -> "Wprowadź nazwę sprzętu")		
+							@helper.textarea(equipmentForm("description"), '_label -> "Opis",  'class -> "form-control", 'placeholder -> "Informacje o sprzęcie", 'rows -> 12, 'style -> "resize: none;")
+							<br>
+						</div>	
+						<div class="col-md-offset-1 col-md-5">
+							<br>
+							<!-- public String purchaseDate;
+							public String nextInspectionDate;
+							public Integer price;
+								public String serialNumber; 
+								{CandidateMember,CommonMember,HonourableMember,SupportingMember}-->
+							@helper.inputText(equipmentForm("purchaseDate"), '_label -> "Data zakupu",  'class -> "form-control datepicker", 'placeholder -> "Wprowadź datę zakupu")
+							@helper.inputText(equipmentForm("nextInspectionDate"), '_label -> "Data inspekcji",  'class -> "form-control datepicker", 'placeholder -> "Wprowadź datę inspekcji")
+							@helper.inputText(equipmentForm("serialNumber"), '_label -> "S/N",  'class -> "form-control", 'placeholder -> "Wprowadź numer seryjny")
+							@helper.inputText(equipmentForm("price"), '_label -> "Cena (PLN)",  'class -> "form-control", 'placeholder -> "Wprowadź cenę zakupu", 'type -> "number")
+							@select(equipmentForm("allowedFor"), 
+									options("CommonMember"->"Członek zwyczajny",
+											"CandidateMember"->"Członek kandydat",
+											"SupportingMember"->"Członek wspierający",
+											"HonourableMember"->"Członek honorowy"),
+											'_label -> "Dostępny dla",
+											'class -> "form-control",
+											'multiple->"multiple",
+											'rel->"tooltip",
+											'title->"Przytymaj klawisz Ctrl i kliknij by zaznaczyć więcej niż jeden")
+							<br>
+						</div>
+						
+					</div>
+				</div>
+			</fieldset>	
+		}	
+	</div>
+	<script>
+		$(function(){
+			$('.datepicker').datepicker()
+		});
+	</script>
+}
 
 
 <!--  @@Author(name="Lukas Pecak")-->

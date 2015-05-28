@@ -5,7 +5,7 @@
 @main(currentUser, role, "Logowanie użytkownika", false){
 	<meta charset="UTF-8">
 	
-	<div class="container col-md-offset-4 col-md-4 panal panel-default" align="center">
+	<div class="container col-md-offset-4 col-md-4" align="center">
 	
 		<br>
 		<br>
@@ -14,9 +14,14 @@
 		<div class="panel panel-default">
 			@helper.form(action = routes.Application.authenticate(), 'enctype -> "multipart/form-data") {
 			<fieldset>
-				<legend align="center"><i class="glyphicon glyphicon-user"></i> Zaloguj się :</legend>
-				@helper.inputText(userAccountForm("userName"), '_label -> "Nazwa użytkownika", '_size -> 50)
-				@helper.inputPassword(userAccountForm("passwordHash"), '_label -> "Hasło", '_size -> 50)	
+				<br>
+				<h3  align="center"><i class="glyphicon glyphicon-user"></i> Zaloguj się :</h3>
+				<br>
+				<br>
+				<div class=" col-md-offset-1 col-md-10">
+					@helper.inputText(userAccountForm("userName"), '_label -> "Nazwa użytkownika", '_size -> 20, 'class -> "form-control", 'placeholder -> "Podaj nazwę użytkownika", 'align -> "left", 'style -> "text-align: center;")
+					@helper.inputPassword(userAccountForm("passwordHash"), '_label -> "Hasło", '_size ->20, 'class -> "form-control", 'placeholder -> "Podaj hasło", 'style -> "text-align: center;")	
+				</div>
 			</fieldset>
 			<br>
 			<span>

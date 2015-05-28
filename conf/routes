@@ -61,7 +61,7 @@ GET 	/equipments/reserve/:id		controllers.Equipments.makeReservation(id: String)
 GET		/equipments/:id				controllers.Equipments.showEquipment(id: String)
 
 
-POST 	/courses 					controllers.Equipments.saveEquipment()
+POST 	/equipments 					controllers.Equipments.saveEquipment(id: String)
 #------------------------------------------------------------------------------------------------------------------------------
 
 # Settings urls ---------------------------------------------------------------------------------------------------------------

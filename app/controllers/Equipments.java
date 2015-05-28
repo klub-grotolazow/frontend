@@ -14,6 +14,7 @@ import service.EquipmentsService;
 import service.UsersService;
 import utils.Messages;
 import views.html.equipments.equipmentsList;
+import views.html.equipments.equipmentDetails;
 
 @Security.Authenticated(Secured.class)
 public class Equipments extends Controller {
@@ -23,7 +24,9 @@ public class Equipments extends Controller {
 	public static Result getEquipmentsList(){
 		if(Secured.isSuperUser() || Secured.isWarehouseManager() || Secured.isStudent()){	
 			try{
-				return ok(equipmentsList.render(UsersService.getUser(session().get("userName")), session().get("role"), EquipmentsService.getEquipmentsList()));
+				return ok(equipmentsList.render(UsersService.getUser(session().get("userName")), 
+													session().get("role"), 
+													EquipmentsService.getEquipmentsList()));
 			} catch(Exception exception){
 				return badRequest();
 			}
@@ -36,14 +39,20 @@ public class Equipments extends Controller {
 	
 	// Reneder a view for entering new equipment *********************************************************************************************
 	public static Result newEquipment(){
-		return TODO;
+		//@(currentUser: User, role: String, equipmentForm: Form[Equipment], id: String)
+		return ok(equipmentDetails.render(UsersService.getUser(session().get("userName")), 
+											session().get("role"),
+											equipmentForm,
+											null));
 	}
 	
 	// Delete a equipment by given id ********************************************************************************************************
 	public static Result deleteEquipment(String id){
 		if(Secured.isSuperUser() || Secured.isWarehouseManager()){	
 			EquipmentsService.deleteEquipment(id);
-			return ok(equipmentsList.render(UsersService.getUser(session().get("userName")), session().get("role"), EquipmentsService.getEquipmentsList()));
+			return ok(equipmentsList.render(UsersService.getUser(session().get("userName")), 
+												session().get("role"), 
+												EquipmentsService.getEquipmentsList()));
 		}  else {
 			Controller.session().clear();
 			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
@@ -77,7 +86,7 @@ public class Equipments extends Controller {
 	}
 	
 	// Save or update the equipment with the given id ****************************************************************************************
-	public static Result saveEquipment(){
+	public static Result saveEquipment(String id){
 		return TODO;
 	}
 	

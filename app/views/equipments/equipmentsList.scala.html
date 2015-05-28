@@ -5,9 +5,11 @@
 
 @main(currentUser, role, "Lista użytkowników", false){
 <meta charset="UTF-8">
-
-	<div class="container">
-	<h1 align="center">Lista sprzętu</h1>
+	<div class="container panel panel-default">
+	<h1 align="center">Magazyn sprzętu <span class="pull-right">@if((session.get("role") == "SuperUser")){
+			<a ref="tooltip" title="Dodaj sprzętu do magazynu" href="@routes.Equipments.newEquipment()" class="btn btn-primary" >
+			<i class="glyphicon glyphicon-plus"></i> Dodaj
+		</a>}</span></span></h1>
 	<br>
 		<table class="table table-striped">
 			<thead>
@@ -23,8 +25,16 @@
 				</tr>
 			</thead>
 			<tbody>
+			@if(equipments.size() == 0){
+				<tr>
+					<td>
+						<h3>Magazyn jest pusty !</h3>
+					</td>
+				</tr>
+			}
 			@for(equipment <- equipments) {
 				<tr>
+					
 					<td><a href="@routes.Equipments.editEquipment(equipment._id)"><b>@equipment.name</b></a></td>
 					<td>
 						@if(equipment.isReserved == true){Zarezerwowany}
@@ -67,9 +77,7 @@
 			}
 			</tbody>
 		</table>
-		<a href="@routes.Equipments.newEquipment()" class="btn btn-primary" >
-			<i class="glyphicon glyphicon-plus"></i> Dodaj sprzęt
-		</a>
+		<br>
 	</div>
     
     <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">

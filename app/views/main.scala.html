@@ -101,7 +101,7 @@
 		            <li><a href="@routes.Equipments.borrowEquipment()">Wypożycz sprzęt </a></li><!-- Borrow equipment from warehouse -->
 		            <li><a href="@routes.Equipments.returnEquipment()">Oddaj sprzęt </a></li><!-- Return equipment to warehouse -->
 		            <li class="divider"></li>
-		            <li><a href="@routes.Equipments.getEquipmentsList()">Lista sprzętu</a></li><!-- Displaying the courses List -->
+		            <li><a href="@routes.Equipments.getEquipmentsList()">Magazyn sprzętu</a></li><!-- Displaying the courses List -->
 		            <li class="divider"></li>
 		            <li><a href="@routes.Equipments.bookEquipment()">Zarezerwuj sprzęt </a></li><!-- Book equipment in warehouse -->
 		          </ul>
@@ -128,7 +128,7 @@
 		      <ul class="nav navbar-nav navbar-right">
 		        
 		        @if(session.containsKey("userName")){
-		        	<li><a @if(!navbarDisabled){ href="/account"}><i class="glyphicon glyphicon-user"></i> Moje konto</a></li><!-- User account details -->
+		        	<li><a @if(!navbarDisabled){ href="/account"}><i class="glyphicon glyphicon-user"></i> Moje dane</a></li><!-- User account details -->
 		        }
 		        
 		        <!-- Defining the link for logout -->
@@ -136,6 +136,10 @@
 		        	<li><a @if(!navbarDisabled){ href="/logout"}><i class="glyphicon glyphicon-log-out"></i> Wyloguj <b>@if(currentUser != null){@currentUser.firstName @currentUser.lastName}</b></a></li><!-- User deauthentication -->
 		        }
 		      	
+		      	<!-- Defining the link for login in -->
+		      	@if(!session.containsKey("userName")){
+		      	<li><a @if(!navbarDisabled){ href="/login"}><i class="glyphicon glyphicon-user"></i> Zarejestruj się</a></li><!-- User authentication -->
+		        }
 		      
 		      	<!-- Defining the link for login in -->
 		      	@if(!session.containsKey("userName")){
@@ -151,13 +155,9 @@
 		    </div><!-- /.navbar-collapse -->
 		  </div><!-- /.container-fluid -->
 		</nav>
-		
-		
-   
-        @content
-        <!-- <script src="bootstrap/js/bootstrap.min.js"></script> -->
+        @content    
         <script>
-	        $(document).ready(function(){
+	      $(document).ready(function(){
 			    $("[rel=tooltip]").tooltip({ placement: 'bottom'});
 			});
         </script>
