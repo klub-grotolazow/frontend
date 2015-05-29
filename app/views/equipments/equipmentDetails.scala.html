@@ -24,7 +24,14 @@
 						<div class="col-md-5">
 							<br>
 							@helper.inputText(equipmentForm("name"), '_label -> "Nazwa",  'class -> "form-control", 'placeholder -> "Wprowadź nazwę sprzętu")		
-							@helper.textarea(equipmentForm("description"), '_label -> "Opis",  'class -> "form-control", 'placeholder -> "Informacje o sprzęcie", 'rows -> 12, 'style -> "resize: none;")
+							@helper.textarea(equipmentForm("description"), '_label -> "Opis",  'class -> "form-control", 'placeholder -> "Informacje o sprzęcie", 'rows -> 10, 'style -> "resize: none;")
+							<br>
+							
+								<h4>Serwis sprzętu <span class="pull-right">
+								<a rel="tooltip" title="Kliknij by zmienić informację o serwisie sprzętu" >
+								<input id="isServicing" name="isServicing" type="checkbox" checked data-toggle="toggle" data-on="Sprzęt w serwisie" data-off="Sprzęt dostępny" data-onstyle="danger" data-offstyle="success" data-width="200" data-style="slow" checked="unchecked">
+								</span></a></h4>
+							
 							<br>
 						</div>	
 						<div class="col-md-offset-1 col-md-5">

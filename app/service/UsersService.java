@@ -170,7 +170,7 @@ public class UsersService {
 			return Controller.ok(usersList.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), UsersService.getUsersList()));
 		} else{
 			Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_USER_DETAILS + response.getStatus() +" "+ response.getStatusText());
-			return Controller.ok(request +" | "+ response.getBody());//return Controller.badRequest(userDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm,id));
+			return Controller.badRequest(userDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm,id));
 		}
 		} 
 		

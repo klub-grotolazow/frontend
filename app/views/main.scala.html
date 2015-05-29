@@ -21,9 +21,16 @@
 		<!-- Latest compiled and minified JavaScript -->
 		<script src="@routes.Assets.at("bootstrap/js/bootstrap.min.js")"></script>
 		<script src="@routes.Assets.at("javascripts/bootstrap-datepicker.js")"></script>
+		<link href="@routes.Assets.at("stylesheets/bootstrap-toggle.min.css")" rel="stylesheet">
+		<script src="@routes.Assets.at("javascripts/bootstrap-toggle.min.js")"></script>
 		
     </head>
     <body>
+    <style>
+	  .slow .toggle-group { transition: left 0.7s; -webkit-transition: left 0.7s; }
+	  .fast .toggle-group { transition: left 0.1s; -webkit-transition: left 0.1s; }
+	  .quick .toggle-group { transition: none; -webkit-transition: none; }
+	</style>
     	@if(flash.containsKey("success")){
 		<div class="alert alert-success alert-dismissible">
 		@flash.get("success")
