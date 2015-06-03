@@ -13,7 +13,6 @@ public class EquipmentHire {
 	public String reservationDate;
 	public String hireDate;
 	public String returnDate;
-	//public Option<Integer> delayedDays;
 	public enum conditionStatusEnum {Ok,Dirty,ToService,Damaged};
 	public conditionStatusEnum conditionStatus;
 	public String user_id;

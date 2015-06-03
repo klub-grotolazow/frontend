@@ -48,6 +48,19 @@ public class EquipmentsService {
 		return resultList;
 	}
 	
+	// Return a equipment with specialized id
+	public static Equipment getEquipment(String id){
+		WSResponse response = null;
+		Equipment equipment = null;
+		try{
+			response = RestService.callREST(Urls.GET_EQUIPMENT_URL+id, null, null, true, RestService.restServiceEnum.GET);
+			equipment = new Gson().fromJson(response.getBody(), Equipment.class);
+		} catch(Exception exception){
+			Controller.flash(Messages.ERROR, Messages.CANT_LOAD_EQUIPMENTS + exception);
+		}
+		return equipment;
+	}
+	
 	//Delete the equipment with the given id *****************************************************************************************
 	public static void deleteEquipment(String id){
 		WSResponse response = null;
@@ -57,75 +70,36 @@ public class EquipmentsService {
 		response = result.get(10000);
 		if(response.getStatus() == StatusCodes.OK){
 			Equipment equipment = new Gson().fromJson(response.getBody(), Equipment.class);
-			Controller.flash().put(Messages.SUCCESS, Messages.SUCCESS_DELETED + equipment.name);
+			Controller.flash().put(Messages.SUCCESS, Messages.SUCCESS_DELETED_EQUIPMENT + equipment.name);
 		} else{
-			Controller.flash().put(Messages.ERROR, Messages.ERROR_DELETE);
+			Controller.flash().put(Messages.ERROR, Messages.ERROR_DELETING_EQUIPMENT);
 		}
-		} catch(Exception exception){
+		} catch(Exception exception){	
 			Controller.flash(Messages.ERROR, Messages.ERROR_DELETING_EQUIPMENT + exception);
 		}
 	}
 		
-	//Save user ******************************************************************************************************************
-	public static Result saveUser(Form<Equipment> boundForm, String id){
-		/*if(boundForm.hasErrors()) {
-			Controller.flash(Messages.WARNING, Messages.CORRECT_FORM);
-			return Controller.badRequest(equipmentDetails.render(UsersService.getUser(Controller.session().get("userName")), 
-											Controller.session().get("role"),
-											boundForm,
-											id));
-		}
-		Equipment equipment = boundForm.get();
+	//Save equipment ******************************************************************************************************************
+	public static int saveEquipment(Equipment equipment) throws Exception{
 		if(equipment.allowedFor == null) equipment.allowedFor = new ArrayList<Equipment.allowedForEnum>();
 		if(equipment.hireHistory == null) equipment.hireHistory = new ArrayList<EquipmentHire>();
-		Gson gson = new Gson();   
-		String request = gson.toJson(user, User.class);
-
-			
 		WSResponse response = null;
-			
-		//The case for new user save --------------------------------------------------------------
-		if((id == null) || id.length() == 0){
+		Gson gson = new Gson();
+		String json = gson.toJson(equipment);
+		System.out.println(json);
+		response = RestService.callREST(Urls.SAVE_EQUIPMENTS_URL,json , Equipment.class, true, RestService.restServiceEnum.POST);
+		return response.getStatus();
 
-		try{
-		Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.POST_USER_URL)
-										.setContentType(Urls.CONTENT_TYPE_JSON)
-										.post(request);
-		response = result.get(10000);
-		} catch(Exception exception){
-			Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_USER + exception);
-			return Controller.badRequest(userDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm,id));
-		}
-		if(response.getStatus() == StatusCodes.CREATED){
-			Controller.flash(Messages.SUCCESS, Messages.SUCCESS_ADING_USER);
-			return Controller.ok(usersList.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), UsersService.getUsersList()));
-		} else{
-			Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_USER_DETAILS + response.getStatus() +" "+ response.getStatusText());
-			return Controller.badRequest(userDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm,id));
-		}
-		} 
-			
-		//The case for user update -----------------------------------------------------------------
-		else{
-			user._id = id;
-			request = gson.toJson(user, User.class);
-			try{
-			Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.PUT_USER_URL+id)
-											.setContentType(Urls.CONTENT_TYPE_JSON)
-											.put(request);
-			response = result.get(10000);
-			} catch(Exception exception){
-				Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_USER + exception);
-				return Controller.badRequest(userDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm,id));
-			}
-			if(response.getStatus() == StatusCodes.OK){
-				Controller.flash(Messages.SUCCESS, Messages.SUCCESS_UPDATE_USER);
-				return Controller.ok(usersList.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), UsersService.getUsersList()));
-			} else{
-				Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_USER_DETAILS + response.getStatus() +" "+ response.getStatusText());
-				return Controller.ok(request +" | "+ response.getBody());//return Controller.badRequest(userDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm,id));
-			}
-		}	*/
-		return Controller.TODO;
+	}
+	
+	//Update equipment ******************************************************************************************************************
+	public static int updateEquipment(Equipment equipment, String id){
+		WSResponse response = null;
+		equipment._id = id;
+		if(equipment.allowedFor == null) equipment.allowedFor = new ArrayList<Equipment.allowedForEnum>();
+		if(equipment.hireHistory == null) equipment.hireHistory = new ArrayList<EquipmentHire>();
+		System.out.println(new Gson().toJson(equipment));
+		response = RestService.callREST(Urls.PUT_EQUIPMENTS_URL+id, new Gson().toJson(equipment), Equipment.class, true, RestService.restServiceEnum.PUT);
+		return response.getStatus();
 	}
 }

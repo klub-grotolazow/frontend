@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import scala.Option;
@@ -35,7 +36,11 @@ public class Equipment {
 																																								//public Option<carabinerTypeEnum> carabinerType; 
 	public List<EquipmentHire> hireHistory;
 	
-	public Equipment() {}
+	public Equipment() {
+		this.allowedFor = new ArrayList<Equipment.allowedForEnum>();
+		this.hireHistory = new ArrayList<EquipmentHire>();
+	}
+	
 	
 	@Override
 	public String toString() {

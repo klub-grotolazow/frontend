@@ -24,7 +24,10 @@ public class Urls {
 
 	//Equipment urls
 	public static final String GET_EQUIPMENTS_URL =			"/equipments";
+	public static final String GET_EQUIPMENT_URL =			"/equipments/";
 	public static final String DELETE_EQUIPMENT_URL =		"/equipments/";
+	public static final String SAVE_EQUIPMENTS_URL =		"/equipments";
+	public static final String PUT_EQUIPMENTS_URL =			"/equipments/";
 	
 	//Payments urls
 	public static final String GET_PAYMENTS_URL =			"/payments";

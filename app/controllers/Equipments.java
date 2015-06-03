@@ -5,6 +5,7 @@ package controllers;
  */
 
 import models.Equipment;
+import models.EquipmentHire;
 import models.User;
 import play.data.Form;
 import play.mvc.Controller;
@@ -13,6 +14,8 @@ import play.mvc.Security;
 import service.EquipmentsService;
 import service.UsersService;
 import utils.Messages;
+import utils.StatusCodes;
+import utils.Utils;
 import views.html.equipments.equipmentsList;
 import views.html.equipments.equipmentDetails;
 
@@ -43,6 +46,8 @@ public class Equipments extends Controller {
 		return ok(equipmentDetails.render(UsersService.getUser(session().get("userName")), 
 											session().get("role"),
 											equipmentForm,
+											new Equipment(),
+											UsersService.getUsersList(),
 											null));
 	}
 	
@@ -60,13 +65,21 @@ public class Equipments extends Controller {
 		}
 	}
 	
-	// Edit the equipmet with giveb id *******************************************************************************************************
+	// Edit the equipment with given id *******************************************************************************************************
 	public static Result editEquipment(String id){
-		return TODO;
+		Equipment equipment = EquipmentsService.getEquipment(id);
+		System.out.println("Equipment is servicing > "+equipment.isServicing);
+		Form<Equipment> form = equipmentForm.fill(equipment);
+		return ok(equipmentDetails.render(Utils.getCurrentUser(), 
+											Utils.getRoles(),
+											form,
+											equipment,
+											UsersService.getUsersList(),
+											id));
 	}
 	
 	// Set the equipment with the give id as borrowd *****************************************************************************************
-	public static Result borrowEquipment(){
+	public static Result hireEquipment(){
 		return TODO;
 	}
 	
@@ -87,12 +100,68 @@ public class Equipments extends Controller {
 	
 	// Save or update the equipment with the given id ****************************************************************************************
 	public static Result saveEquipment(String id){
-		return TODO;
+		Equipment equipment = equipmentForm.bindFromRequest().get();
+		int status = 0;
+		try{
+		//Save new
+		if((id == null) || (id == "")){
+			status = EquipmentsService.saveEquipment(equipment); 
+		//Update existing
+		}else{
+			status = EquipmentsService.updateEquipment(equipment, id);
+		}
+		} catch(Exception exception){
+			flash().put(Messages.ERROR, Messages.ERROR_SAVING_EQUIPMENT + exception);
+			return badRequest(equipmentDetails.render(Utils.getCurrentUser(), 
+														Utils.getRoles(),
+														equipmentForm,
+														equipment,
+														UsersService.getUsersList(),
+														id));
+		}
+		if((status == StatusCodes.CREATED) || (status == StatusCodes.OK)){
+		flash().put(Messages.SUCCESS, Messages.SUCCESS_SAVING_EQUIPMENT + equipment.name);
+		return ok(equipmentsList.render(Utils.getCurrentUser(), 
+											Utils.getRoles(), 
+											EquipmentsService.getEquipmentsList()));
+		} else{
+			flash().put(Messages.ERROR, Messages.ERROR_SAVING_EQUIPMENT + "Status "+status);
+			return badRequest(equipmentDetails.render(Utils.getCurrentUser(), 
+														Utils.getRoles(),
+														equipmentForm,
+														equipment,
+														UsersService.getUsersList(),
+														id));
+		}
 	}
 	
 	// Book the equipment with the given id **************************************************************************************************
-		public static Result bookEquipment(){
-			return TODO;
+		public static Result bookEquipment(String id){
+			Equipment equipment = EquipmentsService.getEquipment(id);
+			if(Utils.getCurrentUser().feeStatus.equals(User.feeStatusEnum.Blocked)){
+				flash().put(Messages.ERROR, Messages.ERROR_BOOKING_EQUIPMENT);
+				return forbidden(equipmentsList.render(Utils.getCurrentUser(), 
+														Utils.getRoles(), 
+														EquipmentsService.getEquipmentsList()))S;
+			}
+			if(equipment.isAvailable){
+				equipment.isReserved = true;
+				equipment.isAvailable = false;
+				EquipmentHire hire = new EquipmentHire();
+				hire.reservationDate = Utils.getDate();
+				hire.user_id = Utils.getCurrentUser()._id;
+				equipment.hireHistory.add(hire);
+				EquipmentsService.updateEquipment(equipment, id);
+				flash().put(Messages.SUCCESS, Messages.SUCCESS_BOOKIN_EQUIPMENT);
+				return ok(equipmentsList.render(Utils.getCurrentUser(), 
+														Utils.getRoles(), 
+														EquipmentsService.getEquipmentsList()));
+			}else{
+				flash().put(Messages.ERROR, Messages.ERROR_BOOKING_EQUIPMENT_ALRADY_BOOKED);
+				return forbidden(equipmentsList.render(Utils.getCurrentUser(), 
+														Utils.getRoles(), 
+														EquipmentsService.getEquipmentsList()));
+			}
 		}
 	
 }

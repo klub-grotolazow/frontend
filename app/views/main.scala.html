@@ -24,13 +24,10 @@
 		<link href="@routes.Assets.at("stylesheets/bootstrap-toggle.min.css")" rel="stylesheet">
 		<script src="@routes.Assets.at("javascripts/bootstrap-toggle.min.js")"></script>
 		
+		
     </head>
     <body>
-    <style>
-	  .slow .toggle-group { transition: left 0.7s; -webkit-transition: left 0.7s; }
-	  .fast .toggle-group { transition: left 0.1s; -webkit-transition: left 0.1s; }
-	  .quick .toggle-group { transition: none; -webkit-transition: none; }
-	</style>
+    
     	@if(flash.containsKey("success")){
 		<div class="alert alert-success alert-dismissible">
 		@flash.get("success")
@@ -105,12 +102,12 @@
 		          	@if((session.get("role") == "SuperUser") || (session.get("role") == "WarehouseManager")){
 		            	<li><a href="@routes.Equipments.newEquipment()">Dodaj sprzęt </a></li><!-- Adding new equipment to warehouse -->
 		            }
-		            <li><a href="@routes.Equipments.borrowEquipment()">Wypożycz sprzęt </a></li><!-- Borrow equipment from warehouse -->
+		            <li><a href="@routes.Equipments.hireEquipment()">Wypożycz sprzęt </a></li><!-- Borrow equipment from warehouse -->
 		            <li><a href="@routes.Equipments.returnEquipment()">Oddaj sprzęt </a></li><!-- Return equipment to warehouse -->
 		            <li class="divider"></li>
 		            <li><a href="@routes.Equipments.getEquipmentsList()">Magazyn sprzętu</a></li><!-- Displaying the courses List -->
 		            <li class="divider"></li>
-		            <li><a href="@routes.Equipments.bookEquipment()">Zarezerwuj sprzęt </a></li><!-- Book equipment in warehouse -->
+		            <li><a href="@routes.Equipments.getEquipmentsList()">Zarezerwuj sprzęt </a></li><!-- Book equipment in warehouse -->
 		          </ul>
 		        </li>
 		      }

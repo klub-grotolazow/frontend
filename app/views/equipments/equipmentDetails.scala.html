@@ -1,4 +1,4 @@
-@(currentUser: User, role: String, equipmentForm: Form[Equipment], id: String)
+@(currentUser: User, role: String, equipmentForm: Form[Equipment], equipment: Equipment, users : List[User], id: String)
 @import helper._
 @import helper.twitterBootstrap._
 
@@ -26,21 +26,39 @@
 							@helper.inputText(equipmentForm("name"), '_label -> "Nazwa",  'class -> "form-control", 'placeholder -> "Wprowadź nazwę sprzętu")		
 							@helper.textarea(equipmentForm("description"), '_label -> "Opis",  'class -> "form-control", 'placeholder -> "Informacje o sprzęcie", 'rows -> 10, 'style -> "resize: none;")
 							<br>
-							
-								<h4>Serwis sprzętu <span class="pull-right">
-								<a rel="tooltip" title="Kliknij by zmienić informację o serwisie sprzętu" >
-								<input id="isServicing" name="isServicing" type="checkbox" checked data-toggle="toggle" data-on="Sprzęt w serwisie" data-off="Sprzęt dostępny" data-onstyle="danger" data-offstyle="success" data-width="200" data-style="slow" checked="unchecked">
-								</span></a></h4>
-							
+							<div class="container col-md-12">
+							<div class="row">
+								<b>Dostępność sprzętu <span class="pull-right">
+								<a rel="tooltip" title="Pokazuje dostępność sprzętu" >
+								<input  id="isAvailable" name="isAvailable" type="checkbox" @if(equipment.isAvailable){checked="checked"} data-toggle="toggle" data-on="Sprzęt dostępny" data-off="Sprzęt niedostępny" data-onstyle="success" data-offstyle="danger" data-width="200">
+								</span></a></b>
+							</div>
 							<br>
+							<div class="row">
+								<b>Serwis sprzętu <span class="pull-right">
+								<a rel="tooltip" title="Kliknij by zmienić informację o serwisie sprzętu" >
+								<input id="isServicing" name="isServicing" type="checkbox" @if(equipment.isServicing){checked="checked"} data-toggle="toggle" data-on="W serwisie" data-off="Nie w serwisie" data-onstyle="danger" data-offstyle="success" data-width="200">
+								</span></a></b>
+							</div>
+							<br>
+							<div class="row">
+								<b>Rezerwacja <span class="pull-right">
+								<a rel="tooltip" title="Kliknij by oznaczy sprzęt jako zarezerwowany" >
+								<input id="isReserved" name="isReserved" type="checkbox" @if(equipment.isReserved){checked="checked"} data-toggle="toggle" data-on="Rezerwacja" data-off="Brak rezerwacji" data-onstyle="danger" data-offstyle="success" data-width="200">
+								</span></a></b>
+							</div>
+							<br>
+							<div class="row">
+								<b>Wypożyczenie <span class="pull-right">
+								<a rel="tooltip" title="Kliknij by oznaczyć sprzęt jako wypożyczony" >
+								<input id="isHired" name="isHired" type="checkbox" @if(equipment.isHired){checked="checked"} data-toggle="toggle" data-on="Sprzęt wypożyczony" data-off="Sprzęt w magazynie" data-onstyle="danger" data-offstyle="success" data-width="200">
+								</span></a></b>
+							</div>
+							<br>
+							</div>
 						</div>	
 						<div class="col-md-offset-1 col-md-5">
 							<br>
-							<!-- public String purchaseDate;
-							public String nextInspectionDate;
-							public Integer price;
-								public String serialNumber; 
-								{CandidateMember,CommonMember,HonourableMember,SupportingMember}-->
 							@helper.inputText(equipmentForm("purchaseDate"), '_label -> "Data zakupu",  'class -> "form-control datepicker", 'placeholder -> "Wprowadź datę zakupu")
 							@helper.inputText(equipmentForm("nextInspectionDate"), '_label -> "Data inspekcji",  'class -> "form-control datepicker", 'placeholder -> "Wprowadź datę inspekcji")
 							@helper.inputText(equipmentForm("serialNumber"), '_label -> "S/N",  'class -> "form-control", 'placeholder -> "Wprowadź numer seryjny")
@@ -61,12 +79,161 @@
 					</div>
 				</div>
 			</fieldset>	
-		}	
+		}
+		<div class="col-md-12">
+			<div class="col-md-12  panel panel-default">
+				<h2 align="center">Historia sprzętu</h2>
+				<hr>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Użytkownik</th>
+							<th>Data rezerwacji</th>
+							<th>Data wypożyczenia</th>
+							<th>Data zwrotu</th>
+							<th>Stan przy zwrocie</th>					
+						</tr>
+					</thead>
+					<tbody>
+					@if(equipment.hireHistory.size == 0){
+						<tr>
+							<td>
+								<h3>Brak historii sprzętu!</h3>
+							</td>
+						</tr>
+					}
+					@for(item <- equipment.hireHistory) {
+						<tr>
+							
+							<td>
+								@for(user <- users){
+									@if(user._id == item.user_id){
+										@user.toString()
+									}
+								}							
+							</td>
+							<td>
+								@item.reservationDate
+							</td>
+							<td>
+								@item.hireDate
+							</td>
+							<td>
+								@item.returnDate
+							</td>
+							<td>
+								@if(item.conditionStatus == "Ok"){Ok}
+								@if(item.conditionStatus == "Dirty"){Brudny}
+								@if(item.conditionStatus == "ToService"){Do serwisowania}
+								@if(item.conditionStatus == "Damaged"){Uszkodzony}
+								@if((item.conditionStatus != "Ok") && (item.conditionStatus != "Dirty") && (item.conditionStatus != "ToService") && (item.conditionStatus != "Damaged")){Brak danych}
+							</td>
+						</tr>
+					}
+					</tbody>
+				</table>
+			</div>
+		</div>			
 	</div>
 	<script>
 		$(function(){
 			$('.datepicker').datepicker()
+		 if($('#isServicing').is(':checked')){
+				$('#isReserved').bootstrapToggle('off')
+				$('#isHired').bootstrapToggle('off')
+				$('#isAvailable').bootstrapToggle('off')
+		    	$('#isReserved').bootstrapToggle('disable')
+				$('#isHired').bootstrapToggle('disable')
+				$('#isAvailable').bootstrapToggle('disable')
+	    	} 
+			if($('#isReserved').is(':checked')){
+				$('#isServicing').bootstrapToggle('off')
+		    	$('#isServicing').bootstrapToggle('disable')
+		    	$('#isAvailable').bootstrapToggle('off')
+		    	$('#isAvailable').bootstrapToggle('disable')
+	    	}
+		    if($('#isHired').is(':checked')){
+		    	$('#isServicing').bootstrapToggle('disable')
+		    	$('#isReserved').bootstrapToggle('disable')
+		    	$('#isAvailable').bootstrapToggle('off')
+		    	$('#isAvailable').bootstrapToggle('disable')	
+		    }
+		    if($('#isAvailable').is(':checked')){
+		    	$('#isServicing').bootstrapToggle('off')
+		    	$('#isReserved').bootstrapToggle('off')
+		    	$('#isHired').bootstrapToggle('off')
+		    } else{
+		    	$('#isAvailable').bootstrapToggle('on')
+		    	$('#isAvailable').bootstrapToggle('disable')
+		    } 
 		});
+		
+		$(function() {
+		    $('#isServicing').change(function() {
+		    	if($('#isServicing').is(':checked')){
+		    		$('#isReserved').bootstrapToggle('enable')
+		    		$('#isReserved').bootstrapToggle('off')
+		    		$('#isHired').bootstrapToggle('enable')
+					$('#isHired').bootstrapToggle('off')
+					$('#isAvailable').bootstrapToggle('enable')
+					$('#isAvailable').bootstrapToggle('off')
+			    	$('#isReserved').bootstrapToggle('disable')
+					$('#isHired').bootstrapToggle('disable')
+					$('#isAvailable').bootstrapToggle('disable')
+		    	}else{
+		    		$('#isReserved').bootstrapToggle('enable')
+					$('#isHired').bootstrapToggle('enable')
+					$('#isAvailable').bootstrapToggle('enable')
+					$('#isAvailable').bootstrapToggle('on')
+					$('#isAvailable').bootstrapToggle('disable')
+		    	}
+		    })
+		  });
+		
+		$(function() {
+		    $('#isReserved').change(function() {
+		    	if($('#isReserved').is(':checked')){
+		    		$('#isServicing').bootstrapToggle('enable')
+		    		$('#isServicing').bootstrapToggle('off')
+			    	$('#isServicing').bootstrapToggle('disable')
+			    	$('#isAvailable').bootstrapToggle('enable')
+			    	$('#isAvailable').bootstrapToggle('off')
+			    	$('#isAvailable').bootstrapToggle('disable')
+		    	}else{
+		    		$('#isServicing').bootstrapToggle('enable')
+		    		$('#isAvailable').bootstrapToggle('enable')
+			    	$('#isAvailable').bootstrapToggle('on')
+			    	$('#isAvailable').bootstrapToggle('disable')
+		    	}
+		    })
+		  });
+		$(function() {
+		    $('#isHired').change(function() {
+		    	if($('#isHired').is(':checked')){
+			    	$('#isServicing').bootstrapToggle('disable')
+			    	$('#isReserved').bootstrapToggle('enable')
+			    	$('#isReserved').bootstrapToggle('off')
+			    	$('#isReserved').bootstrapToggle('disable')
+			    	$('#isAvailable').bootstrapToggle('enable')
+			    	$('#isAvailable').bootstrapToggle('off')
+			    	$('#isAvailable').bootstrapToggle('disable')
+		    	}else{
+		    		$('#isReserved').bootstrapToggle('enable')
+		    		$('#isReserved').bootstrapToggle('off')
+		    		$('#isAvailable').bootstrapToggle('enable')
+			    	$('#isAvailable').bootstrapToggle('on')
+			    	$('#isAvailable').bootstrapToggle('disable')
+		    	}
+		    })
+		  });
+		
+		$('#saveButton').click(function(e){
+			$('#isAvailable').bootstrapToggle('enable')
+			$('#isServicing').bootstrapToggle('enable')
+			$('#isReserved').bootstrapToggle('enable')
+			$('#isHired').bootstrapToggle('enable')
+		});
+	
 	</script>
 }
 

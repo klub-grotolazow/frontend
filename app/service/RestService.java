@@ -45,12 +45,25 @@ public class RestService {
 					
 					// For PUT method ________________________________________________________________
 					if(httpMetod.equals(restServiceEnum.PUT)){
-						System.out.println("in put :  url is"+url+" and request is -> "+ request );
 						result = WS	.url(url)
 								.setContentType(Urls.CONTENT_TYPE_JSON)
 								//.setAuth(Utils.getAuthenticationHeader())
-								
 								.put(requestJson);
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
 						return result.get(Utils.WAIT_FOR_RESPONSE);
 					}
 					

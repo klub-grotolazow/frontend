@@ -9,15 +9,19 @@ import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 import play.mvc.Controller;
+import service.UsersService;
 
 import java.util.Arrays;
 
 import models.Course;
+import models.Equipment;
 import models.Setting;
+import models.User;
 
 public class Utils {
 	public static final String 		CURRENT_USER_ID = "userName";
@@ -133,6 +137,22 @@ public class Utils {
 		String key = new  BigInteger(130, random).toString(32);
 		System.out.println("Generated key is : " +key);
 		return key;
+	}
+	
+	//Get logged in user 
+	public static User getCurrentUser(){
+		return UsersService.getUser(Controller.session().get(CURRENT_USER_ID));
+	}
+	
+	//Get current user's system roles 
+	public static String getRoles(){
+		return Controller.session().get("role");
+	}
+	
+	//Current date in format dd/mm/yyyy
+	public static String getDate(){
+		Date date = new Date();
+		return date.toString();
 	}
 	
 }
