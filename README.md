@@ -12,17 +12,22 @@ For installing it locally you need JDK 6 (Java development kit) or later. You al
 ```
 git clone git@github.com:klub-grotolazow/frontend.git
 ```
+
 2. Navigate to the frontend directory in the git repository folder
 ```
 cd frontend\frontendAKGtool
 ```
+
 3. Run the activator program on port 9001
 ```
 activator run 9001
 ```
+
 4. Now you can test application.
 Open your browser and type in the adress field : http:/localhost:9001
-Your web client is ready to use. Test the functions provided by the client.
+Your web client is ready to use.
+Before using configure the backend url in the client's settings.  
+Test the functions provided by the client. 
 
 
 ### Functionality provided by the web client
@@ -38,6 +43,19 @@ COURSE:
   2. List all courses
   3. Edit course data
   4. Delete course
+  5. Add, Remove, Edit course meeting
+  6. Add, Remove coures members
+  7. Check presets on meetings
+  
+EQUIPMENT
+  1. Add equipment
+  2. List all equipments
+  3. Edit chosen equipment
+  4. Remove equipment
+  5. Book an equipment
+  6. Hire equipment
+  7. Return equipment
+  8. Service equipment
 
 
 
