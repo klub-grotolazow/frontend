@@ -1,6 +1,7 @@
 package service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import play.data.Form;
@@ -16,6 +17,7 @@ import utils.Utils;
 
 import com.google.gson.Gson;
 
+import controllers.Equipments;
 import models.Course;
 import models.Equipment;
 import models.EquipmentHire;
@@ -83,6 +85,22 @@ public class EquipmentsService {
 	public static int saveEquipment(Equipment equipment) throws Exception{
 		if(equipment.allowedFor == null) equipment.allowedFor = new ArrayList<Equipment.allowedForEnum>();
 		if(equipment.hireHistory == null) equipment.hireHistory = new ArrayList<EquipmentHire>();
+		if(stateChanged(equipment)){
+			if(equipment.isHired){                                               //Todo user id-s
+				EquipmentHire hire = new EquipmentHire();
+				hire.warehouseman_id = Utils.getCurrentUser()._id;
+				hire.user_id = Utils.getCurrentUser()._id;
+				hire.hireDate = new Date().toString();
+				equipment.hireHistory.add(hire);
+			}
+			if(equipment.isReserved){
+				EquipmentHire hire = new EquipmentHire();
+				hire.warehouseman_id = Utils.getCurrentUser()._id;
+				hire.user_id = Utils.getCurrentUser()._id;
+				hire.reservationDate = new Date().toString();
+				equipment.hireHistory.add(hire);
+			}
+		}
 		WSResponse response = null;
 		Gson gson = new Gson();
 		String json = gson.toJson(equipment);
@@ -96,10 +114,113 @@ public class EquipmentsService {
 	public static int updateEquipment(Equipment equipment, String id){
 		WSResponse response = null;
 		equipment._id = id;
-		if(equipment.allowedFor == null) equipment.allowedFor = new ArrayList<Equipment.allowedForEnum>();
-		if(equipment.hireHistory == null) equipment.hireHistory = new ArrayList<EquipmentHire>();
-		System.out.println(new Gson().toJson(equipment));
+		if(equipment.hireHistory.size() == 0){
+			equipment.hireHistory = EquipmentsService.getEquipment(id).hireHistory;
+		}
+		if(stateChanged(equipment)){											//Todo user id-s and equipment condition
+			if(equipment.isHired){
+				EquipmentHire hire = new EquipmentHire();
+				hire.warehouseman_id = Utils.getCurrentUser()._id;
+				hire.user_id = Utils.getCurrentUser()._id;
+				hire.hireDate = new Date().toString();
+				equipment.hireHistory.add(hire);
+			}
+			if(equipment.isReserved){
+				if(wasHired()){
+					EquipmentHire hire = new EquipmentHire();
+					hire.warehouseman_id = Utils.getCurrentUser()._id;
+					hire.user_id = Utils.getCurrentUser()._id;
+					hire.returnDate = new Date().toString();
+					hire.conditionStatus = EquipmentHire.conditionStatusEnum.Ok;
+					equipment.hireHistory.add(hire);
+				}else{
+					EquipmentHire hire = new EquipmentHire();
+					hire.warehouseman_id = Utils.getCurrentUser()._id;
+					hire.user_id = Utils.getCurrentUser()._id;
+					hire.reservationDate = new Date().toString();
+					equipment.hireHistory.add(hire);
+				}
+			}
+			if(equipment.isAvailable){
+				if(wasHired()){
+					EquipmentHire hire = new EquipmentHire();
+					hire.warehouseman_id = Utils.getCurrentUser()._id;
+					hire.user_id = Utils.getCurrentUser()._id;
+					hire.returnDate = new Date().toString();
+					hire.conditionStatus = EquipmentHire.conditionStatusEnum.Ok;
+					equipment.hireHistory.add(hire);
+				}
+			}
+			if(equipment.isServicing){
+				if(wasHired()){
+					EquipmentHire hire = new EquipmentHire();
+					hire.warehouseman_id = Utils.getCurrentUser()._id;
+					hire.user_id = Utils.getCurrentUser()._id;
+					hire.returnDate = new Date().toString();
+					hire.conditionStatus = EquipmentHire.conditionStatusEnum.Ok;
+					equipment.hireHistory.add(hire);
+				}
+			}
+		}
+		System.out.println("in update: >"+new Gson().toJson(equipment));
 		response = RestService.callREST(Urls.PUT_EQUIPMENTS_URL+id, new Gson().toJson(equipment), Equipment.class, true, RestService.restServiceEnum.PUT);
 		return response.getStatus();
+	}
+	
+	//Saves the equipment state hired/reserved/available/service in session
+	public static void saveState(Equipment equipment){
+		if(equipment.isAvailable == true){
+			if(Controller.session().containsKey(Equipments.EQUIPMENT_STATE)) Controller.session().remove(Equipments.EQUIPMENT_STATE);
+			Controller.session().put(Equipments.EQUIPMENT_STATE, Equipments.stateEnum.Available.toString());
+		}
+		if(equipment.isServicing == true){
+			if(Controller.session().containsKey(Equipments.EQUIPMENT_STATE)) Controller.session().remove(Equipments.EQUIPMENT_STATE);
+			Controller.session().put(Equipments.EQUIPMENT_STATE, Equipments.stateEnum.Service.toString());
+		}
+		if(equipment.isHired == true){
+			if(Controller.session().containsKey(Equipments.EQUIPMENT_STATE)) Controller.session().remove(Equipments.EQUIPMENT_STATE);
+			Controller.session().put(Equipments.EQUIPMENT_STATE, Equipments.stateEnum.Hired.toString());
+		}
+		if(equipment.isReserved == true){
+			if(Controller.session().containsKey(Equipments.EQUIPMENT_STATE)) Controller.session().remove(Equipments.EQUIPMENT_STATE);
+			Controller.session().put(Equipments.EQUIPMENT_STATE, Equipments.stateEnum.Reserved.toString());
+		}
+	}
+	
+	//Check the equipment state hired/reserved/available/service in session
+	public static boolean stateChanged(Equipment equipment){
+		String state = null;
+		if(Controller.session().containsKey(Equipments.EQUIPMENT_STATE)) state = Controller.session().get(Equipments.EQUIPMENT_STATE);
+		if(equipment.isAvailable == true){
+			if(Equipments.stateEnum.Available.toString().equals(state)){
+				Controller.session().remove(Equipments.EQUIPMENT_STATE);
+				return false;
+			}
+		}
+		if(equipment.isServicing == true){
+			if(Equipments.stateEnum.Service.toString().equals(state)){
+				Controller.session().remove(Equipments.EQUIPMENT_STATE);
+				return false;
+			}
+		}
+		if(equipment.isHired == true){
+			if(Equipments.stateEnum.Hired.toString().equals(state)){
+				Controller.session().remove(Equipments.EQUIPMENT_STATE);
+				return false;
+			}
+		}
+		if(equipment.isReserved == true){
+			if(Equipments.stateEnum.Reserved.toString().equals(state)){
+				Controller.session().remove(Equipments.EQUIPMENT_STATE);
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	//Check if was hired
+	public static boolean wasHired(){
+		if(Equipments.stateEnum.Hired.toString().equals(Controller.session().get(Equipments.EQUIPMENT_STATE))) return true;
+		else return false;
 	}
 }

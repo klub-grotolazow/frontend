@@ -16,7 +16,7 @@
 				<tr>
 					<th>Nazwa</th>
 					<th>Dostępność</th>
-					<th>Ilość wypożyczeń</th>
+					<th>Historia</th>
 					<th>Rezerwacja</th>
 					@if((session.get("role") == "SuperUser") || (session.get("role") == "WarehouseManager")){
 					<th>Zmień</th>
@@ -37,10 +37,10 @@
 					
 					<td><a href="@routes.Equipments.editEquipment(equipment._id)"><b>@equipment.name</b></a></td>
 					<td>
-						@if(equipment.isReserved == true){Zarezerwowany}
-						@if(equipment.isHired == true){Wypożyczony}
-						@if(equipment.isServicing == true){W serwisie}
-						@if(equipment.isAvailable == true){Dostępny}
+						@if(equipment.isReserved == true){<b style="color:orange;">Zarezerwowany</b>}
+						@if(equipment.isHired == true){<b style="color:red;">Wypożyczony</b>}
+						@if(equipment.isServicing == true){<b style="color:red;">W serwisie</b>}
+						@if(equipment.isAvailable == true){<b style="color:green;">Dostępny</b>}
 					
 					</td>
 					<td>

@@ -44,7 +44,7 @@
 							<div class="row">
 								<b>Rezerwacja <span class="pull-right">
 								<a rel="tooltip" title="Kliknij by oznaczy sprzęt jako zarezerwowany" >
-								<input id="isReserved" name="isReserved" type="checkbox" @if(equipment.isReserved){checked="checked"} data-toggle="toggle" data-on="Rezerwacja" data-off="Brak rezerwacji" data-onstyle="danger" data-offstyle="success" data-width="200">
+								<input id="isReserved" name="isReserved" type="checkbox" @if(equipment.isReserved){checked="checked"} data-toggle="toggle" data-on="Rezerwacja" data-off="Brak rezerwacji" data-onstyle="warning" data-offstyle="success" data-width="200">
 								</span></a></b>
 							</div>
 							<br>
@@ -122,16 +122,19 @@
 								@item.returnDate
 							</td>
 							<td>
-								@if(item.conditionStatus == "Ok"){Ok}
-								@if(item.conditionStatus == "Dirty"){Brudny}
-								@if(item.conditionStatus == "ToService"){Do serwisowania}
-								@if(item.conditionStatus == "Damaged"){Uszkodzony}
-								@if((item.conditionStatus != "Ok") && (item.conditionStatus != "Dirty") && (item.conditionStatus != "ToService") && (item.conditionStatus != "Damaged")){Brak danych}
+								@if(item.conditionStatus != null){
+									@if(item.conditionStatus.toString() == "Ok"){Ok}
+									@if(item.conditionStatus.toString() == "Dirty"){Brudny}
+									@if(item.conditionStatus.toString() == "ToService"){Do serwisowania}
+									@if(item.conditionStatus.toString() == "Damaged"){Uszkodzony}
+									@if((item.conditionStatus.toString() != "Ok") && (item.conditionStatus.toString() != "Dirty") && (item.conditionStatus.toString() != "ToService") && (item.conditionStatus.toString() != "Damaged")){Brak danych}
+								}else{Brak danych}
 							</td>
 						</tr>
 					}
 					</tbody>
 				</table>
+				<br>
 			</div>
 		</div>			
 	</div>
@@ -162,6 +165,7 @@
 		    	$('#isServicing').bootstrapToggle('off')
 		    	$('#isReserved').bootstrapToggle('off')
 		    	$('#isHired').bootstrapToggle('off')
+		    	$('#isAvailable').bootstrapToggle('disable')
 		    } else{
 		    	$('#isAvailable').bootstrapToggle('on')
 		    	$('#isAvailable').bootstrapToggle('disable')

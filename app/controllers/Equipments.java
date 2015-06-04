@@ -4,6 +4,8 @@ package controllers;
  * @Author(name="Lukas Pecak")
  */
 
+import com.google.gson.Gson;
+
 import models.Equipment;
 import models.EquipmentHire;
 import models.User;
@@ -21,7 +23,10 @@ import views.html.equipments.equipmentDetails;
 
 @Security.Authenticated(Secured.class)
 public class Equipments extends Controller {
+	public static final String EQUIPMENT_STATE = "equipmentState";
+	public static enum stateEnum {Available, Reserved, Hired, Service};
 	private static Form<Equipment> equipmentForm = Form.form(Equipment.class);
+
 	
 	// List all equipment in warehouse *******************************************************************************************************
 	public static Result getEquipmentsList(){
@@ -43,10 +48,14 @@ public class Equipments extends Controller {
 	// Reneder a view for entering new equipment *********************************************************************************************
 	public static Result newEquipment(){
 		//@(currentUser: User, role: String, equipmentForm: Form[Equipment], id: String)
+		Equipment newEquipment = new Equipment();
+		newEquipment.isAvailable = true;
+		EquipmentsService.saveState(newEquipment);
+		newEquipment = new Equipment();
 		return ok(equipmentDetails.render(UsersService.getUser(session().get("userName")), 
 											session().get("role"),
 											equipmentForm,
-											new Equipment(),
+											newEquipment,
 											UsersService.getUsersList(),
 											null));
 	}
@@ -68,7 +77,7 @@ public class Equipments extends Controller {
 	// Edit the equipment with given id *******************************************************************************************************
 	public static Result editEquipment(String id){
 		Equipment equipment = EquipmentsService.getEquipment(id);
-		System.out.println("Equipment is servicing > "+equipment.isServicing);
+		EquipmentsService.saveState(equipment);
 		Form<Equipment> form = equipmentForm.fill(equipment);
 		return ok(equipmentDetails.render(Utils.getCurrentUser(), 
 											Utils.getRoles(),
@@ -142,7 +151,7 @@ public class Equipments extends Controller {
 				flash().put(Messages.ERROR, Messages.ERROR_BOOKING_EQUIPMENT);
 				return forbidden(equipmentsList.render(Utils.getCurrentUser(), 
 														Utils.getRoles(), 
-														EquipmentsService.getEquipmentsList()))S;
+														EquipmentsService.getEquipmentsList()));
 			}
 			if(equipment.isAvailable){
 				equipment.isReserved = true;
@@ -150,8 +159,10 @@ public class Equipments extends Controller {
 				EquipmentHire hire = new EquipmentHire();
 				hire.reservationDate = Utils.getDate();
 				hire.user_id = Utils.getCurrentUser()._id;
+				hire.warehouseman_id = "brak";
 				equipment.hireHistory.add(hire);
-				EquipmentsService.updateEquipment(equipment, id);
+				System.out.println("in book : > "+ new Gson().toJson(equipment));
+				System.out.println(EquipmentsService.updateEquipment(equipment, id));
 				flash().put(Messages.SUCCESS, Messages.SUCCESS_BOOKIN_EQUIPMENT);
 				return ok(equipmentsList.render(Utils.getCurrentUser(), 
 														Utils.getRoles(), 
