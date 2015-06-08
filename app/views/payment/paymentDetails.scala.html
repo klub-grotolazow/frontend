@@ -1,3 +1,330 @@
+@(currentUser: User, role: String, paymentForm: Form[Payment], payment: Payment, users : List[User], courses: List[Course], id: String)
+@import helper._
+@import helper.twitterBootstrap._
+
+@main(currentUser, role, "Sprzęt", false){
+	<meta charset="UTF-8">
+		<div class="container">
+		@helper.form(action = routes.Payments.savePayment(id),  'enctype -> "multipart/form-data") {
+			<fieldset>
+				<legend>
+					<div class="container row">
+						<div class="col-md-12">
+							<h1>Płatność
+								<span class="pull-right">
+							    	<a rel="tooltip" title="Powrót do płatności" class="btn btn-warning" href="@routes.Payments.getPaymentsList()">Powrót</a> 
+									<input rel="tooltip" title="Zapisz i do listy płatności" id="saveButton" type="submit" class="btn btn-primary" value="Zapisz">
+						    </span>
+							</h1>
+						</div>
+					</div>
+				</legend>	
+				<div class="col-md-12">
+					<div class="col-md-12  panel panel-default">
+						<div class="col-md-5">
+							<br>
+							@select(paymentForm("paymentType"), 
+									options("MonthlyFee"->"Składka członkowska",
+											"CourseCost"->"Opłata za kurs",
+											"PenaltyForEquipmentDamage"->"Dodatkowa opłata za zniszczenia",
+											"Salary"->"Wynagrodzenie"),
+											'_label -> "Typ płatności",
+											'class -> "form-control",
+											'rel->"tooltip",
+											'title->"Typ rejestrowanej płatności")
+							
+							@helper.inputText(paymentForm("amount"), '_label -> "Kwota",  'class -> "form-control", 'placeholder -> "Wprowadź kwotę płatności w PLN", 'type->"number")		
+							@select(paymentForm("paymentStatus"), 
+									options("WaitingForPayment"->"Oczekiwanie na płatność",
+											"NotPayed"->"Nie nie zrealizowana",
+											"Payed"->"Płatnośc zrealizowana"),
+											'_label -> "Status płatności",
+											'class -> "form-control",
+											'rel->"tooltip",
+											'title->"Status rejestrowanej płatności")
+							@helper.inputText(paymentForm("dueDate"), '_label -> "Płatne do",  'class -> "form-control datepicker", 'placeholder -> "Wprowadź datę płatności")
+							<br>
+							<div class="container col-md-12">
+							
+							<br>
+							</div>
+						</div>	
+						<div class="col-md-offset-1 col-md-5">
+							<br>
+							<br>
+							<!-- Choosing the user related with the payment -->
+							<div class="clearfix col-md-offset-1 row center" id="user_id_field">	
+								<div class="col-md-11">
+									<span class="pull-left">
+										<label for="user_id">Użytkownik związany z płatnością :  </label>
+										<br>
+										<b id="user_name">
+										@if(payment != null){
+											@if((payment.user_id != null) && (payment.user_id != "")){
+												@for(user <- users){
+													@if(user._id == payment.user_id){
+														@user.toString()
+													}
+												}
+											} else{
+												Brak!
+											}
+										} else{
+											Brak!
+										}
+										</b>
+									</span>
+									<span class="pull-right">
+										<a class="link" id="userLink" data-toggle="modal" data-target="#chooseUserModal">
+										@if(payment != null){
+											@if((payment.user_id == null) || (payment.user_id == "")){		
+												<i rel="tooltip" title="Dodaj użytkownika" id="add_member_icon" class="glyphicon glyphicon-plus"></i>								    		
+											} else{
+												<i rel="tooltip" title="Zmień użytkownika" class="glyphicon glyphicon-edit"></i>
+											}
+										} else{
+											<i id="add_member_icon" class="glyphicon glyphicon-plus"></i>
+										}	
+										</a>								    	
+									</span>
+								</div>    
+								<input hidden id="user_id" name="user_id" value="@if(payment != null ){@payment.user_id}"></input> 
+							</div>
+							<hr>
+							<!-- Choosing the payment accounter -->
+							<div class="clearfix col-md-offset-1 row center" id="accounter_id_field">	
+								<div class="col-md-11">
+									<span class="pull-left">
+										<label for="accounter_id">Odbiorca płatności :  </label>
+										<br>
+										<b id="accounter_name">
+										@if(payment != null){
+											@if((payment.accounter_id != null) && (payment.accounter_id != "")){
+												@for(user <- users){
+													@if(user._id == payment.accounter_id){
+														@user.toString()
+													}
+												}
+											} else{
+												Brak!
+											}
+										} else{
+											Brak!
+										}
+										</b>
+									</span>
+									<span class="pull-right">
+										<a class="link" id="accounterLink" data-toggle="modal" data-target="#chooseAccounterModal">
+										@if(payment != null){
+											@if((payment.accounter_id == null) || (payment.accounter_id == "")){		
+												<i rel="tooltip" title="Dodaj beneficjenta" id="add_accounter_icon" class="glyphicon glyphicon-plus"></i>								    		
+											} else{
+												<i rel="tooltip" title="Zmień beneficjenta" class="glyphicon glyphicon-edit"></i>
+											}
+										} else{
+											<i id="add_accounter_icon" class="glyphicon glyphicon-plus"></i>
+										}	
+										</a>								    	
+									</span>
+								</div>    
+								<input hidden id="accounter_id" name="accounter_id" value="@if(payment != null ){@payment.accounter_id}"></input> 
+							</div>
+							<hr>
+							<!-- Choosing course ralated to payment -->
+							<div class="clearfix col-md-offset-1 row center" id="course_id_field">	
+								<div class="col-md-11">
+									<span class="pull-left">
+										<label for="course_id">Kurs związany z płatnością :  </label>
+										<br>
+										<b id="course_name">
+										@if(payment != null){
+											@if((payment.course_id != null) && (payment.course_id != "")){
+												@for(course <- courses){
+													@if(course._id == payment.course_id){
+														@course.toString()
+													}
+												}
+											} else{
+												Brak!
+											}
+										} else{
+											Brak!
+										}
+										</b>
+									</span>
+									<span class="pull-right">
+										<a class="link" id="courseLink" data-toggle="modal" data-target="#chooseCourseModal">
+										@if(payment != null){
+											@if((payment.course_id == null) || (payment.course_id == "")){		
+												<i rel="tooltip" title="Dodaj kurs" id="add_course_icon" class="glyphicon glyphicon-plus"></i>								    		
+											} else{
+												<i rel="tooltip" title="Zmień kurs" class="glyphicon glyphicon-edit"></i>
+											}
+										} else{
+											<i id="add_course_icon" class="glyphicon glyphicon-plus"></i>
+										}	
+										</a>								    	
+									</span>
+								</div>    
+								<input hidden id="course_id" name="course_id" value="@if(payment != null ){@payment.course_id}"></input> 
+							</div>
+							<br>
+						</div>
+						
+					</div>
+				</div>
+			</fieldset>	
+		}
+	<!-- Modal window with user chose option - chosing the user related with the payment -->
+	<div class="modal fade" id="chooseUserModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	            	<h3 class="modal-title" id="myModalLabel">Wybierz użytkowanika</h3>
+	            </div>
+	            <div class="modal-body">
+					<table class="table" data-url="/users"  data-click-to-select="true" data-select-item-name="radioName">
+						<thead>
+							<tr>
+								<th data-field="state" data-radio="true"></th>
+					            <th data-field="firstName" data-align="right">Imię</th>
+					            <th data-field="lastName" data-align="center">Nazwisko</th>
+					            <th data-field="email" data-align="left">email</th>
+							</tr>
+						</thead>
+						<tbody>
+							@for(user <- users) {
+								<tr>
+									<td><input id="@user._id" data-manager-name="@user.toString()" type="radio" name="chooseUser"></td>
+									<td>@user.firstName</td>
+									<td>@user.lastName</td>
+									<td>@user.email</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+	                <a  id="chooseUserLink" href="#" class="btn btn-danger" data-dismiss="modal"><i class="glyphicon glyphicon-ok"></i> Wybierz</a>
+	        	</div>
+	    </div>
+	  </div>
+	</div>
+	
+	<!-- Modal window with user chose option - chosing the payment accounter -->
+	<div class="modal fade" id="chooseAccounterModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	            	<h3 class="modal-title" id="myModalLabel">Wybierz użytkowanika</h3>
+	            </div>
+	            <div class="modal-body">
+					<table class="table" data-url="/users"  data-click-to-select="true" data-select-item-name="radioName">
+						<thead>
+							<tr>
+								<th data-field="state" data-radio="true"></th>
+					            <th data-field="firstName" data-align="right">Imię</th>
+					            <th data-field="lastName" data-align="center">Nazwisko</th>
+					            <th data-field="email" data-align="left">email</th>
+							</tr>
+						</thead>
+						<tbody>
+							@for(user <- users) {
+								<tr>
+									<td><input id="@user._id" data-manager-name="@user.toString()" type="radio" name="chooseAccounter"></td>
+									<td>@user.firstName</td>
+									<td>@user.lastName</td>
+									<td>@user.email</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+	                <a  id="chooseAccounterLink" href="#" class="btn btn-danger" data-dismiss="modal"><i class="glyphicon glyphicon-ok"></i> Wybierz</a>
+	        	</div>
+	    </div>
+	  </div>
+	</div>
+	
+	<!-- Modal window with user chose option - chosing the course -->
+	<div class="modal fade" id="chooseCourseModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	            	<h3 class="modal-title" id="myModalLabel">Wybierz kurs</h3>
+	            </div>
+	            <div class="modal-body">
+					<table class="table" data-url="/courses"  data-click-to-select="true" data-select-item-name="radioName">
+						<thead>
+							<tr>
+								<th data-field="state" data-radio="true"></th>
+					            <th data-field="firstName" data-align="right">Nazwa kursu</th>
+					            <th data-field="lastName" data-align="center">Kierownik kursu</th>
+							</tr>
+						</thead>
+						<tbody>
+							@for(course <- courses) {
+								<tr>
+									<td><input id="@course._id" data-course-name="@course.toString()" type="radio" name="chooseCourse"></td>
+									<td>@course.name</td>
+									<td>
+										@for(user <- users){
+											@if(user._id == course.manager_id){
+												@user.toString()
+											}
+										}
+								</tr>
+							}
+						</tbody>
+					</table>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+	                <a  id="chooseCourseLink" href="#" class="btn btn-danger" data-dismiss="modal"><i class="glyphicon glyphicon-ok"></i> Wybierz</a>
+	        	</div>
+	    </div>
+	  </div>
+	</div>
+		
+	<script>
+		$(function(){
+			$('.datepicker').datepicker()
+		});
+		
+		$('#chooseModal').on('show.bs.modal', function(e) {   
+		});
+		
+		//Add, change the user related with the payment
+		$("a[id='chooseUserLink']").click(function(e){
+			var user = $("input[name='chooseUser']:checked").attr('id')
+			var userName = $("input[name='chooseUser']:checked").attr('data-manager-name')
+			$("input[id='user_id']").val(user)
+			$("#user_name").text(userName)
+			$("#add_member_icon").attr('class',"glyphicon glyphicon-edit")
+		});
+		
+		//Add, change the accounter
+		$("a[id='chooseAccounterLink']").click(function(e){
+			var user = $("input[name='chooseAccounter']:checked").attr('id')
+			var userName = $("input[name='chooseAccounter']:checked").attr('data-manager-name')
+			$("input[id='accounter_id']").val(user)
+			$("#accounter_name").text(userName)
+			$("#add_accounter_icon").attr('class',"glyphicon glyphicon-edit")
+		});
+		
+		//Add, change the course
+		$("a[id='chooseCourseLink']").click(function(e){
+			var course = $("input[name='chooseCourse']:checked").attr('id')
+			var courseName = $("input[name='chooseCourse']:checked").attr('data-course-name')
+			$("input[id='course_id']").val(course)
+			$("#course_name").text(courseName)
+			$("#add_course_icon").attr('class',"glyphicon glyphicon-edit")
+		});
+	</script>
+}
 
 
-<!--  @@Author(name="Lukas Pecak") -->
+<!--  @@Author(name="Lukas Pecak")-->

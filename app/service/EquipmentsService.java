@@ -50,6 +50,36 @@ public class EquipmentsService {
 		return resultList;
 	}
 	
+	//Get available equipment
+	public static List<Equipment> getAvailableEquipment(){
+		List<Equipment> resultList = new ArrayList<Equipment>();
+		List<Equipment> allEquipment = getEquipmentsList();
+		for(Equipment equipment : allEquipment){
+			if(equipment.isAvailable) resultList.add(equipment);
+		}
+		return resultList;
+	}
+	
+	//Get reserved equipment
+	public static List<Equipment> getReservedEquipment(){
+		List<Equipment> resultList = new ArrayList<Equipment>();
+		List<Equipment> allEquipment = getEquipmentsList();
+		for(Equipment equipment : allEquipment){
+			if(equipment.isReserved) resultList.add(equipment);
+		}
+		return resultList;
+	}
+		
+	//Get hired equipment
+	public static List<Equipment> getHiredEquipment(){
+		List<Equipment> resultList = new ArrayList<Equipment>();
+		List<Equipment> allEquipment = getEquipmentsList();
+		for(Equipment equipment : allEquipment){
+			if(equipment.isHired) resultList.add(equipment);
+		}
+		return resultList;
+	}	
+	
 	// Return a equipment with specialized id
 	public static Equipment getEquipment(String id){
 		WSResponse response = null;
@@ -104,14 +134,13 @@ public class EquipmentsService {
 		WSResponse response = null;
 		Gson gson = new Gson();
 		String json = gson.toJson(equipment);
-		System.out.println(json);
 		response = RestService.callREST(Urls.SAVE_EQUIPMENTS_URL,json , Equipment.class, true, RestService.restServiceEnum.POST);
 		return response.getStatus();
 
 	}
 	
 	//Update equipment ******************************************************************************************************************
-	public static int updateEquipment(Equipment equipment, String id){
+	public static int updateEquipment(Equipment equipment, String id) throws Exception{
 		WSResponse response = null;
 		equipment._id = id;
 		if(equipment.hireHistory.size() == 0){
@@ -162,7 +191,6 @@ public class EquipmentsService {
 				}
 			}
 		}
-		System.out.println("in update: >"+new Gson().toJson(equipment));
 		response = RestService.callREST(Urls.PUT_EQUIPMENTS_URL+id, new Gson().toJson(equipment), Equipment.class, true, RestService.restServiceEnum.PUT);
 		return response.getStatus();
 	}

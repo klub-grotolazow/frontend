@@ -79,6 +79,9 @@ public class Messages {
 	public static final String CANT_LOAD_EQUIPMENTS =					"Nie można załadować listy sprzętu! ";
 	
 	//Payments list messages
-	public static final String CANT_LOAD_PAYMENTS =						"Nie można załadować listy płatności! ";
-	
+	public static final String CANT_LOAD_PAYMENTS =						"Nie można załadować płatności! ";
+	public static final String ERROR_SAVING_PAYMENT = 					"Podczas próby zapisania płatności wystąpił problem: ";
+	public static final String SUCCESS_SAVING_PAYMENT = 				"Pomyślnie zapisano informacje o płatności.";
+	public static final String SUCCESS_DELETED_PAYMENT =			 	"Pomyślnie usunięto płatność.";
+	public static final String ERROR_DELETING_PAYMENT = 				"Podczas próby usunięcia płatności wystąpił problem: ";
 }

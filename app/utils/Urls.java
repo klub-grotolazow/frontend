@@ -31,6 +31,10 @@ public class Urls {
 	
 	//Payments urls
 	public static final String GET_PAYMENTS_URL =			"/payments";
+	public static final String SAVE_PAYMENTS_URL =			"/payments";
+	public static final String PUT_PAYMENTS_URL =			"/payments/";
+	public static final String GET_PAYMENT_URL =			"/payments/";
+	public static final String DELETE_PAYMENT_URL =			"/payments/";
 	
 	//CourseMeeting urls
 	public static final String POST_COURSE_MEETING_URL =	"/courses/notfound/meetings";

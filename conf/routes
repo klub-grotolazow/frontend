@@ -46,7 +46,7 @@ GET		/payments/delete/:id		controllers.Payments.deletePayment(id: String)
 GET		/payments/edit/:id			controllers.Payments.editPayment(id: String)
 GET		/payments/:id				controllers.Payments.showPayment(id: String)
 
-POST	/payments					controllers.Payments.savePayment()
+POST	/payments					controllers.Payments.savePayment(id: String)
 #------------------------------------------------------------------------------------------------------------------------------
 
 # Warehouse urls ----------------------------------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ GET 	/equipments/edit/:id		controllers.Equipments.editEquipment(id: String)
 GET 	/equipments/hire			controllers.Equipments.hireEquipment()
 GET 	/equipments/return			controllers.Equipments.returnEquipment()
 GET		/equipments/book			controllers.Equipments.bookEquipment(id: String)
-GET 	/equipments/reserve/:id		controllers.Equipments.makeReservation(id: String)
+GET 	/equipments/reserve			controllers.Equipments.makeReservation()
 GET		/equipments/:id				controllers.Equipments.showEquipment(id: String)
 
 

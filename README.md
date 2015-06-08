@@ -47,7 +47,7 @@ COURSE:
   6. Add, Remove coures members
   7. Check presets on meetings
   
-EQUIPMENT
+EQUIPMENT :  
   1. Add equipment
   2. List all equipments
   3. Edit chosen equipment
@@ -57,5 +57,10 @@ EQUIPMENT
   7. Return equipment
   8. Service equipment
 
+PAYMENT :  
+  1. Add payment
+  2. List all payments
+  3. Edit chosen payment
+  4. Remove payment
 
 

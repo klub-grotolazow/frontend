@@ -6,8 +6,11 @@
 @main(currentUser, role, "Lista płatności", false){
 <meta charset="UTF-8">
 
-	<div class="container">
-	<h1 align="center">Lista płatności</h1>
+	<div class="container panel panel-default">
+	<h1 align="center">Lista płatności <span class="pull-right">@if((session.get("role") == "SuperUser") || (session.get("role") == "PaymentManager")){
+			<a ref="tooltip" title="Zarejestruj płatność" href="@routes.Payments.createPayment()" class="btn btn-primary" >
+			<i class="glyphicon glyphicon-plus"></i> Dodaj
+		</a>}</span></h1>
 	<br>
 		<table class="table table-striped">
 			<thead>
@@ -23,23 +26,29 @@
 				</tr>
 			</thead>
 			<tbody>
+			@if(payments.size() == 0){
+				<tr>
+					<td>
+						<h3>Brak zarejestrowanych płatności !</h3>
+					</td>
+				</tr>
+			}
 			@for(payment <- payments) {
 				<tr>
 					<td><a href="@routes.Payments.editPayment(payment._id)"><b>
-					@payment.paymentType
-						@if(payment.paymentType == "MonthlyFee") {Opłata miesięczna}
-						@if(payment.paymentType == "PenaltyForEquipmentDamage") {Opłata za uszkodzony sprzęt}
-						@if(payment.paymentType == "CourseCost") {Opłata za kurs}
+						@if(payment.paymentType.toString() == "MonthlyFee") {Opłata miesięczna}
+						@if(payment.paymentType.toString() == "PenaltyForEquipmentDamage") {Opłata za uszkodzony sprzęt}
+						@if(payment.paymentType.toString() == "CourseCost") {Opłata za kurs}
+						@if(payment.paymentType.toString() == "Salary") {Wynagrodzenie}
 						
 					</b></a></td>
 					<td>
 						@if(payment.amount != null){@payment.amount} else{Nie określono}
 					</td>
 					<td>
-					@payment.paymentStatus
-						@if(payment.paymentStatus == "WaitingForPayment") {Oczekiwanie na płatność}
-						@if(payment.paymentStatus == "NotPayed") {Nie zapłacone}
-						@if(payment.paymentStatus == "Payed") {Zapłacone}
+						@if(payment.paymentStatus.toString() == "WaitingForPayment") {Oczekiwanie na płatność}
+						@if(payment.paymentStatus.toString() == "NotPayed") {Nie zapłacone}
+						@if(payment.paymentStatus.toString() == "Payed") {Zapłacone}
 					</td>
 					
 					<td>
@@ -59,7 +68,7 @@
 
 					</td>
 					<td>
-					 		<a data-toggle="modal" data-target="#confirmModal" data-payment-id="@payment._id" data-payment-amount="@payment.amount">
+					 		<a id="deletePayment" data-toggle="modal" data-target="#confirmModal" data-payment-id="@payment._id">
 							<i class="glyphicon glyphicon-remove"></i></a>	
 					</td>
 					}
@@ -67,21 +76,17 @@
 			}
 			</tbody>
 		</table>
-		@if((session.get("role") == "SuperUser") || (session.get("role") == "PaymentManager")){
-		<a href="@routes.Payments.createPayment()" class="btn btn-primary" >
-			<i class="glyphicon glyphicon-plus"></i> Dodaj płatność
-		</a>
-		}
+		<br>
 	</div>
-    
-    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+   
+	<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
 	    <div class="modal-dialog">
 	        <div class="modal-content">
 	            <div class="modal-header">
 	            <h3 class="modal-title" id="myModalLabel">Ostrzeżenie o usunięciu płatności!</h3>
 	            </div>
 	            <div class="modal-body">
-	                <h5>Uwaga, usunięcie jest <b>nieodwracalne</b>!<br> Czy napewno chcesz <b>usunąć</b> płatność wartości - <b id="paymentToDelete" ></b> złotych ?</h5>
+	                <h5>Uwaga, usunięcie jest <b>nieodwracalne</b>!<br> Czy napewno chcesz <b>usunąć</b> płatność ?</h5>
 	            </div>
 	            <div class="modal-footer">
 	                <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
@@ -90,12 +95,11 @@
 	    </div>
 	  </div>
 	</div>
+	
 	<script type="text/javascript">
 		$('#confirmModal').on('show.bs.modal', function(e) {
-			var paymentName = $(e.relatedTarget).data('payment-amount');
 			var paymentId = "/payments/delete/";
-		    paymntId += $(e.relatedTarget).data('payment-id');
-		    $(e.currentTarget).find('b[id="paymentToDelete"]').text(paymentName);
+			paymentId += $(e.relatedTarget).data('payment-id');
 		    $(e.currentTarget).find('a[id="deleteLink"]').attr("href", paymentId);
 		});
 	</script>

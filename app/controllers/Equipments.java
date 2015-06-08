@@ -89,17 +89,23 @@ public class Equipments extends Controller {
 	
 	// Set the equipment with the give id as borrowd *****************************************************************************************
 	public static Result hireEquipment(){
-		return TODO;
+		return ok(equipmentsList.render(Utils.getCurrentUser(), 
+										Utils.getRoles(), 
+										EquipmentsService.getReservedEquipment()));
 	}
 	
 	// Make a reservation for equipment ******************************************************************************************************
-		public static Result makeReservation(String id){
-			return TODO;
-		}
+	public static Result makeReservation(){
+		return ok(equipmentsList.render(Utils.getCurrentUser(), 
+										Utils.getRoles(), 
+										EquipmentsService.getAvailableEquipment()));
+	}
 	
 	// Set the equipmet as returned **********************************************************************************************************
 	public static Result returnEquipment(){
-		return TODO;
+		return ok(equipmentsList.render(Utils.getCurrentUser(), 
+										Utils.getRoles(), 
+										EquipmentsService.getHiredEquipment()));
 	}
 	
 	// Show the view with the equipment overview *********************************************************************************************
@@ -161,8 +167,6 @@ public class Equipments extends Controller {
 				hire.user_id = Utils.getCurrentUser()._id;
 				hire.warehouseman_id = "brak";
 				equipment.hireHistory.add(hire);
-				System.out.println("in book : > "+ new Gson().toJson(equipment));
-				System.out.println(EquipmentsService.updateEquipment(equipment, id));
 				flash().put(Messages.SUCCESS, Messages.SUCCESS_BOOKIN_EQUIPMENT);
 				return ok(equipmentsList.render(Utils.getCurrentUser(), 
 														Utils.getRoles(), 
