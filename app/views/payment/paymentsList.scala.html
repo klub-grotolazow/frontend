@@ -11,8 +11,24 @@
 			<i class="glyphicon glyphicon-plus"></i> Dodaj
 		</a>}</span></h1>
 	<br>
-	
-	
+	<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Tytuł</th>
+					<th>Kwota</th>
+					<th>Status</th>
+					<th>Użytkownik</th>
+					@if((session.get("role") == "SuperUser") || (session.get("role") == "PaymentManager")){
+					<th>Zmień</th>
+					<th>Usuń</th>
+					}
+				</tr>
+			</thead>
+			<tbody>
+			
+			
+			</tbody>
+		</table>
 	<br>
 	</div>
 
