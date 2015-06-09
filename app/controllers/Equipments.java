@@ -4,6 +4,7 @@ package controllers;
  * @Author(name="Lukas Pecak")
  */
 
+
 import com.google.gson.Gson;
 
 import models.Equipment;
@@ -14,6 +15,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import service.EquipmentsService;
+import service.RestService;
 import service.UsersService;
 import utils.Messages;
 import utils.StatusCodes;
@@ -165,8 +167,16 @@ public class Equipments extends Controller {
 				EquipmentHire hire = new EquipmentHire();
 				hire.reservationDate = Utils.getDate();
 				hire.user_id = Utils.getCurrentUser()._id;
-				hire.warehouseman_id = "brak";
+				hire.warehouseman_id = Utils.getCurrentUser()._id;
 				equipment.hireHistory.add(hire);
+				try{
+					EquipmentsService.updateEquipment(equipment, id);
+				}catch(Exception exception){
+					flash().put(Messages.ERROR, Messages.ERROR_BOOKING_EQUIPMENT);
+					return forbidden(equipmentsList.render(Utils.getCurrentUser(), 
+															Utils.getRoles(), 
+															EquipmentsService.getEquipmentsList()));
+				}
 				flash().put(Messages.SUCCESS, Messages.SUCCESS_BOOKIN_EQUIPMENT);
 				return ok(equipmentsList.render(Utils.getCurrentUser(), 
 														Utils.getRoles(), 

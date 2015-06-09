@@ -5,10 +5,9 @@
 
 @main(currentUser, role, "Lista płatności", false){
 <meta charset="UTF-8">
-
 	<div class="container panel panel-default">
 	<h1 align="center">Lista płatności <span class="pull-right">@if((session.get("role") == "SuperUser") || (session.get("role") == "PaymentManager")){
-			<a ref="tooltip" title="Zarejestruj płatność" href="@routes.Payments.createPayment()" class="btn btn-primary" >
+			<a rel="tooltip" title="Zarejestruj płatność" href="@routes.Payments.createPayment()" class="btn btn-primary" >
 			<i class="glyphicon glyphicon-plus"></i> Dodaj
 		</a>}</span></h1>
 	<br>
@@ -35,7 +34,7 @@
 			}
 			@for(payment <- payments) {
 				<tr>
-					<td><a href="@routes.Payments.editPayment(payment._id)"><b>
+					<td><a rel="tooltip" title="Edytuj płatność" href="@routes.Payments.editPayment(payment._id)"><b>
 						@if(payment.paymentType.toString() == "MonthlyFee") {Opłata miesięczna}
 						@if(payment.paymentType.toString() == "PenaltyForEquipmentDamage") {Opłata za uszkodzony sprzęt}
 						@if(payment.paymentType.toString() == "CourseCost") {Opłata za kurs}
@@ -63,12 +62,12 @@
 					
 					@if((session.get("role") == "SuperUser") || (session.get("role") == "PaymentManager")){
 					<td>
-					 		<a href="@routes.Payments.editPayment(payment._id)">
+					 		<a rel="tooltip" title="Edytuj płatność" href="@routes.Payments.editPayment(payment._id)">
 							<i class="glyphicon glyphicon-pencil"></i></a>
 
 					</td>
 					<td>
-					 		<a id="deletePayment" data-toggle="modal" data-target="#confirmModal" data-payment-id="@payment._id">
+					 		<a rel="tooltip" title="Usuń płatność" id="deletePayment" data-toggle="modal" data-target="#confirmModal" data-payment-id="@payment._id">
 							<i class="glyphicon glyphicon-remove"></i></a>	
 					</td>
 					}
@@ -96,11 +95,11 @@
 	  </div>
 	</div>
 	
-	<script type="text/javascript">
+	<script>
 		$('#confirmModal').on('show.bs.modal', function(e) {
-			var paymentId = "/payments/delete/";
-			paymentId += $(e.relatedTarget).data('payment-id');
-		    $(e.currentTarget).find('a[id="deleteLink"]').attr("href", paymentId);
+			var paymentId = "/payments/delete/"
+			paymentId += $(e.relatedTarget).data('payment-id')
+		    $(e.currentTarget).find('a[id="deleteLink"]').attr("href", paymentId)
 		});
 	</script>
 }
