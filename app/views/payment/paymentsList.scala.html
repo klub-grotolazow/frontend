@@ -5,7 +5,16 @@
 
 @main(currentUser, role, "Lista płatności", false){
 <meta charset="UTF-8">
-
+	<div class="container panel panel-default">
+	<h1 align="center">Lista płatności <span class="pull-right">@if((session.get("role") == "SuperUser") || (session.get("role") == "PaymentManager")){
+			<a rel="tooltip" title="Zarejestruj płatność" href="@routes.Payments.createPayment()" class="btn btn-primary" >
+			<i class="glyphicon glyphicon-plus"></i> Dodaj
+		</a>}</span></h1>
+	<br>
+	
+	
+	<br>
+	</div>
 
 	<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
 	    <div class="modal-dialog">
