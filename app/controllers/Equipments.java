@@ -155,7 +155,7 @@ public class Equipments extends Controller {
 	// Book the equipment with the given id **************************************************************************************************
 		public static Result bookEquipment(String id){
 			Equipment equipment = EquipmentsService.getEquipment(id);
-			if(Utils.getCurrentUser().feeStatus.equals(User.feeStatusEnum.Blocked)){
+			if(User.feeStatusEnum.Blocked.equals(Utils.getCurrentUser().feeStatus)){
 				flash().put(Messages.ERROR, Messages.ERROR_BOOKING_EQUIPMENT);
 				return forbidden(equipmentsList.render(Utils.getCurrentUser(), 
 														Utils.getRoles(), 

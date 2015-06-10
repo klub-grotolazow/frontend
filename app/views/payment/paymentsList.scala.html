@@ -25,7 +25,13 @@
 				</tr>
 			</thead>
 			<tbody>
-			
+				@if(payments.size() == 0){
+				<tr>
+					<td>
+						<h3>Brak zarejestrowanych płatności !</h3>
+					</td>
+				</tr>
+			}
 			
 			</tbody>
 		</table>
@@ -58,4 +64,5 @@
 	</script>
 }
 
+ 
 <!--  @@Author(name="Lukas Pecak") -->
