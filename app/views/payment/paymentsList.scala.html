@@ -34,22 +34,9 @@
 			@for(payment <- payments) {
 				<tr>
 					<td>
-						@if(payment.amount != null){@payment.amount} else{Nie określono}
-					</td>
-					<td>
-						@if(payment.paymentStatus.toString() == "WaitingForPayment") {Oczekiwanie na płatność}
-						@if(payment.paymentStatus.toString() == "NotPayed") {Nie zapłacone}
-						@if(payment.paymentStatus.toString() == "Payed") {Zapłacone}
+						@if(payment.amount != null){@payment.amount}else{Nie określono}
 					</td>
 					
-					<td>
-						@for(user <- users){
-							@if(user._id == payment.user_id){
-								@user.toString()
-							}
-						}
-					
-					</td>
 					
 					
 					@if((session.get("role") == "SuperUser") || (session.get("role") == "PaymentManager")){
