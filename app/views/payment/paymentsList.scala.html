@@ -37,11 +37,7 @@
 					<td>
 						@if(payment.amount != null){@payment.amount}else{Nie określono}
 					</td>
-					<td>
-						@if(payment.paymentStatus.toString() == "WaitingForPayment"){Oczekiwanie na płatność}
-						@if(payment.paymentStatus.toString() == "NotPayed"){Nie zapłacone}
-						@if(payment.paymentStatus.toString() == "Payed"){Zapłacone}
-					</td>
+				
 					
 					<td>
 						@for(user <- users){
