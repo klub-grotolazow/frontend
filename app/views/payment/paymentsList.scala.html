@@ -33,19 +33,24 @@
 			}
 			@for(payment <- payments) {
 				<tr>
-				
-					<!-- <td><a rel="tooltip" title="Edytuj płatność" href="@routes.Payments.editPayment(payment._id)"><b>
-						@if(payment.paymentType.toString() == "MonthlyFee"){Opłata miesięczna}
-						@if(payment.paymentType.toString() == "PenaltyForEquipmentDamage"){Opłata za uszkodzony sprzęt}
-						@if(payment.paymentType.toString() == "CourseCost"){Opłata za kurs}
-						@if(payment.paymentType.toString() == "Salary"){Wynagrodzenie}
-						
-					</b></a></td> -->
 					
 					<td>
 						@if(payment.amount != null){@payment.amount}else{Nie określono}
 					</td>
+					<td>
+						@if(payment.paymentStatus.toString() == "WaitingForPayment"){Oczekiwanie na płatność}
+						@if(payment.paymentStatus.toString() == "NotPayed"){Nie zapłacone}
+						@if(payment.paymentStatus.toString() == "Payed"){Zapłacone}
+					</td>
 					
+					<td>
+						@for(user <- users){
+							@if(user._id == payment.user_id){
+								@user.toString()
+							}
+						}
+					
+					</td>
 					
 					
 					@if((session.get("role") == "SuperUser") || (session.get("role") == "PaymentManager")){
