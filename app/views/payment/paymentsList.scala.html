@@ -13,9 +13,7 @@
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<!-- <th>Tytuł</th> -->
 					<th>Kwota</th>
-					<!-- <th>Status</th> -->
 					<th>Użytkownik</th>
 					@if((session.get("role") == "SuperUser") || (session.get("role") == "PaymentManager")){
 					<th>Zmień</th>
