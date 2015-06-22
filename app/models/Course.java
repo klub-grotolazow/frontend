@@ -15,8 +15,7 @@ public class Course {
 	public List<String> members_ids;
 	public List<String> graduatedMembers_ids;
 	public List<String> instructors_ids;
-	
-	
+		
 	public Course() {}
 	
 	@Override

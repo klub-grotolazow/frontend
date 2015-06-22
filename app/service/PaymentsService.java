@@ -1,11 +1,8 @@
 package service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import models.Equipment;
-import models.EquipmentHire;
 import models.Payment;
 import play.libs.F.Promise;
 import play.libs.ws.WS;
@@ -65,7 +62,6 @@ public class PaymentsService {
 										.delete();
 		response = result.get(10000);
 		if(response.getStatus() == StatusCodes.OK){
-			Payment payment = new Gson().fromJson(response.getBody(), Payment.class);
 			Controller.flash().put(Messages.SUCCESS, Messages.SUCCESS_DELETED_PAYMENT);
 		} else{
 			Controller.flash().put(Messages.ERROR, Messages.ERROR_DELETING_PAYMENT +"HTTP -> "+ response.getStatus());

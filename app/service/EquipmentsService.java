@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import play.data.Form;
 import play.libs.F.Promise;
 import play.libs.ws.WS;
 import play.libs.ws.WSResponse;
 import play.mvc.Controller;
-import play.mvc.Result;
 import utils.Messages;
 import utils.StatusCodes;
 import utils.Urls;
@@ -18,11 +16,8 @@ import utils.Utils;
 import com.google.gson.Gson;
 
 import controllers.Equipments;
-import models.Course;
 import models.Equipment;
 import models.EquipmentHire;
-import models.User;
-import views.html.equipments.equipmentDetails;
 
 /*
  * @Author(name="Lukas Pecak")

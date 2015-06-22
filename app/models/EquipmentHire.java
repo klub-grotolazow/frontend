@@ -1,9 +1,5 @@
 package models;
 
-import java.util.Date;
-
-import scala.Option;
-
 /*
  * @Author(name="Lukas Pecak")
  */
@@ -17,7 +13,6 @@ public class EquipmentHire {
 	public conditionStatusEnum conditionStatus;
 	public String user_id;
 	public String warehouseman_id;
-	
 	public EquipmentHire() {}
 	
 	@Override

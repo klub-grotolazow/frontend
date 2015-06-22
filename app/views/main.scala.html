@@ -30,17 +30,22 @@
     
     	@if(flash.containsKey("success")){
 		<div class="alert alert-success alert-dismissible">
-		@flash.get("success")
+		<i class="glyphicon glyphicon-ok-sign"></i> <b> @flash.get("success")</b>
 		</div>
 		}
 		@if(flash.containsKey("error")){
 		<div class="alert alert-danger alert-dismissible">
-		@flash.get("error")
+		<i class="glyphicon glyphicon-remove-sign"></i> <b> @flash.get("error")</b>
 		</div>
 		}
 		@if(flash.containsKey("warning")){
 		<div class="alert alert-warning alert-dismissible">
-		@flash.get("warning")
+		<i class="glyphicon glyphicon-info-sign"></i> <b> @flash.get("warning")</b>
+		</div>
+		}
+		@if(flash.containsKey("forbidden")){
+		<div class="alert alert-info alert-dismissible">
+		<i class="glyphicon glyphicon-warning-sign"></i> <b> @flash.get("forbidden")</b>
 		</div>
 		}
 		
@@ -97,7 +102,7 @@
 		        @if((session.get("role") == "SuperUser") || (session.get("role") == "Student") || (session.get("role") == "Instructor") || (session.get("role") == "WarehouseManager") || (session.get("role") == "ClubMemeber")){
 		        <!-- Defining the dropdown list for avalible warehouse functions -->
 		        <li class="dropdown">
-		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="glyphicon glyphicon-th"></i> Magazyn <span class="caret"></span></a>
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="glyphicon glyphicon-th-list"></i> Magazyn <span class="caret"></span></a>
 		          <ul class="dropdown-menu" role="menu">
 		          	@if((session.get("role") == "SuperUser") || (session.get("role") == "WarehouseManager")){
 		            	<li><a href="@routes.Equipments.newEquipment()">Dodaj sprzęt </a></li><!-- Adding new equipment to warehouse -->
@@ -132,22 +137,22 @@
 		      <ul class="nav navbar-nav navbar-right">
 		        
 		        @if(session.containsKey("userName")){
-		        	<li><a @if(!navbarDisabled){ href="/account"}><i class="glyphicon glyphicon-user"></i> Moje dane</a></li><!-- User account details -->
+		        	<li><a rel="tooltip" title="Moje dane" @if(!navbarDisabled){ href="/account"}><i class="glyphicon glyphicon-user"></i> Moje dane</a></li><!-- User account details -->
 		        }
 		        
 		        <!-- Defining the link for logout -->
 		        @if(session.containsKey("userName")){
-		        	<li><a @if(!navbarDisabled){ href="/logout"}><i class="glyphicon glyphicon-log-out"></i> Wyloguj <b>@if(currentUser != null){@currentUser.firstName @currentUser.lastName}</b></a></li><!-- User deauthentication -->
+		        	<li><a rel="tooltip" title="Wyloguj się z systemu" @if(!navbarDisabled){ href="/logout"}><i class="glyphicon glyphicon-log-out"></i> Wyloguj <b>@if(currentUser != null){@currentUser.firstName @currentUser.lastName}</b></a></li><!-- User deauthentication -->
 		        }
 		      	
 		      	<!-- Defining the link for login in -->
 		      	@if(!session.containsKey("userName")){
-		      	<li><a @if(!navbarDisabled){ href="/login"}><i class="glyphicon glyphicon-user"></i> Zarejestruj się</a></li><!-- User authentication -->
+		      	<li><a rel="tooltip" title="Zarejestruj się w systemie" @if(!navbarDisabled){ href="/signup"}><i class="glyphicon glyphicon-user"></i> Zarejestruj się</a></li><!-- User signup -->
 		        }
 		      
 		      	<!-- Defining the link for login in -->
 		      	@if(!session.containsKey("userName")){
-		      	<li><a @if(!navbarDisabled){ href="/login"}><i class="glyphicon glyphicon-log-in"></i> Zaloguj</a></li><!-- User authentication -->
+		      	<li><a rel="tooltip" title="Zaloguj do systemu" @if(!navbarDisabled){ href="/login"}><i class="glyphicon glyphicon-log-in"></i> Zaloguj</a></li><!-- User authentication -->
 		        }
 		        
 		        @if((session.get("role") == "SuperUser")){

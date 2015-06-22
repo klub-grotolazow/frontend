@@ -1,0 +1,92 @@
+@(userForm: Form[User])
+@import helper._
+@import helper.twitterBootstrap._
+
+@main(null, null, "Zarejestruj się", false){
+	<meta charset="UTF-8">
+		<div class="container">
+		@helper.form(action = routes.Application.signup(), 'class -> "form-inline", 'enctype -> "multipart/form-data") {
+			<fieldset>
+				<legend>
+					<div class="container row">
+						<div class="col-md-12">
+							<h1>Zarejestuj się 
+								<span class="pull-right"> 
+							  		<input rel="tooltip" title="Zarejestruj się" type="submit" class="btn btn-danger" value="Zarejestruj">
+						  		</span> 
+						  	</h1>
+						</div>
+					</div>
+				</legend>
+					<div class="col-md-6">
+						<div class="container col-md-12 panel panel-default">
+							<div class="col-md-offset-1">
+								<h3>Dane logowania </h3>
+								@helper.inputText(userForm("auth.userName"), '_label -> "Nazwa użytkownika", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj wybraną nazwę użytkownika")
+								@helper.inputText(userForm("auth.passwordHash"), '_label -> "Hasło", 'size -> 40, 'type -> "password", 'class -> "form-control", 'placeholder -> "Wybierz mocne hasło")								
+								<br>								
+							</div>		
+						</div>
+						<div class="container col-md-12 panel panel-default">
+							<div class="col-md-offset-1">
+								<h3>Dane użytkownika </h3>
+								@helper.inputText(userForm("firstName"), '_label -> "Imię", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj imię")
+								@helper.inputText(userForm("lastName"), '_label -> "Nazwisko", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj nazwisko")
+								@helper.inputText(userForm("idCardNr"), '_label -> "Numer dowodu osobistego", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj numer dowodu osobistego")
+								@helper.inputText(userForm("peselNr"), '_label -> "Pesel", 'size -> 40, 'type -> "number", 'class -> "form-control", 'placeholder -> "Podaj numer pesel")
+								@helper.inputText(userForm("age"), '_label -> "Wiek", 'size -> 5, 'type -> "number", 'class -> "form-control", 'placeholder -> "Podaj wiek")
+								@helper.inputText(userForm("indexNr"), '_label -> "Numer indeksu", 'size -> 40, 'type -> "number", 'class -> "form-control", 'placeholder -> "Podaj numer albumu")
+								
+								<br>
+								
+							</div>		
+						</div>
+						<div class="container col-md-12 panel panel-default">
+							<div class="col-md-offset-1">
+							<h3>Dane opcjonalne :</h3>		
+								@helper.inputText(userForm("instructorCard"), '_label -> "Numer karty instruktora", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj numer karty instruktora")	          				
+		          			
+							</div>
+							<br>
+						</div>          				
+					</div>
+					
+					<div class="col-md-6">
+						<div class="container col-md-12 panel panel-default">
+							<div class="col-md-offset-1">
+								<h3>Kontakt :</h3>
+								@helper.inputText(userForm("email"), '_label -> "email", 'size -> 40, 'type -> "email", 'class -> "form-control", 'placeholder -> "Podaj adres e-mail")
+								@helper.inputText(userForm("phoneNr"), '_label -> "Numer telefonu", 'size -> 40, 'type -> "tel", 'class -> "form-control", 'placeholder -> "Podaj numer telefonu")
+								@helper.inputText(userForm("ICEphoneNr"),'_label -> "Numer telefonu ICE", 'size -> 40, 'type -> "tel", 'class -> "form-control", 'placeholder -> "Podaj numer awaryjny ICE")
+							</div>
+							<br>
+						</div>
+						<div class="container col-md-12 panel panel-default">
+							<div class="col-md-offset-1">
+								<h3>Adres :</h3>
+								@helper.inputText(userForm("address.street"), '_label -> "Ulica", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj nazwę ulicy")
+								@helper.inputText(userForm("address.buildingNr"), '_label -> "Numer budynku", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj numer budynku")
+								@helper.inputText(userForm("address.apartmentNr"), '_label -> "Numer mieszkania", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj numer lokalu")
+								@helper.inputText(userForm("address.town"), '_label -> "Miejscowość", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj miejscowość")
+								@helper.inputText(userForm("address.zipCode"), '_label -> "Kod pocztowy", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj kod pocztowy")
+								@helper.inputText(userForm("address.voivodeship"), '_label -> "Województwo", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj województwo")
+							</div>
+							<br>
+						</div>
+						<br>
+						<br>
+						<p class="text-right">
+							
+							
+							
+						</p>
+
+					</div>
+			</fieldset>
+			
+		}
+		</div>
+
+}
+
+<!--  @@Author(name="Lukas Pecak") href="@routes.Users.getUsersList()"-->

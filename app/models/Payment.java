@@ -1,7 +1,5 @@
 package models;
 
-import java.util.Date;
-
 /*
  * @Author(name="Lukas Pecak")
  */
@@ -17,7 +15,7 @@ public class Payment {
 	public String user_id; 
 	public String course_id;
 	public String accounter_id;
-	
+
 	public Payment() {}
 	
 	@Override

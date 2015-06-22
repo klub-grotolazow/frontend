@@ -18,6 +18,11 @@ import com.google.gson.Gson;
 
 public class SecurityService {
 	
+	public static String getSignupHeader(User user){
+		String header = user.auth.userName + "&" + user.auth.passwordHash;
+		return header;
+	}
+	
 	// Get the authentication data from server **************************************************************************
 	public static User authenticateUser(String userName, String passwordHash){	//user name can be users email
 		UserAccount userAccount = new UserAccount();

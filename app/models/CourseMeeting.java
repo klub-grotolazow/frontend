@@ -1,10 +1,6 @@
 package models;
 
-import java.util.Date;
 import java.util.List;
-
-import scala.Option;
-import utils.Utils;
 
 /*
  * @Author(name="Lukas Pecak")

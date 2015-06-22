@@ -2,6 +2,7 @@ package service;
 
 import com.google.gson.Gson;
 
+import models.User;
 import play.libs.F.Promise;
 import play.libs.ws.WS;
 import play.libs.ws.WSResponse;
@@ -14,14 +15,30 @@ import utils.Utils;
 
 public class RestService {
 	public enum restServiceEnum {GET, POST, PUT, DELETE}
+	public static final String AUTHORIZATION = 	"Authorization";
+	
+	public static WSResponse callRESTsignup(User user){
+		String url = Utils.getApiUrl() + Urls.SIGNUP_URL;
+		user = UsersService.createUserStructure(user);
+		String request = new Gson().toJson(user);
+		try{
+			Promise<WSResponse> result = null;
+			result = WS	.url(url)
+					.setContentType(Urls.CONTENT_TYPE_JSON)
+					.setHeader(AUTHORIZATION, SecurityService.getSignupHeader(user))
+					.post(request);
+			return result.get(Utils.WAIT_FOR_RESPONSE);		
+		} catch(Exception exception){
+			return null;
+		}
+	}
 	
 	// Call the REST api ******************************************************************************************************
+	@SuppressWarnings("rawtypes")
 	public static WSResponse callREST(String requestUrl, String requestJson, Class requestJsonClass, Boolean contentJson, restServiceEnum httpMetod){
 		String url = Utils.getApiUrl();
 		if(requestUrl != null) url += requestUrl;
-		String request = null;
 		if((httpMetod != null) && (contentJson != null)){
-			System.out.println("In not null");
 			try{
 				Promise<WSResponse> result = null;
 				if(contentJson.equals(true)){
@@ -48,22 +65,7 @@ public class RestService {
 						result = WS	.url(url)
 								.setContentType(Urls.CONTENT_TYPE_JSON)
 								//.setAuth(Utils.getAuthenticationHeader())
-								.put(requestJson);
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
-						
+								.put(requestJson);									
 						return result.get(Utils.WAIT_FOR_RESPONSE);
 					}
 					

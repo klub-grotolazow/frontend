@@ -19,11 +19,11 @@ import service.UsersService;
 import java.util.Arrays;
 
 import models.Course;
-import models.Equipment;
 import models.Setting;
 import models.User;
 
 public class Utils {
+	public static final String 		BLOCKED = "blocked";
 	public static final String 		CURRENT_USER_ID = "userName";
 	public static final String 		DRAFT_COURSE = "draft_course";
 	public static final String 		USERS_JSON_TABLE = "users";
@@ -93,7 +93,6 @@ public class Utils {
 	}
 
 	//Spliting a coma separated string into string list
-	@SuppressWarnings("unchecked")
 	public static List<String> toStringList(String css){
 		if((css.length() == 0) || (css == null)){
 			return new ArrayList<String>();
@@ -103,7 +102,6 @@ public class Utils {
 	}
 	
 	//Concatenate in a coma separated string from a string list
-	@SuppressWarnings("unchecked")
 	public static String toCSS(List<String> list){
 		StringBuilder builder = new StringBuilder();
 		if((list == null) || (list.size() == 0)){
@@ -135,7 +133,6 @@ public class Utils {
 	public static String generateKey() {
 		SecureRandom random = new SecureRandom();
 		String key = new  BigInteger(130, random).toString(32);
-		System.out.println("Generated key is : " +key);
 		return key;
 	}
 	

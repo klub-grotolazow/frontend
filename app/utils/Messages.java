@@ -14,6 +14,9 @@ public class Messages {
 	public static final String LOGIN_SUCCESS_END	=		" z uprawnieniami - ";
 	public static final String ERROR_AUTHENTICATING_USER =	"Podczas próby uwierzytelnienia użytkownika wystąpił błąd! ";
 	public static final String ERROR_USER_NAME_PASSWORD	=	"Niepoprawna nazwa użytkownika lub hasło";
+	public static final String ERROR_SIGNUP	=				"Podczas rejestracji użytkownika wystąpił błąd ! ";
+	public static final String SUCCESS_SIGNUP =				"Pomyślnie zarejestrowano uzytkownika ";
+	public static final String WARNING_SIGNUP =				"Popraw dane! Wprowadzone dane są niepoprawne.  ";
 	
 	public static String getLogginSuccess(String userName, String role){
 		return new StringBuilder().append(LOGIN_SUCCESS_BEGIN).append(userName).append(LOGIN_SUCCESS_END).append(role).toString();

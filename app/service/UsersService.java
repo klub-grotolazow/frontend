@@ -3,9 +3,6 @@ package service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import com.google.gson.Gson;
 
 import play.api.libs.Codecs;
@@ -19,9 +16,6 @@ import utils.Messages;
 import utils.StatusCodes;
 import utils.Urls;
 import utils.Utils;
-
-
-
 import models.Course;
 import models.SystemRoleEnum;
 import models.User;
@@ -34,6 +28,8 @@ import views.html.users.usersList;
  */
 
 public class UsersService {
+	public static final String EMPTY = "";
+	
 	
 	// Authenticat the user ****************************************************************************************************
 	public static UserAccount authenticate(String userName, String passwordHash) {
@@ -139,19 +135,15 @@ public class UsersService {
 			return Controller.badRequest(userDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm, id));
 		}
 		User user = boundForm.get();
-		System.out.println("The user have value > " + user);
 		if(user.currentCourses_ids == null) user.currentCourses_ids = new ArrayList<String>();
 		if(user.hiredEquipments_ids == null) user.hiredEquipments_ids = new ArrayList<String>();
 		if(user.payments_ids == null) user.payments_ids = new ArrayList<String>();
 		//if(user.feeStatus == null) user.feeStatus = User.feeStatusEnum.OnTime;
 		Gson gson = new Gson();
-		System.out.println("After gson" + user);
 		//String request = "{\"firstName\": \"Lukas\",\"lastName\": \"Pęcak\",\"email\": \"michal.kijania@gmail.com\",\"feeStatus\": \"OnTime\",\"hoursPoints\": 0,\"address\": {\"voivodeship\": \"Lesser Poland\",\"town\": \"Krakow\",\"street\": \"Bracka\",\"buildingNr\": 12,\"apartmentNr\": 2},\"currentCourses_ids\": [],\"hiredEquipments_ids\": [],\"payments_ids\": []}";   
 		String request = gson.toJson(user, User.class);
-		System.out.println("Request value > " + request);
 		
 		WSResponse response = null;
-		System.out.println(request);
 		
 		//The case for new user save --------------------------------------------------------------
 		if((id == null) || id.length() == 0){
@@ -209,6 +201,19 @@ public class UsersService {
 			}
 		}
 		return result;
+	}
+	
+	//Creates all null lists to prepare for json generation
+	public static User createUserStructure(User user){
+		if(user.currentCourses_ids == null) user.currentCourses_ids = new ArrayList<String>();
+		if(user.hiredEquipments_ids == null) user.hiredEquipments_ids = new ArrayList<String>();
+		if(user.payments_ids == null) user.payments_ids = new ArrayList<String>();
+		if(user.auth.roles == null) user.auth.roles = new ArrayList<String>();
+		if(user.auth.authToken == null) user.auth.authToken = EMPTY;
+		if(user.auth.tokenExpiredDate == null) user.auth.tokenExpiredDate = EMPTY;
+		if(user.auth.feeStatus == null) user.auth.feeStatus = EMPTY;
+		user.auth.passwordHash = Codecs.md5(user.auth.passwordHash.getBytes());
+		return user;
 	}
 
 }

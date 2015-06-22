@@ -7,16 +7,10 @@ package service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import play.data.Form;
-import play.libs.F.Promise;
-import play.libs.ws.WS;
 import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Result;
-import service.RestService.restServiceEnum;
 import utils.Messages;
 import utils.StatusCodes;
 import utils.Urls;
@@ -26,10 +20,8 @@ import com.google.gson.Gson;
 
 import models.Course;
 import models.CourseMeeting;
-import models.User;
 import views.html.courses.coursesList;
 import views.html.courses.courseDetails;
-import views.html.courses.courseOverview;
 import views.html.courses.courseMeetingDetails;
 
 public class CoursesService {
@@ -218,7 +210,6 @@ public class CoursesService {
 		String request = gson.toJson(course, Course.class);
 		if(Controller.session().containsKey(Utils.DRAFT_COURSE)) Controller.session().remove(Utils.DRAFT_COURSE);
 		Controller.session().put(Utils.DRAFT_COURSE, request);
-		System.out.println(request);
 		return courseId;
 	}
 	
@@ -239,7 +230,6 @@ public class CoursesService {
 			if(course.meetingHistory != null){
 				for(CourseMeeting meeting : course.meetingHistory){
 					String presentMembers = Utils.toCSS(meeting.presentMembers_ids);
-					System.out.println(presentMembers);
 					meeting.presentMembers_ids.clear();
 					meeting.presentMembers_ids.add(presentMembers);
 				}
@@ -256,7 +246,6 @@ public class CoursesService {
 		try{
 			response = RestService.callREST(Urls.DELETE_COURSE_URL+id, null, null, false, RestService.restServiceEnum.DELETE);	
 			if(response.getStatus() == StatusCodes.OK){
-				User user = new Gson().fromJson(response.getBody(), User.class);
 				Controller.flash().put(Messages.SUCCESS, Messages.SUCCESS_DELETED_COURSE + course.name);
 			} else{
 				Controller.flash().put(Messages.ERROR, Messages.ERROR_DELETE_COURSE + response.getStatus() + " " + response.getStatusText());
@@ -344,9 +333,6 @@ public class CoursesService {
 																		meetingId));
 		}
 		meeting.presentMembers_ids = Utils.toStringList(meeting.presentMembers_ids.get(0));	
-		Gson gson = new Gson();
-		String request;
-		WSResponse response = null;
 		if(meeting.presentMembers_ids == null) meeting.presentMembers_ids = new ArrayList<String>();
 		Course draft = CoursesService.loadCourseDraft();
 		if(draft == null) {

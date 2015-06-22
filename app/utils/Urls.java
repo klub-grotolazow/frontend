@@ -8,6 +8,11 @@ public class Urls {
 	//Content types
 	public static final String CONTENT_TYPE_JSON = "application/json";
 	
+	// Authentication urls
+	public static final String SIGNUP_URL =					"/signup";
+	public static final String LOGIN_URL =					"/login";
+	public static final String LOGOUT_URL =					"/logout";
+	
 	//Users urls
 	public static final String POST_USER_URL = 				"/users";
 	public static final String GET_USERS_URL = 				"/users";
@@ -42,7 +47,6 @@ public class Urls {
 	//CourseMeeting post url
 	public static String getCourseMeetingPostUrl(String courseId){
 		if(courseId != null){
-			//System.out.println("the cours id is ->"+courseId+"<-");
 			StringBuilder builder = new StringBuilder();
 			builder.append("/courses/")
 					.append(courseId)
@@ -56,7 +60,6 @@ public class Urls {
 	//Get CourseMeetings list url
 	public static String getCourseMeetingsGetUrl(String courseId){
 		if(courseId != null){
-			//System.out.println("the cours id is ->"+courseId+"<-");
 			StringBuilder builder = new StringBuilder();
 			builder.append("/courses/")
 					.append(courseId)
@@ -70,7 +73,6 @@ public class Urls {
 	//Get course meeting url
 	public static String getCourseMeetingGetUrl(String courseId, String meetingId){
 		if((courseId != null) && (meetingId != null)){
-			//System.out.println("the meeting id is ->"+courseId+"<-");
 			StringBuilder builder = new StringBuilder();
 			builder.append("/courses/")
 					.append(courseId)
@@ -85,7 +87,6 @@ public class Urls {
 	//Put course meeting url
 	public static String getCourseMeetingPutUrl(String courseId, String meetingId){
 		if((courseId != null) && (meetingId != null)){
-			//System.out.println("the meeting id is ->"+courseId+"<-");
 			StringBuilder builder = new StringBuilder();
 			builder.append("/courses/")
 					.append(courseId)
@@ -100,7 +101,6 @@ public class Urls {
 	//Put course url
 	public static String getCoursePutUrl(String courseId){
 		if(courseId != null){
-			//System.out.println("the meeting id is ->"+courseId+"<-");
 			StringBuilder builder = new StringBuilder();
 			builder.append("/courses/")
 					.append(courseId);
