@@ -1,4 +1,4 @@
-@(currentUser: User, role: String, userAccountForm: Form[UserAccount])
+@(currentUser: User, role: String, authForm: Form[Auth])
 @import helper._
 @import helper.twitterBootstrap._
 
@@ -19,8 +19,8 @@
 				<br>
 				<br>
 				<div class=" col-md-offset-1 col-md-10">
-					@helper.inputText(userAccountForm("userName"), '_label -> "Nazwa użytkownika", '_size -> 20, 'class -> "form-control", 'placeholder -> "Podaj nazwę użytkownika", 'align -> "left", 'style -> "text-align: center;")
-					@helper.inputPassword(userAccountForm("passwordHash"), '_label -> "Hasło", '_size ->20, 'class -> "form-control", 'placeholder -> "Podaj hasło", 'style -> "text-align: center;")	
+					@helper.inputText(authForm("userName"), '_label -> "Nazwa użytkownika", '_size -> 20, 'class -> "form-control", 'placeholder -> "Podaj nazwę użytkownika", 'align -> "left", 'style -> "text-align: center;")
+					@helper.inputPassword(authForm("passwordHash"), '_label -> "Hasło", '_size ->20, 'class -> "form-control", 'placeholder -> "Podaj hasło", 'style -> "text-align: center;")	
 				</div>
 			</fieldset>
 			<br>

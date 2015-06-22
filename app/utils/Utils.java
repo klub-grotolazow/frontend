@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Properties;
 
 import play.mvc.Controller;
+import service.SecurityService;
 import service.UsersService;
 
 import java.util.Arrays;
@@ -24,7 +25,7 @@ import models.User;
 
 public class Utils {
 	public static final String 		BLOCKED = "blocked";
-	public static final String 		CURRENT_USER_ID = "userName";
+	public static final String 		CURRENT_USER_ID = "userId";
 	public static final String 		DRAFT_COURSE = "draft_course";
 	public static final String 		USERS_JSON_TABLE = "users";
 	public static final String		API_URL = "apiUrl";
@@ -101,6 +102,24 @@ public class Utils {
 		}
 	}
 	
+	//Spliting a & separated string into string list
+	public static List<String> toAuthList(String authString){
+		if((authString.length() == 0) || (authString == null)){
+			return new ArrayList<String>();
+		} else{
+			return Arrays.asList(authString.split("\\s*&\\s*"));
+		}
+	}
+	
+	//Spliting a : separated string into string list
+	public static List<String> toRolesList(String rolesString){
+		if((rolesString.length() == 0) || (rolesString == null)){
+			return new ArrayList<String>();
+		} else{
+			return Arrays.asList(rolesString.split("\\s*:\\s*"));
+		}
+	}
+	
 	//Concatenate in a coma separated string from a string list
 	public static String toCSS(List<String> list){
 		StringBuilder builder = new StringBuilder();
@@ -141,9 +160,33 @@ public class Utils {
 		return UsersService.getUser(Controller.session().get(CURRENT_USER_ID));
 	}
 	
+	//Get logged in users id 
+	public static String getCurrentUserId(){
+		return Controller.session().get(SecurityService.USER_ID);
+	}	
+	
+	//Get logged in users name 
+	public static String getCurrentUserName(){
+		return Controller.session().get(SecurityService.USER_NAME);
+	}
+	
+	//Get logged in users token 
+	public static String getCurrentUserToken(){
+		return Controller.session().get(SecurityService.TOKEN);
+	}	
+	
 	//Get current user's system roles 
 	public static String getRoles(){
-		return Controller.session().get("role");
+		return Controller.session().get(SecurityService.ROLES);
+	}
+	
+	//Get current user's system roles list 
+	public static List<String> getRolesList(){
+		List<String> rolesList = null;
+		if(Controller.session().containsKey(SecurityService.ROLES)){
+			rolesList = Utils.toRolesList(Controller.session().get(SecurityService.ROLES));
+		}
+		return rolesList;
 	}
 	
 	//Current date in format dd/mm/yyyy

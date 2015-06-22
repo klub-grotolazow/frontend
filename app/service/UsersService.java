@@ -215,5 +215,6 @@ public class UsersService {
 		user.auth.passwordHash = Codecs.md5(user.auth.passwordHash.getBytes());
 		return user;
 	}
+	
 
 }

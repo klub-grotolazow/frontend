@@ -2,6 +2,7 @@ package service;
 
 import com.google.gson.Gson;
 
+import models.Auth;
 import models.User;
 import play.libs.F.Promise;
 import play.libs.ws.WS;
@@ -17,6 +18,7 @@ public class RestService {
 	public enum restServiceEnum {GET, POST, PUT, DELETE}
 	public static final String AUTHORIZATION = 	"Authorization";
 	
+	// Method for new user registering
 	public static WSResponse callRESTsignup(User user){
 		String url = Utils.getApiUrl() + Urls.SIGNUP_URL;
 		user = UsersService.createUserStructure(user);
@@ -33,6 +35,20 @@ public class RestService {
 		}
 	}
 	
+	// Method for user login
+		public static WSResponse callRESTlogin(Auth auth){
+			String url = Utils.getApiUrl() + Urls.LOGIN_URL;
+			try{
+				Promise<WSResponse> result = null;
+				result = WS	.url(url)
+						.setHeader(AUTHORIZATION, SecurityService.getLoggingHeader(auth))
+						.post("");
+				return result.get(Utils.WAIT_FOR_RESPONSE);		
+			} catch(Exception exception){
+				return null;
+			}
+		}
+	
 	// Call the REST api ******************************************************************************************************
 	@SuppressWarnings("rawtypes")
 	public static WSResponse callREST(String requestUrl, String requestJson, Class requestJsonClass, Boolean contentJson, restServiceEnum httpMetod){
@@ -46,7 +62,7 @@ public class RestService {
 					if(httpMetod.equals(restServiceEnum.GET)){
 						result = WS	.url(url)
 									.setContentType(Urls.CONTENT_TYPE_JSON)
-									//.setAuth(Utils.getAuthenticationHeader())
+									.setHeader(AUTHORIZATION, SecurityService.getAuthHeader())
 									.get();
 						return result.get(Utils.WAIT_FOR_RESPONSE);
 					}
@@ -55,7 +71,7 @@ public class RestService {
 					if(httpMetod.equals(restServiceEnum.POST)){
 						result = WS	.url(url)
 								.setContentType(Urls.CONTENT_TYPE_JSON)
-								//.setAuth(Utils.getAuthenticationHeader())
+								.setHeader(AUTHORIZATION, SecurityService.getAuthHeader())
 								.post(requestJson);
 						return result.get(Utils.WAIT_FOR_RESPONSE);
 					}
@@ -64,7 +80,7 @@ public class RestService {
 					if(httpMetod.equals(restServiceEnum.PUT)){
 						result = WS	.url(url)
 								.setContentType(Urls.CONTENT_TYPE_JSON)
-								//.setAuth(Utils.getAuthenticationHeader())
+								.setHeader(AUTHORIZATION, SecurityService.getAuthHeader())
 								.put(requestJson);									
 						return result.get(Utils.WAIT_FOR_RESPONSE);
 					}
@@ -73,7 +89,7 @@ public class RestService {
 					if(httpMetod.equals(restServiceEnum.DELETE)){
 						result = WS	.url(url)
 								.setContentType(Urls.CONTENT_TYPE_JSON)
-								//.setAuth(Utils.getAuthenticationHeader())
+								.setHeader(AUTHORIZATION, SecurityService.getAuthHeader())
 								.delete();
 						return result.get(Utils.WAIT_FOR_RESPONSE);
 					}
@@ -81,7 +97,7 @@ public class RestService {
 					// For GET method without content header___________________________________________
 					if(httpMetod.equals(restServiceEnum.GET)){
 						result = WS	.url(url)
-									//.setAuth(Utils.getAuthenticationHeader())
+								.setHeader(AUTHORIZATION, SecurityService.getAuthHeader())
 									.get();
 						return result.get(Utils.WAIT_FOR_RESPONSE);
 					}
@@ -89,7 +105,7 @@ public class RestService {
 					// For POST method without content header__________________________________________
 					if(httpMetod.equals(restServiceEnum.POST)){
 						result = WS	.url(url)
-								//.setAuth(Utils.getAuthenticationHeader())
+								.setHeader(AUTHORIZATION, SecurityService.getAuthHeader())
 								.post(requestJson);
 						return result.get(Utils.WAIT_FOR_RESPONSE);
 					}
@@ -97,7 +113,7 @@ public class RestService {
 					// For PUT method without content header___________________________________________
 					if(httpMetod.equals(restServiceEnum.PUT)){
 						result = WS	.url(url)
-								//.setAuth(Utils.getAuthenticationHeader())
+								.setHeader(AUTHORIZATION, SecurityService.getAuthHeader())
 								.put(requestJson);
 						return result.get(Utils.WAIT_FOR_RESPONSE);
 					}
@@ -105,7 +121,7 @@ public class RestService {
 					// For DELETE method without content header________________________________________
 					if(httpMetod.equals(restServiceEnum.DELETE)){
 						result = WS	.url(url)
-								//.setAuth(Utils.getAuthenticationHeader())
+								.setHeader(AUTHORIZATION, SecurityService.getAuthHeader())
 								.delete();
 						return result.get(Utils.WAIT_FOR_RESPONSE);
 					}

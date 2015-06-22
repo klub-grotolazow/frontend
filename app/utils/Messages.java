@@ -15,6 +15,8 @@ public class Messages {
 	public static final String ERROR_AUTHENTICATING_USER =	"Podczas próby uwierzytelnienia użytkownika wystąpił błąd! ";
 	public static final String ERROR_USER_NAME_PASSWORD	=	"Niepoprawna nazwa użytkownika lub hasło";
 	public static final String ERROR_SIGNUP	=				"Podczas rejestracji użytkownika wystąpił błąd ! ";
+	public static final String ERROR_LOGIN	=				"Podczas logowania wystąpił nieokreślony błąd ! ";
+	public static final String SUCCESS_LOGIN =				"Logowanie prawidłowe. Witaj ";
 	public static final String SUCCESS_SIGNUP =				"Pomyślnie zarejestrowano uzytkownika ";
 	public static final String WARNING_SIGNUP =				"Popraw dane! Wprowadzone dane są niepoprawne.  ";
 	
@@ -26,12 +28,13 @@ public class Messages {
 	public static final String WARNING = 									"warning";
 	public static final String ERROR = 										"error"; 
 	public static final String SUCCESS = 									"success";
+	public static final String FORBIDDEN =									"forbidden";
 	
 	//Keys
 	public static final String EDIT_USER_KEY = 							"editUser";
 		
 	//User details messages
-	public static final String CORRECT_FORM = 							"Popraw dane w formularzu poniżej! ";
+	public static final String CORRECT_FORM = 							"Popraw dane w formularzu ! ";
 	public static final String ERROR_ADDING_USER = 						"Błąd! Nie można dodać użytkownika! Info : Nie można połączyć z serwerm! Sprawdź czy serwer działa i czy wprowadzony adres serwera jest poprawny! ";
 	public static final String SUCCESS_ADING_USER = 					"Pomyślnie dodano użytkownika! ";
 	public static final String SUCCESS_UPDATE_USER = 					"Pomyślnie aktualizowano użutkownika! ";
