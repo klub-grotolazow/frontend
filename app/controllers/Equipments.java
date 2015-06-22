@@ -4,18 +4,13 @@ package controllers;
  * @Author(name="Lukas Pecak")
  */
 
-
-import com.google.gson.Gson;
-
 import models.Equipment;
 import models.EquipmentHire;
-import models.User;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import service.EquipmentsService;
-import service.RestService;
 import service.UsersService;
 import utils.Messages;
 import utils.StatusCodes;
@@ -155,7 +150,7 @@ public class Equipments extends Controller {
 	// Book the equipment with the given id **************************************************************************************************
 		public static Result bookEquipment(String id){
 			Equipment equipment = EquipmentsService.getEquipment(id);
-			if(User.feeStatusEnum.Blocked.equals(Utils.getCurrentUser().feeStatus)){
+			if(Utils.getCurrentUser().auth.feeStatus == Utils.BLOCKED){
 				flash().put(Messages.ERROR, Messages.ERROR_BOOKING_EQUIPMENT);
 				return forbidden(equipmentsList.render(Utils.getCurrentUser(), 
 														Utils.getRoles(), 

@@ -4,27 +4,16 @@ package controllers;
  * @Author(name="Lukas Pecak")
  */
 
-import java.util.ArrayList;
 
 import org.json.JSONException;
 
-import com.google.gson.Gson;
-
-import play.libs.Json;
-import play.libs.ws.WS;
-import play.libs.ws.WSResponse;
 import play.mvc.Result;
 import play.mvc.Security;
-import static play.libs.F.Promise;
 import models.User;
-import models.UserAccount;
 import play.data.Form;
 import play.mvc.Controller;
 import service.UsersService;
 import utils.Messages;
-import utils.StatusCodes;
-import utils.Urls;
-import utils.Utils;
 import views.html.index;
 import views.html.users.usersList;
 import views.html.users.userDetails;
@@ -33,7 +22,7 @@ import views.html.users.userOverview;
 @Security.Authenticated(Secured.class)
 public class Users extends Controller {
 	private static Form<User> userForm = Form.form(User.class);
-	private static final Form<UserAccount> userAccountForm = Form.form(UserAccount.class);
+	
 	
 	//Show user overview **********************************************************************************************************************
 	public static Result showUser(String id){

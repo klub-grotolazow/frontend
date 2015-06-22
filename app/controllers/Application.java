@@ -5,6 +5,8 @@ package controllers;
  */
 
 
+import com.google.gson.Gson;
+
 import models.Course;
 import models.SystemRoleEnum;
 import models.User;
@@ -12,17 +14,65 @@ import models.UserAccount;
 import play.*;
 import play.api.libs.Codecs;
 import play.data.Form;
+import play.libs.ws.WSResponse;
 import play.mvc.*;
+import service.RestService;
 import service.UsersService;
 import utils.Messages;
+import utils.StatusCodes;
 import utils.Utils;
 import views.html.index;
 import views.html.login;
+import views.html.signup;
 import views.html.userInfo;
 import views.html.users.userDetails;
 
+
 @SuppressWarnings("unused")
 public class Application extends Controller {
+	private static Form<User> userForm = Form.form(User.class);
+	
+	//Signup
+	//Register a  new user *******************************************************************************************************************
+	public static Result signup(){
+		Form<User> boundForm = userForm.bindFromRequest();
+		if(boundForm.hasErrors()){
+			flash().put(Messages.WARNING, Messages.WARNING_SIGNUP + boundForm.globalErrors());
+			ok(signup.render(boundForm));
+		}
+		User user = null;
+		try{
+			user = boundForm.get();
+		}catch(Exception exception){
+			flash().put(Messages.WARNING, Messages.WARNING_SIGNUP + boundForm.globalErrors());
+			ok(signup.render(boundForm));
+		}
+		
+		WSResponse response = null;
+		try{
+			response = RestService.callRESTsignup(user);
+		}catch(Exception exception){
+			flash().put(Messages.ERROR, Messages.ERROR_SIGNUP + exception);
+			return badRequest(signup.render(userForm));
+		}
+		if(StatusCodes.CREATED == response.getStatus()){
+			flash().put(Messages.SUCCESS, Messages.SUCCESS_SIGNUP + user.firstName + " " + user.lastName);
+			return index();
+		}else{
+			/*if(StatusCodes.UNAUTHORIZED == response.getStatus()){
+				flash().put(Messages.WARNING, Messages.WARNING_SIGNUP);
+				return ok(signup.render(boundForm));
+			}*/
+			flash().put(Messages.ERROR, Messages.ERROR_SIGNUP + response.getStatus() + " " + response.getStatusText());
+			return badRequest("HTTP > " + response.getStatus() + " " + response.getStatusText() + new Gson().toJson(user));
+		}
+	}
+	
+	//Register a  new user *******************************************************************************************************************
+	public static Result showSignup(){
+		return ok(signup.render(userForm));
+	}
+	
 	
 	// Show the info page at startup ***********************************************************************************************************
 	public static Result index() {

@@ -5,11 +5,8 @@ package controllers;
  */
 
 import java.util.ArrayList;
-import java.util.List;
 
 import models.CourseMeeting;
-import models.User;
-import models.UserAccount;
 
 import org.json.JSONException;
 
@@ -34,7 +31,6 @@ import views.html.courses.courseMeetingDetails;
 public class Courses extends Controller {
 	private static Form<Course> courseForm = Form.form(Course.class);
 	private static Form<CourseMeeting> meetingForm = Form.form(CourseMeeting.class);
-	private static List<Course> cl = new ArrayList<Course>();
 
 	//Displaying the list of courses ********************************************************************************************************** 
 	public static Result getCourses() throws JSONException {
@@ -250,7 +246,6 @@ public class Courses extends Controller {
 			meeting.presentMembers_ids = new ArrayList<String>();
 		}
 		String presentMenbersString = Utils.toCSS(meeting.presentMembers_ids);
-		System.out.println("the tocss output is : "+presentMenbersString);
 		meeting.presentMembers_ids.clear();
 		meeting.presentMembers_ids.add(presentMenbersString);
 		if(meeting.presentMembers_ids.size() == 0) meeting.presentMembers_ids.add("");

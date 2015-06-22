@@ -4,26 +4,19 @@ package controllers;
  * @Author(name="Lukas Pecak")
  */
 
-import com.google.gson.Gson;
 
-import models.Equipment;
 import models.Payment;
 import play.data.Form;
-import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 import service.CoursesService;
-import service.EquipmentsService;
 import service.PaymentsService;
-import service.RestService;
 import service.UsersService;
 import utils.Messages;
 import utils.StatusCodes;
-import utils.Urls;
 import utils.Utils;
 import views.html.payment.paymentsList;
-import views.html.payment.paymentOverview;
 import views.html.payment.paymentDetails;
 
 @Security.Authenticated(Secured.class)
