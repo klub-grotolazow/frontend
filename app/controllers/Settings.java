@@ -14,7 +14,7 @@ import utils.Utils;
 import views.html.settings;
 import views.html.index;
 
-@Security.Authenticated(Secured.class)
+//@Security.Authenticated(Secured.class)
 public class Settings extends Controller {
 	public static final String API_URL = "apiUrl";
 	public static final String PROPERTIES_FILE = "config.properties";

@@ -19,13 +19,13 @@ import utils.Utils;
 import views.html.payment.paymentsList;
 import views.html.payment.paymentDetails;
 
-@Security.Authenticated(Secured.class)
+//@Security.Authenticated(Secured.class)
 public class Payments extends Controller {
 	private static Form<Payment> paymentForm = Form.form(Payment.class);
 	
 	// Get the list of all payments
 	public static Result getPaymentsList(){
-		if(Secured.isSuperUser() || Secured.isPaymentManager() || Secured.isCourseManager()){	
+		if(Secured.isSuperUser() || Secured.isAccounter() || Secured.isCourseManager()){	
 			try{
 				return ok(paymentsList.render(UsersService.getUser(session().get("userName")), 
 												session().get("role"), 
@@ -55,7 +55,7 @@ public class Payments extends Controller {
 	
 	// Delete the payment with the given id from the system
 	public static Result deletePayment(String id){
-		if(Secured.isSuperUser() || Secured.isPaymentManager()){	
+		if(Secured.isSuperUser() || Secured.isAccounter()){	
 			PaymentsService.deletePayment(id);
 			return ok(paymentsList.render(UsersService.getUser(session().get("userName")), 
 													session().get("role"), 

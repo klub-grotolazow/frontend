@@ -19,7 +19,7 @@ import views.html.users.usersList;
 import views.html.users.userDetails;
 import views.html.users.userOverview;
 
-@Security.Authenticated(Secured.class)
+//@Security.Authenticated(Secured.class)
 public class Users extends Controller {
 	private static Form<User> userForm = Form.form(User.class);
 	
@@ -48,9 +48,8 @@ public class Users extends Controller {
 						ok(userDetails.render(UsersService.getUser(session().get("userName")), session().get("role"), form, id));
 			}
 		} else {
-			Controller.session().clear();
 			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
-			return redirect(routes.Application.login());
+			return redirect(routes.Application.index());
 		}
 	}
 	
@@ -60,9 +59,8 @@ public class Users extends Controller {
 			UsersService.deleteUser(id);	
 			return ok(usersList.render(UsersService.getUser(session().get("userName")), session().get("role"), UsersService.getUsersList()));
 		}  else {
-			Controller.session().clear();
 			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
-			return redirect(routes.Application.login());
+			return redirect(routes.Application.index());
 		}
 	}
 	
@@ -75,22 +73,20 @@ public class Users extends Controller {
 				return badRequest();
 			}
 		} else {
-			Controller.session().clear();
 			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
-			return redirect(routes.Application.login());
+			return redirect(routes.Application.index());
 		}
     }
 	
 	//Saving user in beckend api ************************************************************************************************************** 
 	public static Result saveUser(String id){
-		if(Secured.isSuperUser()){
+		//if(Secured.isSuperUser()){
 			Form<User> boundForm = userForm.bindFromRequest();
 			return UsersService.saveUser(boundForm, id);
-		} else {
-			Controller.session().clear();
-			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
-			return redirect(routes.Application.login());
-		}
+		//} else {
+			//Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
+			//return redirect(routes.Application.index());
+		//}
 	}
 	
 	//Adding new user *************************************************************************************************************************
@@ -98,9 +94,8 @@ public class Users extends Controller {
 		if(Secured.isSuperUser()){
 			return ok(userDetails.render(UsersService.getUser(session().get("userName")), session().get("role"), userForm,null));
 		} else {
-			Controller.session().clear();
 			Controller.flash().put(Messages.ERROR, Messages.FORBIDDEN_ACCESS);
-			return redirect(routes.Application.login());
+			return redirect(routes.Application.index());
 		}
 	}
 	

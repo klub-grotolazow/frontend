@@ -27,7 +27,7 @@ import views.html.courses.courseDetails;
 import views.html.courses.courseOverview;
 import views.html.courses.courseMeetingDetails;
 
-@Security.Authenticated(Secured.class)
+//@Security.Authenticated(Secured.class)
 public class Courses extends Controller {
 	private static Form<Course> courseForm = Form.form(Course.class);
 	private static Form<CourseMeeting> meetingForm = Form.form(CourseMeeting.class);

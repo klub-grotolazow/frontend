@@ -73,7 +73,7 @@
 		      	<!-- Defining the main page link-->
 		      	<li><a href="/"><i class="glyphicon glyphicon-home"></i> Info</a></li>
 		      	
-		      	@if((session.get("role") == "SuperUser")){
+		      	@if(session.containsKey("roles")){@if(session.get("roles") contains "SuperUser"){
 		      	<!-- Defining the dropdown list for avalible user functions -->
 		        <li class="dropdown">
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="glyphicon glyphicon-user"></i> Użytkownicy <span class="caret"></span></a>
@@ -83,30 +83,41 @@
 		            <li><a href="/users">Lista użytkowników</a></li><!-- Displaying the users List -->
 		          </ul>
 		        </li>
-		        }
+		        }}
 		        
-		        @if((session.get("role") == "SuperUser") || (session.get("role") == "CourseManager") || (session.get("role") == "Student") ){
+		        @if(session.containsKey("roles")){@if((session.get("roles") contains "SuperUser") ||
+		        										(session.get("roles") contains "CourseManager") ||
+		        										(session.get("roles") contains "CourseMember")){
 		        <!-- Defining the dropdown list for avalible course functions -->
 		        <li class="dropdown">
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="glyphicon glyphicon-tree-conifer"></i> Kursy <span class="caret"></span></a>
 		          <ul class="dropdown-menu" role="menu">
-		          	@if((session.get("role") == "SuperUser") || (session.get("role") == "CourseManager")){
+		          	@if(session.containsKey("roles")){@if((session.get("roles") contains "SuperUser") ||
+		        										(session.get("roles") contains "CourseManager")){
 		            <li><a href="/courses/new">Nowy kurs</a></li><!-- Adding new course -->
-		            }
+		            }}
 		            <li class="divider"></li>
 		            <li><a href="/courses">Lista kursów</a></li><!-- Displaying the courses List -->
 		          </ul>
 		        </li>
-		        }
+		        }}
 		        
-		        @if((session.get("role") == "SuperUser") || (session.get("role") == "Student") || (session.get("role") == "Instructor") || (session.get("role") == "WarehouseManager") || (session.get("role") == "ClubMemeber")){
+		        
+		        @if(session.containsKey("roles")){@if((session.get("roles") contains "SuperUser") || 
+											        	(session.get("roles") contains "CourseMember") || 
+											        	(session.get("roles") contains "CourseManager") || 
+											        	(session.get("roles") contains "Instructor") ||
+											        	(session.get("roles") contains "Warehouseman") || 
+											        	(session.get("roles") contains "Accounter") || 
+											        	(session.get("roles") contains "Candidate")){
 		        <!-- Defining the dropdown list for avalible warehouse functions -->
 		        <li class="dropdown">
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="glyphicon glyphicon-th-list"></i> Magazyn <span class="caret"></span></a>
 		          <ul class="dropdown-menu" role="menu">
-		          	@if((session.get("role") == "SuperUser") || (session.get("role") == "WarehouseManager")){
+		          	@if(session.containsKey("roles")){@if((session.get("roles") contains "SuperUser") || 
+		          											(session.get("roles") contains "Warehouseman")){
 		            	<li><a href="@routes.Equipments.newEquipment()">Dodaj sprzęt </a></li><!-- Adding new equipment to warehouse -->
-		            }
+		            }}
 		            <li><a href="@routes.Equipments.hireEquipment()">Wypożycz sprzęt </a></li><!-- Borrow equipment from warehouse -->
 		            <li><a href="@routes.Equipments.returnEquipment()">Oddaj sprzęt </a></li><!-- Return equipment to warehouse -->
 		            <li class="divider"></li>
@@ -115,9 +126,10 @@
 		            <li><a href="@routes.Equipments.makeReservation()">Zarezerwuj sprzęt </a></li><!-- Book equipment in warehouse -->
 		          </ul>
 		        </li>
-		      }
+		      }}
 		      
-		      @if((session.get("role") == "SuperUser")){
+		      @if(session.containsKey("roles")){@if((session.get("roles") contains "SuperUser") || 										        	 
+											        	(session.get("roles") contains "Accounter")){
 		      <!-- Defining the dropdown list for avalible payment functions -->
 		        <li class="dropdown">
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="glyphicon glyphicon-usd"></i> Płatności <span class="caret"></span></a>
@@ -127,7 +139,7 @@
 		            <li><a href="/payments">Lista płatności</a></li><!-- Displaying the payments List -->
 		          </ul>
 		        </li>
-		      }
+		      }}
 		      
 		      </ul>
 		      } <!-- The end of disabling navbar elements -->
@@ -135,6 +147,7 @@
 		      
 		      <!-- Defining the nav-bars right side components -->
 		      <ul class="nav navbar-nav navbar-right">
+		        
 		        
 		        @if(session.containsKey("userName")){
 		        	<li><a rel="tooltip" title="Moje dane" @if(!navbarDisabled){ href="/account"}><i class="glyphicon glyphicon-user"></i> Moje dane</a></li><!-- User account details -->
@@ -155,10 +168,10 @@
 		      	<li><a rel="tooltip" title="Zaloguj do systemu" @if(!navbarDisabled){ href="/login"}><i class="glyphicon glyphicon-log-in"></i> Zaloguj</a></li><!-- User authentication -->
 		        }
 		        
-		        @if((session.get("role") == "SuperUser")){
+		        @if(session.containsKey("roles")){@if((session.get("roles") == "SuperUser")){
 		        <!-- Defining the link for access the system settings -->
 		        <li><a rel="tooltip" title="Ustawienia systemu" @if(!navbarDisabled){ href="/settings"}><i class="glyphicon glyphicon-cog"></i></a></li><!-- Displaying the settings panel -->
-		      	}
+		      	}}
 		      </ul>
 		      
 		    </div><!-- /.navbar-collapse -->

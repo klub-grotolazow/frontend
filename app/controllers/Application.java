@@ -132,6 +132,7 @@ public class Application extends Controller {
         	return redirect(routes.Application.index());
         }
         else {
+        	SecurityService.isForbidden(response);
         	flash().put(Messages.ERROR, Messages.ERROR_LOGIN);
         	return redirect(routes.Application.login());
         }

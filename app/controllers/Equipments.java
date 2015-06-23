@@ -18,7 +18,7 @@ import utils.Utils;
 import views.html.equipments.equipmentsList;
 import views.html.equipments.equipmentDetails;
 
-@Security.Authenticated(Secured.class)
+//@Security.Authenticated(Secured.class)
 public class Equipments extends Controller {
 	public static final String EQUIPMENT_STATE = "equipmentState";
 	public static enum stateEnum {Available, Reserved, Hired, Service};
@@ -27,7 +27,7 @@ public class Equipments extends Controller {
 	
 	// List all equipment in warehouse *******************************************************************************************************
 	public static Result getEquipmentsList(){
-		if(Secured.isSuperUser() || Secured.isWarehouseManager() || Secured.isStudent()){	
+		if(Secured.isSuperUser() || Secured.isWarehouseMan() || Secured.isCourseMember()){	
 			try{
 				return ok(equipmentsList.render(UsersService.getUser(session().get("userName")), 
 													session().get("role"), 
@@ -59,7 +59,7 @@ public class Equipments extends Controller {
 	
 	// Delete a equipment by given id ********************************************************************************************************
 	public static Result deleteEquipment(String id){
-		if(Secured.isSuperUser() || Secured.isWarehouseManager()){	
+		if(Secured.isSuperUser() || Secured.isWarehouseMan()){	
 			EquipmentsService.deleteEquipment(id);
 			return ok(equipmentsList.render(UsersService.getUser(session().get("userName")), 
 												session().get("role"), 

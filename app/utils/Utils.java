@@ -19,8 +19,11 @@ import service.UsersService;
 
 import java.util.Arrays;
 
+
+
 import models.Course;
 import models.Setting;
+import models.SystemRoleEnum;
 import models.User;
 
 public class Utils {
@@ -162,22 +165,38 @@ public class Utils {
 	
 	//Get logged in users id 
 	public static String getCurrentUserId(){
-		return Controller.session().get(SecurityService.USER_ID);
+		if(Controller.session().containsKey(SecurityService.USER_ID)){
+			return Controller.session().get(SecurityService.USER_ID);
+		}else{
+			return SecurityService.EMPTY;
+		}
 	}	
 	
 	//Get logged in users name 
 	public static String getCurrentUserName(){
-		return Controller.session().get(SecurityService.USER_NAME);
+		if(Controller.session().containsKey(SecurityService.USER_NAME)){
+			return Controller.session().get(SecurityService.USER_NAME);
+		}else{
+			return SecurityService.EMPTY;
+		}
 	}
 	
 	//Get logged in users token 
 	public static String getCurrentUserToken(){
-		return Controller.session().get(SecurityService.TOKEN);
+		if(Controller.session().containsKey(SecurityService.TOKEN)){
+			return Controller.session().get(SecurityService.TOKEN);
+		}else{
+			return SecurityService.EMPTY;
+		}
 	}	
 	
 	//Get current user's system roles 
 	public static String getRoles(){
-		return Controller.session().get(SecurityService.ROLES);
+		if(Controller.session().containsKey(SecurityService.ROLES)){
+			return Controller.session().get(SecurityService.ROLES);
+		}else{
+			return SecurityService.EMPTY;
+		}
 	}
 	
 	//Get current user's system roles list 
@@ -188,6 +207,7 @@ public class Utils {
 		}
 		return rolesList;
 	}
+	
 	
 	//Current date in format dd/mm/yyyy
 	public static String getDate(){

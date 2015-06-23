@@ -9,6 +9,7 @@ public class Messages {
 	
 	//Login actions
 	public static final String FORBIDDEN_ACCESS	=			"Niestety nie masz uprawnień do wykonania tej akcji! Zaloguj jako uprawniony użytkownik! ";
+	public static final String FORBIDDEN_REMOTE_ACCESS	=	"Nie masz uprawnień do wykonania zdalnej akcji! ";
 	public static final String LOGOUT_SUCCESS	=			"Użytkownik został prawidłowo wylogowany! ";
 	public static final String LOGIN_SUCCESS_BEGIN	=		"Zalogowany jako ";
 	public static final String LOGIN_SUCCESS_END	=		" z uprawnieniami - ";

@@ -13,7 +13,7 @@
 							<h1>@userForm("firstName").valueOr("Nowy") @userForm("lastName").valueOr("użytkownik") 
 								<span class="pull-right">
 							    	<a rel="tooltip" title="Powrót bez zapisywania" class="btn btn-warning" href="@routes.Users.getUsersList()">Powrót</a> 
-							  		<input rel="tooltip" title="Zapisz zmiany" type="submit" class="btn btn-primary" value="Zapisz">
+							  		<input id="saveButton" rel="tooltip" title="Zapisz zmiany" type="submit" class="btn btn-primary" value="Zapisz">
 						  		</span> 
 						  	</h1>
 						</div>
@@ -23,27 +23,15 @@
 						<div class="container col-md-12 panel panel-default">
 							<div class="col-md-offset-1">
 								<h3>Dane użytkownika </h3>
+								<div hidden="hidden">
+									@helper.inputText(userForm("_id"), 'type -> "hidden", 'class -> "form-control")
+								</div>
 								@helper.inputText(userForm("firstName"), '_label -> "Imię", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj imię")
 								@helper.inputText(userForm("lastName"), '_label -> "Nazwisko", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj nazwisko")
 								@helper.inputText(userForm("idCardNr"), '_label -> "Numer dowodu osobistego", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj numer dowodu osobistego")
 								@helper.inputText(userForm("peselNr"), '_label -> "Pesel", 'size -> 40, 'type -> "number", 'class -> "form-control", 'placeholder -> "Podaj numer pesel")
 								@helper.inputText(userForm("age"), '_label -> "Wiek", 'size -> 5, 'type -> "number", 'class -> "form-control", 'placeholder -> "Podaj wiek")
 								@helper.inputText(userForm("indexNr"), '_label -> "Numer indeksu", 'size -> 40, 'type -> "number", 'class -> "form-control", 'placeholder -> "Podaj numer albumu")
-								@if("SuperUser".equals(role)){
-									@select(userForm("feeStatus"),
-										options("OnTime"->"Brak zaległości",
-												"Overpayed"->"Nadpłata",
-												"OnePaymentMissing"->"Brak ostatniej płatności",
-												"Blocked"->"Zaległości - blokada magazynu"),
-										'_label -> "Płatności", '_size -> 30,'class -> "form-control")
-								}else{
-									@select(userForm("feeStatus"),
-										options("OnTime"->"Brak zaległości",
-												"Overpayed"->"Nadpłata",
-												"OnePaymentMissing"->"Brak ostatniej płatności",
-												"Blocked"->"Zaległości - blokada magazynu"),
-										'_label -> "Płatności", '_size -> 30,'class -> "form-control", 'disabled -> "disabled")
-								}
 								<br>
 								
 							</div>
@@ -51,9 +39,28 @@
 						</div>
 						<div class="container col-md-12 panel panel-default">
 							<div class="col-md-offset-1">
-							<h3>Dane opcjonalne :</h3>		
-								@helper.inputText(userForm("instructorCard"), '_label -> "Numer karty instruktora", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj numer karty instruktora")	          				
-		          				@helper.inputText(userForm("hoursPoints"), '_label -> "Przepracowane godziny", 'size -> 40, 'type -> "number", 'class -> "form-control", 'placeholder -> "Podaj ilość przepracowanych godzin")
+							<h3>Dane autentykacyjne :</h3>								
+								@helper.inputText(userForm("auth.userName"), '_label -> "Nazwa użytkownika", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj nazwę użytkownika")	          				
+		          				@helper.inputText(userForm("auth.authToken"), '_label -> "Token autoryzacyjny", 'size -> 40, 'type -> "text", 'class -> "form-control", 'disabled -> "disabled")
+		          				@helper.inputText(userForm("auth.tokenExpiredDate"), '_label -> "Data ważności tokena", 'size -> 40, 'type -> "text", 'class -> "form-control", 'disabled -> "disabled")	          				
+		          				@helper.inputText(userForm("auth.feeStatus"), '_label -> "Status", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Wpisz status")
+		          				<div hidden="hidden">
+		          					@helper.inputText(userForm("auth.passwordHash"), 'type -> "hidden", 'class -> "form-control", 'disabled -> "disabled")
+		          				</div>
+		          				@select(userForm("auth.roles"), 
+									options("SuperUser"->"Administrator",
+											"CourseManager"->"Kierownik kursu",
+											"Warehouseman"->"Magazynier",
+											"Accounter"->"Skarbnik",
+											"Candidate"->"Członek kandydat",
+											"Instructor"->"Instruktor",
+											"CourseMember"->"Kursant"),
+											'_label -> "Lista uprawnień",
+											'class -> "form-control",
+											'multiple->"multiple",
+											'rel->"tooltip",
+											'title->"Przytymaj klawisz Ctrl i kliknij by zaznaczyć więcej niż jeden",
+											'style -> "scroll: none;")
 							</div>
 							<br>
 						</div>          				
@@ -81,6 +88,14 @@
 							</div>
 							<br>
 						</div>
+						<div class="container col-md-12 panel panel-default">
+							<div class="col-md-offset-1">
+							<h3>Dane opcjonalne :</h3>		
+								@helper.inputText(userForm("instructorCard"), '_label -> "Numer karty instruktora", 'size -> 40, 'type -> "text", 'class -> "form-control", 'placeholder -> "Podaj numer karty instruktora")	          				
+		          				@helper.inputText(userForm("hoursPoints"), '_label -> "Przepracowane godziny", 'size -> 40, 'type -> "number", 'class -> "form-control", 'placeholder -> "Podaj ilość przepracowanych godzin")
+							</div>
+							<br>
+						</div>     
 						<br>
 						<br>
 						<p class="text-right">
@@ -94,7 +109,14 @@
 			
 		}
 		</div>
-
+		<script>
+			$('#saveButton').click(function(e){
+				$("#auth_authToken").removeAttr('disabled');
+				$("#auth_tokenExpiredDate").removeAttr('disabled');
+				$("#auth_passwordHash").removeAttr('disabled');
+				$("#_id").removeAttr('disabled');
+			});
+		</script>
 }
 
 <!--  @@Author(name="Lukas Pecak") href="@routes.Users.getUsersList()"-->

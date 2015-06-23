@@ -12,6 +12,7 @@ import play.libs.ws.WS;
 import play.libs.ws.WSResponse;
 import play.mvc.Controller;
 import play.mvc.Result;
+import service.RestService.restServiceEnum;
 import utils.Messages;
 import utils.StatusCodes;
 import utils.Urls;
@@ -31,7 +32,7 @@ public class UsersService {
 	public static final String EMPTY = "";
 	
 	
-	// Authenticat the user ****************************************************************************************************
+	/*// Authenticat the user ****************************************************************************************************
 	public static UserAccount authenticate(String userName, String passwordHash) {
         //fake kode
 		UserAccount account = new UserAccount();
@@ -39,12 +40,6 @@ public class UsersService {
 		account.userName = "root";
 		account.systemRole = SystemRoleEnum.SuperUser;
 		account.passwordHash = Codecs.md5(new String("root").getBytes());
-		if(account.userName.equals(userName) && account.passwordHash.equals(passwordHash)) return account;
-		
-		account.userId = "552568ce397a10473066f356";
-		account.userName = "lukaspecak";
-		account.systemRole = SystemRoleEnum.SuperUser;
-		account.passwordHash = "ca513602238bd1cda290fa1eb2a74ab1";
 		if(account.userName.equals(userName) && account.passwordHash.equals(passwordHash)) return account;
 		
 		account.userId = "5517d4db07b4c25ec8c1ca07";
@@ -72,19 +67,19 @@ public class UsersService {
 		if(account.userName.equals(userName) && account.passwordHash.equals(passwordHash)) return account;
 		
 		return null;
-    }
+    }*/
 	
 	//Get the list of all users ************************************************************************************************
 	public static List<User> getUsersList(){
 		WSResponse response = null;
 		List<User> resultList = new ArrayList<User>();
 		try{
-		Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.GET_USERS_URL)
+		/*Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.GET_USERS_URL)
 										.setContentType(Urls.CONTENT_TYPE_JSON)
 										.get();
-		response = result.get(10000);
-		Gson gson = new Gson();
-		User[] users = gson.fromJson(response.getBody(), User[].class);
+		response = result.get(10000);*/
+		response = RestService.callREST(Urls.GET_USERS_URL, null, null, true, restServiceEnum.GET);
+		User[] users = new Gson().fromJson(response.getBody(), User[].class);
 		for(int i=0; i<users.length; i++){
 			resultList.add(users[i]);
 		}
@@ -98,9 +93,10 @@ public class UsersService {
 	public static void deleteUser(String id){
 		WSResponse response = null;
 		try{
-		Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.DELETE_USER_URL+id)
+		/*Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.DELETE_USER_URL+id)
 										.delete();
-		response = result.get(10000);
+		response = result.get(10000);*/
+		response = RestService.callREST(Urls.DELETE_USER_URL+id, null, null, false, restServiceEnum.DELETE);
 		if(response.getStatus() == StatusCodes.OK){
 			User user = new Gson().fromJson(response.getBody(), User.class);
 			Controller.flash().put(Messages.SUCCESS, Messages.SUCCESS_DELETED + user.firstName + " " + user.lastName);
@@ -117,10 +113,11 @@ public class UsersService {
 		WSResponse response = null;
 		User user = null;
 		try{
-		Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.GET_ONE_USER+id)
+		/*Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.GET_ONE_USER+id)
 										.setContentType(Urls.CONTENT_TYPE_JSON)
 										.get();
-		response = result.get(10000);
+		response = result.get(10000);*/
+		response = RestService.callREST(Urls.GET_ONE_USER+id, null, null, true, restServiceEnum.GET);
 		user = new Gson().fromJson(response.getBody(), User.class);
 		} catch(Exception exception){
 			Controller.flash(Messages.ERROR, Messages.CANT_LOAD_USERS + exception);
@@ -132,37 +129,42 @@ public class UsersService {
 	public static Result saveUser(Form<User> boundForm, String id){
 		if(boundForm.hasErrors()) {
 			Controller.flash(Messages.WARNING, Messages.CORRECT_FORM);
-			return Controller.badRequest(userDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm, id));
+			return Controller.badRequest(userDetails.render(Utils.getCurrentUser(), Controller.session().get("role"), boundForm, id));
 		}
 		User user = boundForm.get();
 		if(user.currentCourses_ids == null) user.currentCourses_ids = new ArrayList<String>();
 		if(user.hiredEquipments_ids == null) user.hiredEquipments_ids = new ArrayList<String>();
 		if(user.payments_ids == null) user.payments_ids = new ArrayList<String>();
-		//if(user.feeStatus == null) user.feeStatus = User.feeStatusEnum.OnTime;
 		Gson gson = new Gson();
-		//String request = "{\"firstName\": \"Lukas\",\"lastName\": \"Pęcak\",\"email\": \"michal.kijania@gmail.com\",\"feeStatus\": \"OnTime\",\"hoursPoints\": 0,\"address\": {\"voivodeship\": \"Lesser Poland\",\"town\": \"Krakow\",\"street\": \"Bracka\",\"buildingNr\": 12,\"apartmentNr\": 2},\"currentCourses_ids\": [],\"hiredEquipments_ids\": [],\"payments_ids\": []}";   
-		String request = gson.toJson(user, User.class);
-		
+		String request = gson.toJson(user, User.class);	
 		WSResponse response = null;
 		
 		//The case for new user save --------------------------------------------------------------
 		if((id == null) || id.length() == 0){
 
 		try{
-		Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.POST_USER_URL)
+		/*Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.POST_USER_URL)
 										.setContentType(Urls.CONTENT_TYPE_JSON)
 										.post(request);
-		response = result.get(10000);
+		response = result.get(10000);*/
+		response = RestService.callREST(Urls.POST_USER_URL, request, User.class, true, restServiceEnum.POST);
 		} catch(Exception exception){
 			Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_USER + exception);
-			return Controller.badRequest(userDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm,id));
+			return Controller.badRequest(userDetails.render(Utils.getCurrentUser(), 
+															Controller.session().get("role"), 
+															boundForm,id));
 		}
 		if(response.getStatus() == StatusCodes.CREATED){
 			Controller.flash(Messages.SUCCESS, Messages.SUCCESS_ADING_USER);
-			return Controller.ok(usersList.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), UsersService.getUsersList()));
+			return Controller.ok(usersList.render(Utils.getCurrentUser(), 
+													Controller.session().get("role"), 
+													UsersService.getUsersList()));
 		} else{
+			SecurityService.isForbidden(response);
 			Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_USER_DETAILS + response.getStatus() +" "+ response.getStatusText());
-			return Controller.badRequest(userDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm,id));
+			return Controller.badRequest(userDetails.render(Utils.getCurrentUser(), 
+																Controller.session().get("role"), 
+																boundForm,id));
 		}
 		} 
 		
@@ -171,20 +173,26 @@ public class UsersService {
 			user._id = id;
 			request = gson.toJson(user, User.class);
 			try{
-			Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.PUT_USER_URL+id)
+			/*Promise<WSResponse> result = WS.url(Utils.getApiUrl()+Urls.PUT_USER_URL+id)
 											.setContentType(Urls.CONTENT_TYPE_JSON)
 											.put(request);
-			response = result.get(10000);
+			response = result.get(10000);*/
+			response = RestService.callREST(Urls.PUT_USER_URL+id, request, User.class, true, restServiceEnum.PUT);
 			} catch(Exception exception){
 				Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_USER + exception);
-				return Controller.badRequest(userDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm,id));
+				return Controller.badRequest(userDetails.render(Utils.getCurrentUser(), 
+																Controller.session().get("role"), 
+																boundForm,id));
 			}
 			if(response.getStatus() == StatusCodes.OK){
 				Controller.flash(Messages.SUCCESS, Messages.SUCCESS_UPDATE_USER);
-				return Controller.ok(usersList.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), UsersService.getUsersList()));
+				return Controller.ok(usersList.render(Utils.getCurrentUser(), 
+														Controller.session().get("role"), 
+														UsersService.getUsersList()));
 			} else{
+				SecurityService.isForbidden(response);
 				Controller.flash(Messages.ERROR, Messages.ERROR_ADDING_USER_DETAILS + response.getStatus() +" "+ response.getStatusText());
-				return Controller.ok(request +" | "+ response.getBody());//return Controller.badRequest(userDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm,id));
+				return Controller.ok(response.getStatusText()+" > "+request +" | "+ response.getBody());//return Controller.badRequest(userDetails.render(UsersService.getUser(Controller.session().get("userName")), Controller.session().get("role"), boundForm,id));
 			}
 		}	
 	}

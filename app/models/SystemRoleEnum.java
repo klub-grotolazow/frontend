@@ -1,5 +1,11 @@
 package models;
 
 public enum SystemRoleEnum {
-	SuperUser, CourseManager, Instructor, WarehouseManager, Student, ClubMemeber, PaymentManager, HouerspointsManager
+	SuperUser,
+	CourseMember,
+	CourseManager, 
+	Instructor, 
+	Warehouseman,  
+	Accounter, 
+	Candidate
 }
